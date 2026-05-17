@@ -10,7 +10,7 @@
 | **Nomor Dokumen** | MikoMart-SRS-2026-001 |
 | **Versi** | 1.0 — Draft |
 | **Tanggal** | 16 April 2026 |
-| **Status** | Draft — Menunggu Review |
+| **Status** | Disetujui |
 | **Klasifikasi** | INTERNAL — CONFIDENTIAL |
 
 ---
