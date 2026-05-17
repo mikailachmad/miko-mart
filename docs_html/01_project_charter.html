@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>PROJECT CHARTER — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-PC-2026-001</div>
+  <h1>PROJECT CHARTER</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>PROJECT CHARTER</h1>
+<h2>MikoMart Point of Sale (POS) System</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Proyek</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Versi Dokumen</strong></td><td>1.0</td></tr>
+<tr><td><strong>Tanggal</strong></td><td>16 April 2026</td></tr>
+<tr><td><strong>Status</strong></td><td>Draft — Menunggu Persetujuan</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-PC-2026-001</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. RINGKASAN EKSEKUTIF</h2>
+<br>
+<p>MikoMart POS adalah sistem kasir berbasis web (offline-first) yang dirancang untuk mendukung operasional ritel MikoMart secara menyeluruh. Sistem ini menggantikan proses manual dan menyatukan transaksi penjualan, manajemen inventori, manajemen pengguna berbasis peran (RBAC), integrasi pembayaran digital, serta pelaporan bisnis dalam satu platform terpadu.</p>
+<br>
+<p>Sistem ini dikembangkan menggunakan stack: <strong>PHP Laravel</strong> (backend API), <strong>Node.js</strong> (layanan real-time/event), <strong>React</strong> (frontend SPA), dan <strong>SQLite</strong> (penyimpanan lokal offline), dengan desain arsitektur yang mendukung sinkronisasi data ketika koneksi internet kembali tersedia.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. LATAR BELAKANG & TUJUAN BISNIS</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Tujuan Bisnis</th><th>Indikator Keberhasilan</th></tr></thead>
+<tbody>
+<tr><td>Mempercepat proses transaksi kasir</td><td>Transaksi tuntas ≤ 10 detik</td></tr>
+<tr><td>Mengurangi kesalahan pencatatan stok</td><td>Akurasi stok ≥ 99%</td></tr>
+<tr><td>Meningkatkan visibilitas laporan ke pemilik</td><td>Owner dapat melihat rekap harian/mingguan/bulanan</td></tr>
+<tr><td>Kepatuhan terhadap regulasi pajak</td><td>Ekspor data transaksi untuk audit pajak tersedia</td></tr>
+<tr><td>Keamanan data pengguna & transaksi</td><td>Zero data breach; audit log 100% tercatat</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. RUANG LINGKUP PROYEK</h2>
+<br>
+<h3>3.1 Dalam Lingkup (In-Scope)</h3>
+<br>
+<ul>
+<li><strong>Modul Autentikasi & RBAC</strong>: Login, session management, 4 role (Admin, Supervisor, Kasir, Owner)</li>
+<li><strong>Modul Transaksi POS</strong>:</li>
+<li>Multiple metode pembayaran per transaksi (tunai, QRIS, transfer, kombinasi)</li>
+<li>Fitur split bill</li>
+<li>Diskon manual & override harga (max 30%, semua tercatat di audit log)</li>
+<li>Void & retur transaksi oleh kasir secara mandiri</li>
+<li><strong>Modul Inventori</strong>:</li>
+<li>Pengurangan stok real-time saat transaksi</li>
+<li>Notifikasi stok minimum</li>
+<li>Modul pembelian & restock</li>
+<li><strong>Modul Pembayaran</strong>:</li>
+<li>Integrasi langsung payment gateway (QRIS/Midtrans/Xendit)</li>
+<li><strong>Modul Struk</strong>:</li>
+<li>Cetak struk fisik via thermal printer</li>
+<li>Ekspor struk digital format PDF</li>
+<li><strong>Modul Laporan & Audit</strong>:</li>
+<li>Rekap transaksi harian/mingguan/bulanan (Owner)</li>
+<li>Activity log lengkap (siapa, apa, kapan)</li>
+<li>Ekspor data untuk audit pajak (PPN)</li>
+<li><strong>Arsitektur Offline-First</strong>:</li>
+<li>Transaksi tetap berjalan tanpa koneksi internet</li>
+<li>Auto-sinkronisasi data saat koneksi kembali</li>
+<li>Kasir memiliki otoritas merge jika terjadi konflik data</li>
+</ul>
+<br>
+<h3>3.2 Di Luar Lingkup (Out-of-Scope)</h3>
+<br>
+<ul>
+<li>Aplikasi mobile (Android/iOS) native</li>
+<li>Modul penggajian/payroll karyawan</li>
+<li>Integrasi dengan sistem akuntansi eksternal (e.g., Accurate, Jurnal.id) — bisa jadi fase berikutnya</li>
+<li>E-commerce / penjualan online</li>
+<li>Fitur loyalty points / program membership pelanggan</li>
+<li>Customer Relationship Management (CRM)</li>
+</ul>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. STAKEHOLDER</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Peran</th><th>Nama / Jabatan</th><th>Kepentingan</th></tr></thead>
+<tbody>
+<tr><td><strong>Project Sponsor</strong></td><td>Pemilik MikoMart</td><td>Pembiayaan & persetujuan akhir</td></tr>
+<tr><td><strong>Product Owner</strong></td><td>Owner (Role sistem)</td><td>Visibilitas laporan & kepatuhan pajak</td></tr>
+<tr><td><strong>System Admin</strong></td><td>Admin MikoMart</td><td>Konfigurasi sistem, harga, diskon</td></tr>
+<tr><td><strong>End User — Kasir</strong></td><td>Kasir aktif (4 orang)</td><td>Kemudahan & kecepatan transaksi</td></tr>
+<tr><td><strong>End User — Supervisor</strong></td><td>Supervisor toko</td><td>Pengawasan transaksi & stok</td></tr>
+<tr><td><strong>Developer Team</strong></td><td>Tim Pengembang</td><td>Pembangunan & pemeliharaan sistem</td></tr>
+<tr><td><strong>QA Engineer</strong></td><td>Tim SQA</td><td>Pengujian & validasi sistem</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>5. DELIVERABLES PROYEK</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>No</th><th>Deliverable</th><th>Format</th><th>Target Fase</th></tr></thead>
+<tbody>
+<tr><td>D-01</td><td>Software Requirements Specification (SRS)</td><td>Markdown / PDF</td><td>Fase 2B</td></tr>
+<tr><td>D-02</td><td>System Architecture Document (SAD)</td><td>SVG + Markdown</td><td>Fase 3</td></tr>
+<tr><td>D-03</td><td>Entity Relationship Diagram (ERD)</td><td>Mermaid</td><td>Fase 3</td></tr>
+<tr><td>D-04</td><td>Database Schema (DDL)</td><td>SQL</td><td>Fase 3</td></tr>
+<tr><td>D-05</td><td>Source Code Aplikasi</td><td>GitHub Repository</td><td>Fase 4–6</td></tr>
+<tr><td>D-06</td><td>REST API Documentation</td><td>OpenAPI 3.0</td><td>Fase 4</td></tr>
+<tr><td>D-07</td><td>Test Plan & Test Cases (IEEE 829)</td><td>Markdown</td><td>Fase 7</td></tr>
+<tr><td>D-08</td><td>Test Report & Bug Report</td><td>Markdown</td><td>Fase 7</td></tr>
+<tr><td>D-09</td><td>Deployment Guide</td><td>Markdown</td><td>Fase 8</td></tr>
+<tr><td>D-10</td><td>Project Closure Report</td><td>Markdown / PDF</td><td>Fase 8</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>6. MILESTONE & JADWAL</h2>
+<br>
+<pre><code>gantt
+    title MikoMart POS — Project Timeline
+    dateFormat  YYYY-MM-DD
+    section Fase Dokumentasi
+    Project Charter & SRS          :done,    f1, 2026-04-16, 7d
+    Architecture & ERD Design       :active,  f2, 2026-04-23, 7d
+    section Fase Pengembangan
+    Setup Environment & Auth/RBAC   :         f3, 2026-04-30, 14d
+    Modul Inventori & Produk        :         f4, 2026-05-14, 14d
+    Modul Transaksi POS             :         f5, 2026-05-28, 21d
+    Integrasi Payment Gateway       :         f6, 2026-06-18, 14d
+    Modul Laporan & Audit Log       :         f7, 2026-07-02, 14d
+    section Fase Pengujian
+    Unit & Integration Testing      :         f8, 2026-07-16, 14d
+    User Acceptance Testing (UAT)   :         f9, 2026-07-30, 7d
+    section Fase Deployment
+    Staging & Go-Live               :         f10, 2026-08-06, 7d
+    Project Closure                 :         f11, 2026-08-13, 7d</code></pre>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Milestone</th><th>Deskripsi</th><th>Target Tanggal</th></tr></thead>
+<tbody>
+<tr><td><strong>M0</strong></td><td>Dokumen Dasar Selesai (Charter, SRS, SLA)</td><td>16 Apr 2026</td></tr>
+<tr><td><strong>M1</strong></td><td>Arsitektur & ERD Final</td><td>30 Apr 2026</td></tr>
+<tr><td><strong>M2</strong></td><td>Modul Auth & RBAC Selesai</td><td>14 Mei 2026</td></tr>
+<tr><td><strong>M3</strong></td><td>Modul Inventori & Produk Selesai</td><td>28 Mei 2026</td></tr>
+<tr><td><strong>M4</strong></td><td>Modul Transaksi POS Selesai</td><td>18 Jun 2026</td></tr>
+<tr><td><strong>M5</strong></td><td>Integrasi Payment Gateway Selesai</td><td>02 Jul 2026</td></tr>
+<tr><td><strong>M6</strong></td><td>Modul Laporan & Audit Selesai</td><td>16 Jul 2026</td></tr>
+<tr><td><strong>M7</strong></td><td>UAT & Sign-Off</td><td>06 Ags 2026</td></tr>
+<tr><td><strong>M8</strong></td><td>Go-Live & Project Closure</td><td>13 Ags 2026</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>7. REGISTER RISIKO</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Risiko</th><th>Probabilitas</th><th>Dampak</th><th>Skor</th><th>Mitigasi</th></tr></thead>
+<tbody>
+<tr><td>R-01</td><td>Konflik data sinkronisasi offline di multi-kasir</td><td>Tinggi</td><td>Tinggi</td><td>🔴 Kritis</td><td>Implementasi timestamp-based merge + log konflik; kasir diedukasi prosedur merge</td></tr>
+<tr><td>R-02</td><td>Kegagalan integrasi payment gateway (Midtrans/Xendit)</td><td>Sedang</td><td>Tinggi</td><td>🟠 Tinggi</td><td>Gunakan SDK resmi, testing di sandbox dulu, failover ke mode manual</td></tr>
+<tr><td>R-03</td><td>Kompatibilitas thermal printer dengan browser/React</td><td>Sedang</td><td>Sedang</td><td>🟡 Sedang</td><td>Uji di hardware nyata (EPSON/Star) di awal sprint; gunakan WebUSB/ESC-POS library</td></tr>
+<tr><td>R-04</td><td>Overrun jadwal pengembangan</td><td>Sedang</td><td>Sedang</td><td>🟡 Sedang</td><td>Agile sprint 2 minggu, daily standup, buffer 1 sprint</td></tr>
+<tr><td>R-05</td><td>Kerentanan keamanan pada endpoint API</td><td>Rendah</td><td>Sangat Tinggi</td><td>🟠 Tinggi</td><td>OWASP Top 10 checklist wajib, penetration testing sebelum go-live</td></tr>
+<tr><td>R-06</td><td>Performa lambat saat peak 500 transaksi/hari</td><td>Rendah</td><td>Sedang</td><td>🟢 Rendah</td><td>Load testing dengan k6; indexing database; caching query laporan</td></tr>
+<tr><td>R-07</td><td>Kehilangan data saat perangkat kasir mati mendadak</td><td>Sedang</td><td>Tinggi</td><td>🟠 Tinggi</td><td>SQLite WAL mode; auto-save setiap langkah transaksi; backup lokal</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>8. ASUMSI & KETERGANTUNGAN</h2>
+<br>
+<h3>8.1 Asumsi</h3>
+<ul>
+<li>Setiap kasir menggunakan tablet touchscreen dengan browser modern (Chrome/Edge terbaru)</li>
+<li>Jaringan LAN/WLAN tersedia di toko namun tidak dijamin stabil 100%</li>
+<li>Thermal printer sudah tersedia dan kompatibel dengan standar ESC/POS</li>
+<li>Tidak ada regulasi pajak yang mengharuskan integrasi langsung ke sistem DJP (e-Faktur) pada versi ini</li>
+<li>NPWP toko telah tersedia dan valid untuk keperluan struk PPN</li>
+</ul>
+<br>
+<h3>8.2 Ketergantungan</h3>
+<ul>
+<li>API payment gateway aktif (Midtrans atau Xendit) — membutuhkan akun merchant yang terdaftar</li>
+<li>Koneksi internet untuk proses transaksi digital (QRIS, transfer)</li>
+<li>Server/hosting yang mendukung PHP 8.x, Node.js ≥ 18.x</li>
+</ul>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>9. KRITERIA KEBERHASILAN PROYEK</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kriteria</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>Semua Functional Requirements (FR) terpenuhi</td><td>100% FR Pass di UAT</td></tr>
+<tr><td>Tidak ada Critical/High bug saat go-live</td><td>0 bug Critical, ≤ 3 bug High</td></tr>
+<tr><td>Performa transaksi</td><td>≤ 10 detik end-to-end di peak load</td></tr>
+<tr><td>Uptime sistem</td><td>≥ 99.5% per bulan</td></tr>
+<tr><td>Audit log lengkap</td><td>100% override & void tercatat</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>10. PERSETUJUAN DOKUMEN</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Peran</th><th>Nama</th><th>Tanda Tangan</th><th>Tanggal</th></tr></thead>
+<tbody>
+<tr><td>Project Sponsor</td><td>__________________</td><td>__________________</td><td>__________</td></tr>
+<tr><td>Product Owner</td><td>__________________</td><td>__________________</td><td>__________</td></tr>
+<tr><td>Lead Developer</td><td>__________________</td><td>__________________</td><td>__________</td></tr>
+<tr><td>QA Lead</td><td>__________________</td><td>__________________</td><td>__________</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini merupakan landasan resmi proyek MikoMart POS. Setiap perubahan ruang lingkup harus melalui proses Change Request (CR) formal dan mendapat persetujuan Project Sponsor.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-PC-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-PC-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

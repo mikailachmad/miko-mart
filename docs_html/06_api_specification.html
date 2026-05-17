@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>API SPECIFICATION — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-API-2026-001</div>
+  <h1>API SPECIFICATION</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>API SPECIFICATION</h1>
+<h2>MikoMart Point of Sale (POS) System — Fase 4B</h2>
+<h3>Standar: OpenAPI 3.0.3 | @api-spec.md</h3>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-API-2026-001</td></tr>
+<tr><td><strong>Standar</strong></td><td>OpenAPI Specification 3.0.3</td></tr>
+<tr><td><strong>Base URL (Production)</strong></td><td><code>https://api.mikomart.local/api/v1</code></td></tr>
+<tr><td><strong>Versi API</strong></td><td>v1.0.0</td></tr>
+<tr><td><strong>Tanggal</strong></td><td>17 April 2026</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. VERSIONING STRATEGY</h2>
+<br>
+<h3>1.1 Skema Versi</h3>
+<br>
+<p>Format: <strong>URL Versioning</strong> — <code>/api/v{major}/</code></p>
+<br>
+<pre><code>https://api.mikomart.local/api/v1/transactions
+https://api.mikomart.local/api/v2/transactions  ← Versi baru (masa depan)</code></pre>
+<br>
+<h3>1.2 Aturan Semantic Versioning per Perubahan API</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Tipe Perubahan</th><th>Dampak</th><th>Aksi</th></tr></thead>
+<tbody>
+<tr><td>Tambah field baru di response</td><td>Backward-compatible ✅</td><td>PATCH version bump (tidak butuh versi URL baru)</td></tr>
+<tr><td>Tambah endpoint baru</td><td>Backward-compatible ✅</td><td>MINOR version bump</td></tr>
+<tr><td>Ubah tipe data field yang ada</td><td>Breaking ❌</td><td>MAJOR → <code>/api/v2/</code></td></tr>
+<tr><td>Hapus field dari response</td><td>Breaking ❌</td><td>MAJOR → <code>/api/v2/</code></td></tr>
+<tr><td>Ubah format/nama field</td><td>Breaking ❌</td><td>MAJOR → <code>/api/v2/</code></td></tr>
+<tr><td>Ubah HTTP method endpoint</td><td>Breaking ❌</td><td>MAJOR → <code>/api/v2/</code></td></tr>
+<tr><td>Ubah behavior (logic bisnis)</td><td>Breaking ❌</td><td>MAJOR → <code>/api/v2/</code></td></tr>
+<tr><td>Perubahan validasi (lebih ketat)</td><td>Breaking ❌</td><td>MAJOR → <code>/api/v2/</code></td></tr>
+</tbody></table></div>
+<br>
+<h3>1.3 Backward Compatibility Rules</h3>
+<br>
+<pre><code>Wajib dijaga di v1 (tidak boleh melanggar):
+✅ Semua field yang ada di response tetap ada
+✅ Tipe data semua field tidak berubah
+✅ HTTP status code per skenario tidak berubah
+✅ Endpoint yang ada tidak dihapus (hanya deprecated)
+✅ Request body yang tersedia tetap diterima</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. DEPRECATION POLICY</h2>
+<br>
+<h3>2.1 Prosedur Deprecasi Endpoint</h3>
+<br>
+<pre><code>1. Tandai endpoint sebagai deprecated di dokumentasi (added: x-deprecated: true)
+2. Tambahkan header Sunset di semua response endpoint deprecated
+3. Beri notice period minimal 3 bulan untuk patch/minor change
+4. Beri notice period minimal 6 bulan untuk major change (breaking)
+5. Arahkan ke endpoint pengganti via header Link
+6. Hapus endpoint setelah sunset date</code></pre>
+<br>
+<h3>2.2 Header Deprecation (RFC 8594)</h3>
+<br>
+<pre><code>HTTP/1.1 200 OK
+Deprecation: true
+Sunset: Sat, 17 Oct 2026 23:59:59 GMT
+Link: </api/v2/transactions>; rel="successor-version"
+Warning: 299 - "This endpoint is deprecated. Use /api/v2/transactions instead."</code></pre>
+<br>
+<h3>2.3 Multi-Version Coexistence</h3>
+<br>
+<pre><code>v1 (aktif)    → Terima request, kirim Deprecation header setelah v2 rilis
+v2 (aktif)    → Versi baru, fully supported
+v1 (sunset)   → Hapus setelah masa notice habis; return HTTP 410 Gone</code></pre>
+<br>
+<h3>2.4 Migration Guide Template</h3>
+<br>
+<p>Setiap breaking change wajib disertai migration guide:</p>
+<br>
+<pre><code>## Migration: v1 → v2 — Transactions Endpoint
+
+**Breaking Change:** Field `payment_method` (string) diganti menjadi
+`payment_methods` (array) untuk mendukung split bill lebih eksplisit.
+
+### v1 (Deprecated)
+GET /api/v1/transactions/{id}
+Response: { "payment_method": "cash" }
+
+### v2 (Baru)
+GET /api/v2/transactions/{id}
+Response: { "payment_methods": ["cash"] }
+
+### Migration Steps
+1. Update client untuk membaca `payment_methods[0]` untuk single-payment
+2. Perbarui filter laporan yang bergantung pada `payment_method`
+3. Sunset Date: 17 Oktober 2026</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. SECURITY REQUIREMENTS PER ENDPOINT</h2>
+<br>
+<h3>3.1 Skema Keamanan</h3>
+<br>
+<pre><code>securitySchemes:
+  BearerAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    description: |
+      JWT Token dari endpoint /auth/login.
+      Format: Authorization: Bearer <token>
+      Expiry: 60 menit. Inactivity timeout: 30 menit.
+
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: X-API-Key
+    description: |
+      Digunakan untuk komunikasi server-to-server (internal service).
+      Diambil dari environment variable — tidak boleh hardcoded.</code></pre>
+<br>
+<h3>3.2 Rate Limiting Headers</h3>
+<br>
+<p>Semua response menyertakan header berikut:</p>
+<br>
+<pre><code>X-RateLimit-Limit: 300
+X-RateLimit-Remaining: 247
+X-RateLimit-Reset: 1713312000</code></pre>
+<br>
+<p>Jika limit tercapai:</p>
+<pre><code>HTTP/1.1 429 Too Many Requests
+Retry-After: 45
+Content-Type: application/json
+
+{ "error": "Terlalu banyak request. Coba lagi dalam 45 detik." }</code></pre>
+<br>
+<h3>3.3 Security Matrix per Endpoint</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Endpoint</th><th>Auth Required</th><th>Role yang Diizinkan</th><th>Rate Limit</th></tr></thead>
+<tbody>
+<tr><td><code>POST /auth/login</code></td><td>❌ Tidak</td><td>—</td><td>20 req/menit per IP</td></tr>
+<tr><td><code>POST /auth/logout</code></td><td>✅ JWT</td><td>Semua role</td><td>50 req/menit</td></tr>
+<tr><td><code>GET /auth/me</code></td><td>✅ JWT</td><td>Semua role</td><td>100 req/menit</td></tr>
+<tr><td><code>GET /products</code></td><td>✅ JWT</td><td>Semua role</td><td>300 req/menit</td></tr>
+<tr><td><code>POST /products</code></td><td>✅ JWT</td><td>admin</td><td>60 req/menit</td></tr>
+<tr><td><code>PATCH /products/{id}</code></td><td>✅ JWT</td><td>admin</td><td>60 req/menit</td></tr>
+<tr><td><code>DELETE /products/{id}</code></td><td>✅ JWT</td><td>admin</td><td>30 req/menit</td></tr>
+<tr><td><code>GET /products/{id}/stock</code></td><td>✅ JWT</td><td>admin, supervisor, cashier</td><td>300 req/menit</td></tr>
+<tr><td><code>POST /transactions</code></td><td>✅ JWT</td><td>cashier, admin</td><td>120 req/menit</td></tr>
+<tr><td><code>GET /transactions</code></td><td>✅ JWT</td><td>admin, supervisor, cashier (own only)</td><td>200 req/menit</td></tr>
+<tr><td><code>GET /transactions/{id}</code></td><td>✅ JWT</td><td>admin, supervisor, cashier (own only)</td><td>200 req/menit</td></tr>
+<tr><td><code>GET /transactions/{id}/receipt</code></td><td>✅ JWT</td><td>admin, supervisor, cashier (own only)</td><td>60 req/menit</td></tr>
+<tr><td><code>POST /transactions/{id}/reprint</code></td><td>✅ JWT</td><td>cashier, admin, supervisor</td><td>30 req/menit</td></tr>
+<tr><td><code>POST /webhooks/payment</code></td><td>✅ HMAC</td><td>— (IP Whitelist)</td><td>200 req/menit</td></tr>
+<tr><td><code>POST /voids</code></td><td>✅ JWT</td><td>cashier, admin, supervisor</td><td>30 req/menit</td></tr>
+<tr><td><code>GET /voids</code></td><td>✅ JWT</td><td>admin, supervisor</td><td>100 req/menit</td></tr>
+<tr><td><code>POST /voids/{id}/approve</code></td><td>✅ JWT</td><td>admin, supervisor</td><td>30 req/menit</td></tr>
+<tr><td><code>POST /voids/{id}/reject</code></td><td>✅ JWT</td><td>admin, supervisor</td><td>30 req/menit</td></tr>
+<tr><td><code>GET /reports/dashboard</code></td><td>✅ JWT</td><td>admin, supervisor, owner</td><td>60 req/menit</td></tr>
+<tr><td><code>GET /reports/daily</code></td><td>✅ JWT</td><td>admin, owner</td><td>30 req/menit</td></tr>
+<tr><td><code>POST /reports/export</code></td><td>✅ JWT</td><td>admin, owner</td><td>10 req/menit</td></tr>
+<tr><td><code>POST /sync/push</code></td><td>✅ JWT</td><td>cashier</td><td>60 req/menit</td></tr>
+<tr><td><code>GET /sync/status</code></td><td>✅ JWT</td><td>cashier, admin</td><td>120 req/menit</td></tr>
+<tr><td><code>POST /sync/conflict/resolve</code></td><td>✅ JWT</td><td>cashier, admin, supervisor</td><td>30 req/menit</td></tr>
+<tr><td><code>GET /users</code></td><td>✅ JWT</td><td>admin</td><td>60 req/menit</td></tr>
+<tr><td><code>POST /users</code></td><td>✅ JWT</td><td>admin</td><td>20 req/menit</td></tr>
+<tr><td><code>PATCH /users/{id}</code></td><td>✅ JWT</td><td>admin</td><td>30 req/menit</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. OPENAPI 3.0.3 SPECIFICATION</h2>
+<br>
+<pre><code>openapi: "3.0.3"
+
+info:
+  title: MikoMart POS API
+  version: "1.0.0"
+  description: |
+    REST API untuk sistem Point of Sale MikoMart.
+
+    **Autentikasi:** Bearer JWT — diperoleh dari `POST /auth/login`.
+    **Rate Limiting:** Header `X-RateLimit-*` disertakan di setiap response.
+    **Versioning:** URL-based `/api/v1/`. Lihat Deprecation Policy untuk migrasi.
+
+    **Security Notes:**
+    - Semua endpoint wajib HTTPS
+    - Token JWT di-invalidate saat logout atau inactivity 30 menit
+    - Webhook menggunakan HMAC-SHA512; verifikasi WAJIB di sisi server
+
+  contact:
+    name: Lead Developer MikoMart
+    email: dev@mikomart.internal
+  license:
+    name: INTERNAL USE ONLY
+
+servers:
+  - url: https://api.mikomart.local/api/v1
+    description: Production Server
+  - url: https://staging.mikomart.local/api/v1
+    description: Staging Server (Sandbox Payment)
+  - url: http://localhost:8000/api/v1
+    description: Development Server
+
+tags:
+  - name: Auth
+    description: Autentikasi dan manajemen sesi
+  - name: Products
+    description: CRUD produk dan pengecekan stok
+  - name: Transactions
+    description: Pembuatan dan pengelolaan transaksi POS
+  - name: Payments
+    description: Integrasi payment gateway dan webhook
+  - name: Voids
+    description: Pengajuan dan persetujuan void/retur (two-step)
+  - name: Reports
+    description: Laporan penjualan dan ekspor pajak
+  - name: Sync
+    description: Sinkronisasi data offline-online
+  - name: Users
+    description: Manajemen pengguna dan RBAC
+
+# ════════════════════════════════════════════
+# PATHS
+# ════════════════════════════════════════════
+paths:
+
+  # ─────────────── AUTH ───────────────
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login pengguna
+      description: |
+        Autentikasi pengguna dengan username dan password.
+        Mengembalikan JWT token untuk digunakan di endpoint lain.
+
+        **Security:**
+        - Rate limit: 20 req/menit per IP
+        - Account lockout setelah 5x gagal (30 menit)
+        - Password divalidasi menggunakan Argon2id hashing
+      operationId: authLogin
+      security: []  # Public endpoint
+      x-rate-limit: "20/minute per IP"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              username: kasir01
+              password: "P@ssw0rd123!"
+      responses:
+        '200':
+          description: Login berhasil
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              description: HttpOnly cookie untuk JWT (opsional)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                success: true
+                data:
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  token_type: Bearer
+                  expires_at: "2026-04-17T12:00:00Z"
+                  user:
+                    id: 3
+                    username: kasir01
+                    full_name: "Ahmad Kasir"
+                    role: cashier
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '423':
+          description: Akun terkunci
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: ACCOUNT_LOCKED
+                  message: "Akun terkunci karena terlalu banyak percobaan gagal."
+                  locked_until: "2026-04-17T10:30:00Z"
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout dan invalidasi token
+      operationId: authLogout
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor, cashier, owner]
+      x-rate-limit: "50/minute"
+      responses:
+        '200':
+          description: Logout berhasil; token diinvalidasi di server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Ambil profil pengguna yang sedang login
+      operationId: authMe
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor, cashier, owner]
+      x-rate-limit: "100/minute"
+      responses:
+        '200':
+          description: Data profil pengguna
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfileResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # ─────────────── PRODUCTS ───────────────
+
+  /products:
+    get:
+      tags: [Products]
+      summary: Daftar produk (dengan pencarian & filter)
+      operationId: productsList
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor, cashier, owner]
+      x-rate-limit: "300/minute"
+      parameters:
+        - $ref: '#/components/parameters/SearchQuery'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: category_id
+          in: query
+          schema: { type: integer }
+          description: Filter berdasarkan kategori
+        - name: low_stock
+          in: query
+          schema: { type: boolean }
+          description: Jika true, tampilkan hanya produk dengan stok ≤ minimum
+      responses:
+        '200':
+          description: Daftar produk berhasil diambil
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+
+    post:
+      tags: [Products]
+      summary: Tambah produk baru
+      description: |
+        **RBAC:** Hanya `admin` yang dapat menambah produk.
+        Setiap pembuatan produk dicatat di audit_logs.
+      operationId: productsCreate
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin]
+      x-rate-limit: "60/minute"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductCreateRequest'
+            example:
+              name: "Mie Goreng Sedap"
+              sku: "MGS-001"
+              category_id: 2
+              price_sell: 3500
+              price_buy: 2500
+              stock_current: 100
+              stock_minimum: 20
+              unit: pcs
+      responses:
+        '201':
+          description: Produk berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /products/{id}:
+    patch:
+      tags: [Products]
+      summary: Update produk (harga, stok, status)
+      description: |
+        **RBAC:** Hanya `admin` yang dapat mengubah data produk termasuk harga.
+        `supervisor` hanya dapat melihat, tidak dapat mengubah.
+        Setiap perubahan harga dicatat di audit_logs (`PRODUCT_PRICE_UPDATED`).
+      operationId: productsUpdate
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin]
+      x-rate-limit: "60/minute"
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductUpdateRequest'
+      responses:
+        '200':
+          description: Produk berhasil diupdate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    delete:
+      tags: [Products]
+      summary: Soft-delete produk
+      operationId: productsDelete
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin]
+      x-rate-limit: "30/minute"
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: Produk berhasil dinonaktifkan (soft delete)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ─────────────── TRANSACTIONS ───────────────
+
+  /transactions:
+    post:
+      tags: [Transactions]
+      summary: Buat transaksi baru
+      description: |
+        **RBAC:** `cashier` dan `admin`.
+        **Validasi Server:**
+        - Semua `discount_percent` wajib ≤ 30%
+        - `price_override` tidak boleh < `price_buy` (floor price)
+        - Stok divalidasi real-time sebelum transaksi disimpan
+        - `grand_total` dihitung ulang di server; nilai dari client diabaikan
+
+        **Offline Mode:** Jika `is_offline_transaction: true`, transaksi
+        disimpan lokal dan disync kemudian via `/sync/push`.
+      operationId: transactionsCreate
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [cashier, admin]
+      x-rate-limit: "120/minute"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionCreateRequest'
+            example:
+              items:
+                - product_id: 1
+                  quantity: 3
+                  discount_percent: 0
+                - product_id: 5
+                  quantity: 2
+                  discount_percent: 20
+                  price_override: null
+              payment_method: cash
+              cash_received: 30000
+              is_offline_transaction: false
+              notes: "Pelanggan membership"
+      responses:
+        '201':
+          description: Transaksi berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          description: Stok tidak mencukupi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: INSUFFICIENT_STOCK
+                  message: "Stok produk 'Aqua 600ml' tidak mencukupi."
+                  product_id: 7
+                  current_stock: 0
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+    get:
+      tags: [Transactions]
+      summary: Daftar transaksi
+      description: |
+        **RBAC Object-Level:**
+        - `cashier`: hanya melihat transaksi milik sendiri
+        - `admin`, `supervisor`, `owner`: melihat semua transaksi
+      operationId: transactionsList
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor, cashier, owner]
+      x-rate-limit: "200/minute"
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+        - name: date_from
+          in: query
+          schema: { type: string, format: date }
+        - name: date_to
+          in: query
+          schema: { type: string, format: date }
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, completed, void_pending, voided, returned]
+        - name: cashier_id
+          in: query
+          schema: { type: integer }
+          description: Filter kasir (admin/supervisor only)
+      responses:
+        '200':
+          description: Daftar transaksi
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionListResponse'
+
+  /transactions/{id}/receipt:
+    get:
+      tags: [Transactions]
+      summary: Dapatkan URL struk PDF
+      description: |
+        **RBAC Object-Level:** Kasir hanya bisa akses struk transaksi milik sendiri.
+        **Security:** URL bertanda tangan (signed URL) dengan expiry 15 menit.
+        NPWP toko tidak dikembalikan di JSON response — hanya ada di dalam PDF.
+      operationId: getReceipt
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor, cashier]
+      x-rate-limit: "60/minute"
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      responses:
+        '200':
+          description: URL struk PDF
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean, example: true }
+                  data:
+                    type: object
+                    properties:
+                      pdf_url:
+                        type: string
+                        example: "https://api.mikomart.local/storage/receipts/TRX-20260417-0042.pdf?sig=abc123&exp=1713223200"
+                      expires_at:
+                        type: string
+                        format: date-time
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ─────────────── PAYMENTS & WEBHOOK ───────────────
+
+  /payments/{transaction_id}/initiate:
+    post:
+      tags: [Payments]
+      summary: Inisiasi pembayaran digital (QRIS/Transfer)
+      description: |
+        **RBAC:** `cashier`, `admin`.
+        Membuat order di payment gateway (Midtrans/Xendit) dan
+        mengembalikan QR code atau virtual account.
+        API key gateway diambil dari environment variable — TIDAK dari request.
+      operationId: paymentInitiate
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [cashier, admin]
+      x-rate-limit: "60/minute"
+      parameters:
+        - name: transaction_id
+          in: path
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [method]
+              properties:
+                method:
+                  type: string
+                  enum: [qris, transfer]
+      responses:
+        '200':
+          description: Pembayaran diinisiasi
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: object
+                    properties:
+                      gateway_order_id: { type: string }
+                      qr_code_url: { type: string, nullable: true }
+                      virtual_account: { type: string, nullable: true }
+                      expires_at: { type: string, format: date-time }
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /webhooks/payment:
+    post:
+      tags: [Payments]
+      summary: Terima webhook dari payment gateway
+      description: |
+        **Autentikasi:** HMAC-SHA512 signature, bukan JWT.
+        **IP Whitelist:** Hanya dari IP Midtrans/Xendit yang diizinkan.
+        **Idempotency:** Request dengan `gateway_transaction_id` yang sama
+        hanya diproses SATU kali.
+
+        **Verifikasi WAJIB (server-side):**
+        ```
+        HMAC-SHA512(server_key + order_id + status + gross_amount)
+        === header X-Signature
+        ```
+
+        **Security:** Endpoint ini TIDAK memerlukan JWT.
+        Diproteksi via HMAC + IP whitelist saja.
+      operationId: paymentWebhook
+      security: []  # No JWT — protected by HMAC + IP whitelist
+      x-rate-limit: "200/minute (IP Whitelist only)"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentWebhookPayload'
+      responses:
+        '200':
+          description: Webhook diterima dan diproses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+        '400':
+          description: HMAC signature tidak valid atau format salah
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: WEBHOOK_SIGNATURE_INVALID
+                  message: "Webhook signature tidak valid."
+        '409':
+          description: Webhook duplikat (already processed)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+
+  # ─────────────── VOIDS ───────────────
+
+  /voids:
+    post:
+      tags: [Voids]
+      summary: Ajukan permintaan void/retur
+      description: |
+        **Step 1 dari Two-Step Approval.**
+        **RBAC:** `cashier`, `admin`, `supervisor` bisa mengajukan.
+        Setelah pengajuan, status transaksi menjadi `void_pending`.
+        Notifikasi real-time dikirim ke Supervisor/Admin via WebSocket.
+        Dicatat di audit_log dengan action `TRX_VOID_REQUESTED`.
+      operationId: voidCreate
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [cashier, admin, supervisor]
+      x-rate-limit: "30/minute"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [transaction_id, reason]
+              properties:
+                transaction_id:
+                  type: integer
+                  description: ID transaksi yang akan di-void
+                reason:
+                  type: string
+                  minLength: 5
+                  maxLength: 500
+                  description: Alasan void (wajib diisi)
+            example:
+              transaction_id: 39
+              reason: "Barang rusak saat diterima pelanggan"
+      responses:
+        '201':
+          description: Permintaan void berhasil diajukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoidRequestResponse'
+        '409':
+          description: Transaksi tidak dapat di-void (status tidak valid)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: INVALID_TRANSACTION_STATUS
+                  message: "Transaksi tidak dapat di-void. Status saat ini: voided"
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /voids:
+    get:
+      tags: [Voids]
+      summary: Daftar permintaan void pending
+      description: |
+        **RBAC:** `admin`, `supervisor` — untuk halaman approval queue.
+      operationId: voidList
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor]
+      x-rate-limit: "100/minute"
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, approved, rejected]
+      responses:
+        '200':
+          description: Daftar void request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoidListResponse'
+
+  /voids/{id}/approve:
+    post:
+      tags: [Voids]
+      summary: Setujui permintaan void
+      description: |
+        **Step 2 dari Two-Step Approval.**
+        **RBAC:** Hanya `admin` atau `supervisor`.
+        **Rule:** Yang menyetujui TIDAK boleh sama dengan yang mengajukan.
+        Setelah approve:
+        - Stok semua item dikembalikan
+        - Status transaksi menjadi `voided`
+        - Audit log: `TRX_VOID_APPROVED`
+        - Notifikasi ke kasir via WebSocket
+      operationId: voidApprove
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor]
+      x-rate-limit: "30/minute"
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notes:
+                  type: string
+                  maxLength: 500
+                  description: Catatan approval (opsional)
+      responses:
+        '200':
+          description: Void disetujui; stok dikembalikan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoidRequestResponse'
+        '403':
+          description: Tidak berwenang atau pengguna sama dengan yang mengajukan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                success: false
+                error:
+                  code: SELF_APPROVAL_NOT_ALLOWED
+                  message: "Anda tidak dapat menyetujui permintaan yang Anda ajukan sendiri."
+
+  /voids/{id}/reject:
+    post:
+      tags: [Voids]
+      summary: Tolak permintaan void
+      description: |
+        **RBAC:** `admin`, `supervisor`.
+        Status transaksi kembali ke `completed`.
+        Audit log: `TRX_VOID_REJECTED`.
+        Notifikasi penolakan ke kasir via WebSocket.
+      operationId: voidReject
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor]
+      x-rate-limit: "30/minute"
+      parameters:
+        - $ref: '#/components/parameters/ResourceId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [rejection_reason]
+              properties:
+                rejection_reason:
+                  type: string
+                  minLength: 5
+                  maxLength: 500
+      responses:
+        '200':
+          description: Void ditolak; transaksi dikembalikan ke completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VoidRequestResponse'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  # ─────────────── REPORTS ───────────────
+
+  /reports/dashboard:
+    get:
+      tags: [Reports]
+      summary: Data dashboard ringkasan (hari ini)
+      description: |
+        **RBAC:** `admin`, `supervisor`, `owner`.
+        Mengembalikan KPI hari ini: total transaksi, pendapatan,
+        produk stok rendah, void pending.
+      operationId: reportsDashboard
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, supervisor, owner]
+      x-rate-limit: "60/minute"
+      responses:
+        '200':
+          description: Data dashboard
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResponse'
+
+  /reports/daily:
+    get:
+      tags: [Reports]
+      summary: Laporan penjualan harian
+      description: |
+        **RBAC:** `admin`, `owner`.
+        Auditable: aksi `REPORT_DAILY_VIEWED` dicatat di audit_log.
+      operationId: reportsDaily
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, owner]
+      x-rate-limit: "30/minute"
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema: { type: string, format: date }
+          example: "2026-04-17"
+      responses:
+        '200':
+          description: Laporan harian
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DailyReportResponse'
+
+  /reports/export:
+    post:
+      tags: [Reports]
+      summary: Ekspor laporan pajak (CSV/XLS)
+      description: |
+        **RBAC:** `admin`, `owner`.
+        **Security:** NPWP toko disertakan di dalam file export — tidak di JSON response.
+        Ekspor besar (> 1000 baris) diproses sebagai background job.
+        Audit log: `REPORT_TAX_EXPORTED`.
+      operationId: reportsExport
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin, owner]
+      x-rate-limit: "10/minute"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [date_from, date_to, format]
+              properties:
+                date_from: { type: string, format: date }
+                date_to: { type: string, format: date }
+                format:
+                  type: string
+                  enum: [csv, xlsx]
+      responses:
+        '200':
+          description: File siap diunduh atau job dibuat
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: object
+                    properties:
+                      download_url: { type: string, nullable: true }
+                      job_id: { type: string, nullable: true }
+                      status:
+                        type: string
+                        enum: [ready, processing]
+
+  # ─────────────── SYNC ───────────────
+
+  /sync/push:
+    post:
+      tags: [Sync]
+      summary: Push data offline ke server
+      description: |
+        **RBAC:** `cashier`.
+        Menerima batch data transaksi yang dibuat saat offline.
+        Server memvalidasi, mendeteksi konflik, dan menyimpan ke MySQL.
+        Konflik akan mengembalikan status `conflict` dan mengisi conflict_logs.
+      operationId: syncPush
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [cashier]
+      x-rate-limit: "60/minute"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [device_id, payload]
+              properties:
+                device_id: { type: string }
+                payload:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/SyncPayloadItem'
+                  maxItems: 50
+      responses:
+        '200':
+          description: Sync diproses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success: { type: boolean }
+                  data:
+                    type: object
+                    properties:
+                      synced: { type: integer, description: "Jumlah record berhasil sync" }
+                      conflicts:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ConflictItem'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+  /sync/conflict/resolve:
+    post:
+      tags: [Sync]
+      summary: Resolusi konflik sinkronisasi
+      description: |
+        **RBAC:** `cashier` (yang mengajukan), `admin`, `supervisor`.
+        Kasir memilih resolusi: `local_wins`, `server_wins`, atau `manual_merge`.
+        Supervisor/Admin mendapat notifikasi untuk oversight.
+      operationId: syncConflictResolve
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [cashier, admin, supervisor]
+      x-rate-limit: "30/minute"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [conflict_log_id, resolution]
+              properties:
+                conflict_log_id: { type: integer }
+                resolution:
+                  type: string
+                  enum: [local_wins, server_wins, manual_merge]
+                merged_value:
+                  type: object
+                  nullable: true
+                  description: Wajib diisi jika resolution = manual_merge
+      responses:
+        '200':
+          description: Konflik berhasil diselesaikan
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessMessage'
+
+  # ─────────────── USERS ───────────────
+
+  /users:
+    get:
+      tags: [Users]
+      summary: Daftar pengguna
+      description: |
+        **RBAC:** Hanya `admin`.
+        Response TIDAK menyertakan `password_hash`.
+      operationId: usersList
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin]
+      x-rate-limit: "60/minute"
+      parameters:
+        - name: role
+          in: query
+          schema:
+            type: string
+            enum: [admin, supervisor, cashier, owner]
+      responses:
+        '200':
+          description: Daftar pengguna
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserListResponse'
+
+    post:
+      tags: [Users]
+      summary: Buat akun pengguna baru
+      description: |
+        **RBAC:** Hanya `admin`.
+        Password di-hash menggunakan Argon2id.
+        Audit log: `USER_CREATED`.
+      operationId: usersCreate
+      security:
+        - BearerAuth: []
+      x-rbac-roles: [admin]
+      x-rate-limit: "20/minute"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreateRequest'
+      responses:
+        '201':
+          description: Pengguna berhasil dibuat
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+
+# ════════════════════════════════════════════
+# COMPONENTS
+# ════════════════════════════════════════════
+components:
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema: { type: integer, minimum: 1 }
+    SearchQuery:
+      name: search
+      in: query
+      schema: { type: string, maxLength: 100 }
+      description: Cari berdasarkan nama/SKU
+    PageParam:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    LimitParam:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 50, default: 20 }
+
+  schemas:
+    # ─── Auth ───
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[a-z0-9_]+$'
+          description: Hanya lowercase alphanumeric dan underscore
+        password:
+          type: string
+          minLength: 8
+          maxLength: 128
+          description: "Min 8 karakter; tidak di-log manapun"
+
+    LoginResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          properties:
+            token: { type: string }
+            token_type: { type: string, example: Bearer }
+            expires_at: { type: string, format: date-time }
+            user:
+              $ref: '#/components/schemas/UserProfile'
+
+    UserProfile:
+      type: object
+      properties:
+        id: { type: integer }
+        username: { type: string }
+        full_name: { type: string }
+        role:
+          type: string
+          enum: [admin, supervisor, cashier, owner]
+        device_id: { type: string, nullable: true }
+
+    UserProfileResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          $ref: '#/components/schemas/UserProfile'
+
+    # ─── Product ───
+    Product:
+      type: object
+      properties:
+        id: { type: integer }
+        name: { type: string }
+        sku: { type: string }
+        category_id: { type: integer }
+        price_sell: { type: number, format: decimal }
+        stock_current: { type: integer }
+        stock_minimum: { type: integer }
+        unit: { type: string }
+        is_active: { type: boolean }
+        is_low_stock: { type: boolean, description: "true jika stock_current <= stock_minimum" }
+
+    ProductCreateRequest:
+      type: object
+      required: [name, sku, category_id, price_sell, price_buy, unit]
+      properties:
+        name: { type: string, maxLength: 200 }
+        sku: { type: string, maxLength: 50 }
+        category_id: { type: integer }
+        price_sell:
+          type: number
+          minimum: 0.01
+          description: Harus lebih besar dari price_buy
+        price_buy:
+          type: number
+          minimum: 0
+        stock_current: { type: integer, minimum: 0, default: 0 }
+        stock_minimum: { type: integer, minimum: 0, default: 5 }
+        unit:
+          type: string
+          enum: [pcs, kg, liter, box, pack, lusin]
+
+    ProductUpdateRequest:
+      type: object
+      properties:
+        name: { type: string, maxLength: 200 }
+        price_sell: { type: number, minimum: 0.01 }
+        stock_minimum: { type: integer, minimum: 0 }
+        is_active: { type: boolean }
+
+    ProductResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          $ref: '#/components/schemas/Product'
+
+    ProductListResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ─── Transaction ───
+    TransactionItem:
+      type: object
+      required: [product_id, quantity]
+      properties:
+        product_id: { type: integer }
+        quantity: { type: integer, minimum: 1 }
+        discount_percent:
+          type: integer
+          minimum: 0
+          maximum: 30
+          default: 0
+          description: "Server akan menolak jika > 30"
+        price_override:
+          type: number
+          nullable: true
+          description: "Override harga; harus > price_buy. Dicatat di audit log."
+
+    TransactionCreateRequest:
+      type: object
+      required: [items, payment_method]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TransactionItem'
+          minItems: 1
+        payment_method:
+          type: string
+          enum: [cash, qris, transfer, split]
+        cash_received:
+          type: number
+          nullable: true
+          description: "Wajib jika payment_method = cash"
+        split_payments:
+          type: array
+          nullable: true
+          description: "Wajib jika payment_method = split"
+          items:
+            type: object
+            properties:
+              method: { type: string, enum: [cash, qris, transfer] }
+              amount: { type: number }
+        is_offline_transaction: { type: boolean, default: false }
+        notes: { type: string, maxLength: 500, nullable: true }
+
+    Transaction:
+      type: object
+      properties:
+        id: { type: integer }
+        transaction_number: { type: string, example: "TRX-20260417-0042" }
+        cashier_id: { type: integer }
+        status:
+          type: string
+          enum: [pending, completed, void_pending, voided, returned]
+        subtotal: { type: number }
+        discount_amount: { type: number }
+        tax_amount: { type: number }
+        grand_total: { type: number }
+        payment_method: { type: string }
+        cash_received: { type: number, nullable: true }
+        change_amount: { type: number, nullable: true }
+        sync_status:
+          type: string
+          enum: [synced, pending, conflict]
+        items:
+          type: array
+          items:
+            type: object
+        created_at: { type: string, format: date-time }
+
+    TransactionResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          $ref: '#/components/schemas/Transaction'
+
+    TransactionListResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+
+    # ─── Payment Webhook ───
+    PaymentWebhookPayload:
+      type: object
+      required: [order_id, transaction_status, gross_amount, signature_key]
+      properties:
+        order_id: { type: string }
+        transaction_id: { type: string }
+        transaction_status:
+          type: string
+          enum: [capture, settlement, pending, deny, cancel, expire, failure]
+        gross_amount: { type: string }
+        payment_type: { type: string }
+        signature_key:
+          type: string
+          description: "HMAC-SHA512 dari server_key + order_id + status + gross_amount"
+        fraud_status: { type: string, nullable: true }
+
+    # ─── Void ───
+    VoidRequest:
+      type: object
+      properties:
+        id: { type: integer }
+        transaction_id: { type: integer }
+        transaction_number: { type: string }
+        requested_by: { type: integer }
+        approved_by: { type: integer, nullable: true }
+        status:
+          type: string
+          enum: [pending, approved, rejected]
+        reason: { type: string }
+        rejection_reason: { type: string, nullable: true }
+        created_at: { type: string, format: date-time }
+
+    VoidRequestResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          $ref: '#/components/schemas/VoidRequest'
+
+    VoidListResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VoidRequest'
+
+    # ─── Reports ───
+    DashboardResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          properties:
+            today_transactions: { type: integer }
+            today_revenue: { type: number }
+            low_stock_count: { type: integer }
+            void_pending_count: { type: integer }
+            active_cashiers: { type: integer }
+
+    DailyReportResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: object
+          properties:
+            date: { type: string, format: date }
+            total_transactions: { type: integer }
+            total_revenue: { type: number }
+            total_discount: { type: number }
+            total_tax: { type: number }
+            payment_breakdown:
+              type: object
+              properties:
+                cash: { type: number }
+                qris: { type: number }
+                transfer: { type: number }
+                split: { type: number }
+
+    # ─── Sync ───
+    SyncPayloadItem:
+      type: object
+      required: [resource_type, resource_id, payload, created_at_local]
+      properties:
+        resource_type:
+          type: string
+          enum: [transaction, stock_adjustment]
+        resource_id: { type: integer }
+        payload: { type: object }
+        created_at_local: { type: string, format: date-time }
+
+    ConflictItem:
+      type: object
+      properties:
+        conflict_log_id: { type: integer }
+        resource_type: { type: string }
+        resource_id: { type: integer }
+        value_local: { type: object }
+        value_server: { type: object }
+
+    # ─── Users ───
+    UserCreateRequest:
+      type: object
+      required: [full_name, username, password, role_id]
+      properties:
+        full_name: { type: string, maxLength: 100 }
+        username:
+          type: string
+          minLength: 3
+          maxLength: 50
+          pattern: '^[a-z0-9_]+$'
+        password:
+          type: string
+          minLength: 8
+          description: Akan di-hash Argon2id; tidak disimpan plaintext
+        role_id: { type: integer }
+        device_id: { type: string, nullable: true }
+
+    UserResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          $ref: '#/components/schemas/UserProfile'
+
+    UserListResponse:
+      type: object
+      properties:
+        success: { type: boolean }
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserProfile'
+
+    # ─── Common ───
+    SuccessMessage:
+      type: object
+      properties:
+        success: { type: boolean, example: true }
+        message: { type: string }
+
+    ErrorResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        error:
+          type: object
+          properties:
+            code: { type: string, description: "SCREAMING_SNAKE_CASE error code" }
+            message: { type: string, description: "Pesan error yang aman untuk ditampilkan ke user" }
+
+    ValidationErrorResponse:
+      type: object
+      properties:
+        success: { type: boolean, example: false }
+        error:
+          type: object
+          properties:
+            code: { type: string, example: VALIDATION_ERROR }
+            message: { type: string }
+            errors:
+              type: object
+              additionalProperties:
+                type: array
+                items: { type: string }
+              example:
+                discount_percent: ["Diskon tidak boleh melebihi 30%"]
+                price_sell: ["Harga jual harus lebih besar dari harga beli"]
+
+    PaginationMeta:
+      type: object
+      properties:
+        current_page: { type: integer }
+        per_page: { type: integer }
+        total: { type: integer }
+        last_page: { type: integer }
+        next_cursor: { type: string, nullable: true }
+
+  responses:
+    Unauthorized:
+      description: Token tidak valid, expired, atau tidak disertakan
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: UNAUTHORIZED
+              message: "Token tidak valid atau sudah kadaluarsa. Silakan login kembali."
+
+    Forbidden:
+      description: Akses ditolak — role tidak memiliki izin
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: FORBIDDEN
+              message: "Anda tidak memiliki izin untuk melakukan aksi ini."
+
+    NotFound:
+      description: Resource tidak ditemukan
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: NOT_FOUND
+              message: "Resource yang diminta tidak ditemukan."
+
+    ValidationError:
+      description: Validasi input gagal
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ValidationErrorResponse'
+
+    TooManyRequests:
+      description: Rate limit terlampaui
+      headers:
+        Retry-After:
+          schema: { type: integer }
+          description: Detik hingga limit reset
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: RATE_LIMIT_EXCEEDED
+              message: "Terlalu banyak request. Coba lagi dalam 45 detik."
+
+    InternalError:
+      description: Server error internal
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            success: false
+            error:
+              code: INTERNAL_SERVER_ERROR
+              message: "Terjadi kesalahan pada server. Silakan coba lagi."</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini adalah bagian dari Fase 4B — API Specification MikoMart POS System.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-API-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-API-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

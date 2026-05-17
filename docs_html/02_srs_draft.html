@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOFTWARE REQUIREMENTS SPEC — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-SRS-2026-001</div>
+  <h1>SOFTWARE REQUIREMENTS SPEC</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>SOFTWARE REQUIREMENTS SPECIFICATION (SRS)</h1>
+<h2>MikoMart Point of Sale (POS) System</h2>
+<h3>Berdasarkan Standar IEEE 830</h3>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-SRS-2026-001</td></tr>
+<tr><td><strong>Versi</strong></td><td>1.0 — Draft</td></tr>
+<tr><td><strong>Tanggal</strong></td><td>16 April 2026</td></tr>
+<tr><td><strong>Status</strong></td><td>Draft — Menunggu Review</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>DAFTAR ISI</h2>
+<br>
+<ol>
+<li>Pendahuluan</li>
+<li>Deskripsi Umum Sistem</li>
+<li>Kebutuhan Fungsional (FR)</li>
+<li>Kebutuhan Non-Fungsional (NFR)</li>
+<li>Kebutuhan Keamanan</li>
+<li>Kebutuhan Antarmuka</li>
+<li>Batasan Desain & Implementasi</li>
+<li>Matriks Keterlacakan Kebutuhan</li>
+</ol>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. PENDAHULUAN</h2>
+<br>
+<h3>1.1 Tujuan Dokumen</h3>
+<br>
+<p>Dokumen ini mendefinisikan kebutuhan perangkat lunak sistem MikoMart POS secara lengkap, terstruktur, dan dapat diverifikasi. Dokumen ini menjadi acuan tunggal bagi tim pengembang, QA, dan stakeholder dalam seluruh siklus hidup pengembangan perangkat lunak (SDLC).</p>
+<br>
+<h3>1.2 Ruang Lingkup Sistem</h3>
+<br>
+<p><strong>MikoMart POS</strong> adalah sistem kasir berbasis web offline-first yang mendukung:</p>
+<ul>
+<li>Manajemen transaksi penjualan multi-metode pembayaran</li>
+<li>Manajemen inventori dan restock real-time</li>
+<li>Role-Based Access Control (RBAC) dengan 4 tingkatan akses</li>
+<li>Integrasi payment gateway (QRIS)</li>
+<li>Pencetakan struk fisik (thermal) dan digital (PDF)</li>
+<li>Audit log komprehensif dan ekspor laporan pajak</li>
+</ul>
+<br>
+<h3>1.3 Definisi, Akronim, dan Singkatan</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Term</th><th>Definisi</th></tr></thead>
+<tbody>
+<tr><td><strong>POS</strong></td><td>Point of Sale — sistem kasir digital</td></tr>
+<tr><td><strong>RBAC</strong></td><td>Role-Based Access Control — kontrol akses berbasis peran</td></tr>
+<tr><td><strong>FR</strong></td><td>Functional Requirement — kebutuhan fungsional</td></tr>
+<tr><td><strong>NFR</strong></td><td>Non-Functional Requirement — kebutuhan non-fungsional</td></tr>
+<tr><td><strong>SLA</strong></td><td>Service Level Agreement — perjanjian tingkat layanan</td></tr>
+<tr><td><strong>QRIS</strong></td><td>Quick Response Code Indonesian Standard — standar pembayaran QR code Indonesia</td></tr>
+<tr><td><strong>PII</strong></td><td>Personally Identifiable Information — data pribadi yang dapat mengidentifikasi individu</td></tr>
+<tr><td><strong>NPWP</strong></td><td>Nomor Pokok Wajib Pajak</td></tr>
+<tr><td><strong>PPN</strong></td><td>Pajak Pertambahan Nilai</td></tr>
+<tr><td><strong>ESC/POS</strong></td><td>Epson Standard Code for POS Printers — protokol thermal printer</td></tr>
+<tr><td><strong>WAL</strong></td><td>Write-Ahead Logging — mode SQLite untuk keandalan data</td></tr>
+<tr><td><strong>RTO</strong></td><td>Recovery Time Objective — target waktu pemulihan</td></tr>
+<tr><td><strong>RPO</strong></td><td>Recovery Point Objective — target titik pemulihan data</td></tr>
+<tr><td><strong>Override</strong></td><td>Perubahan harga/diskon secara manual oleh kasir</td></tr>
+<tr><td><strong>Void</strong></td><td>Pembatalan transaksi yang sudah diproses</td></tr>
+<tr><td><strong>Split bill</strong></td><td>Pemecahan total tagihan ke beberapa metode pembayaran</td></tr>
+</tbody></table></div>
+<br>
+<h3>1.4 Referensi</h3>
+<br>
+<ul>
+<li>IEEE Std 830-1998: IEEE Recommended Practice for Software Requirements Specifications</li>
+<li>ISO/IEC 25010:2011: Systems and Software Quality Requirements and Evaluation</li>
+<li>OWASP Top 10 2021: Web Application Security Risks</li>
+<li>Peraturan DJP tentang retensi dokumen pajak</li>
+<li>ESC/POS Command Reference (Epson Corporation)</li>
+<li>Midtrans/Xendit API Documentation v2</li>
+</ul>
+<br>
+<h3>1.5 Ikhtisar Dokumen</h3>
+<br>
+<p>Bagian 2 menjelaskan konteks dan karakteristik umum sistem. Bagian 3–5 mendefinisikan kebutuhan fungsional, non-fungsional, dan keamanan. Bagian 6–8 mencakup kebutuhan antarmuka, batasan, dan matriks keterlacakan.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. DESKRIPSI UMUM SISTEM</h2>
+<br>
+<h3>2.1 Perspektif Produk</h3>
+<br>
+<p>MikoMart POS adalah sistem standalone berbasis web yang beroperasi secara offline-first. Setiap terminal kasir menyimpan data lokal menggunakan SQLite dan melakukan sinkronisasi dengan server pusat (Laravel backend) ketika koneksi internet tersedia. Sistem ini bukan bagian dari sistem yang sudah ada — ini adalah implementasi baru.</p>
+<br>
+<pre><code>┌──────────────────────────────────────────────────────────┐
+│                   ARSITEKTUR TINGKAT TINGGI               │
+├──────────────────────────────────────────────────────────┤
+│  [Tablet Kasir]      [Tablet Kasir]   [Tablet Kasir]    │
+│   React SPA +         React SPA +      React SPA +       │
+│   SQLite Local        SQLite Local     SQLite Local       │
+│        │                   │                │             │
+│        └───────────────────┼────────────────┘             │
+│                            │ LAN/WLAN                      │
+│                    ┌───────▼────────┐                     │
+│                    │  Laravel API   │                     │
+│                    │  (PHP 8.x)     │                     │
+│                    │  Node.js RT    │                     │
+│                    └───────┬────────┘                     │
+│                            │                              │
+│              ┌─────────────┼──────────────┐              │
+│              │             │              │               │
+│    [Payment Gateway]  [SQLite/DB]  [PDF Generator]       │
+│    (Midtrans/Xendit)  (Server)     (Receipt Service)     │
+└──────────────────────────────────────────────────────────┘</code></pre>
+<br>
+<h3>2.2 Fungsi Utama Sistem</h3>
+<br>
+<ol>
+<li>Autentikasi dan manajemen sesi pengguna</li>
+<li>Transaksi penjualan dengan multi-metode pembayaran dan split bill</li>
+<li>Manajemen produk dan kategori</li>
+<li>Manajemen inventori real-time dengan notifikasi stok minimum</li>
+<li>Modul pembelian dan restock</li>
+<li>Pembayaran digital via QRIS/payment gateway</li>
+<li>Pencetakan struk fisik (thermal) dan digital (PDF)</li>
+<li>Void dan retur transaksi</li>
+<li>Manajemen diskon dan override harga dengan batas per role</li>
+<li>Audit log dan activity tracking</li>
+<li>Laporan transaksi dan ekspor data pajak</li>
+<li>Sinkronisasi data offline-to-online</li>
+</ol>
+<br>
+<h3>2.3 Kelas Pengguna dan Karakteristik</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Role</th><th>Jumlah</th><th>Karakteristik</th><th>Hak Akses Utama</th></tr></thead>
+<tbody>
+<tr><td><strong>Admin</strong></td><td>1</td><td>Pengelola sistem, teknis</td><td>Full access: konfigurasi harga, diskon, produk, user management</td></tr>
+<tr><td><strong>Supervisor</strong></td><td>1–2</td><td>Pengawas operasional</td><td>Monitor transaksi, laporan harian, inventori; tidak bisa ubah harga</td></tr>
+<tr><td><strong>Kasir</strong></td><td>4 (aktif)</td><td>Operator transaksi harian</td><td>Transaksi POS, void, retur, diskon ≤ 30%, cetak struk</td></tr>
+<tr><td><strong>Owner</strong></td><td>1</td><td>Pemilik bisnis</td><td>Read-only: laporan rekap, ekspor pajak, dashboard bisnis</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.4 Lingkungan Operasional</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Komponen</th><th>Spesifikasi</th></tr></thead>
+<tbody>
+<tr><td><strong>Perangkat Kasir</strong></td><td>Tablet touchscreen dengan browser Chrome/Edge terbaru</td></tr>
+<tr><td><strong>Backend Server</strong></td><td>PHP 8.2+, Node.js 18+, dapat dijalankan di server lokal toko</td></tr>
+<tr><td><strong>Database Lokal</strong></td><td>SQLite 3.x (mode WAL aktif)</td></tr>
+<tr><td><strong>Database Server</strong></td><td>SQLite / MySQL (server pusat)</td></tr>
+<tr><td><strong>Thermal Printer</strong></td><td>Kompatibel ESC/POS (EPSON, Star Micronics)</td></tr>
+<tr><td><strong>Jaringan</strong></td><td>LAN/WLAN internal toko; internet untuk sinkronisasi & payment</td></tr>
+<tr><td><strong>Browser</strong></td><td>Google Chrome 110+ / Microsoft Edge 110+</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.5 Batasan Desain dan Implementasi</h3>
+<br>
+<ul>
+<li>Sistem HARUS berfungsi tanpa internet (offline mode) untuk transaksi tunai</li>
+<li>Semua credential disimpan di environment variable (<code>.env</code>), tidak ada hardcoded secret</li>
+<li>Database lokal SQLite harus dienkripsi untuk data sensitif</li>
+<li>Semua komunikasi API menggunakan HTTPS (TLS 1.2 minimum)</li>
+<li>Maximum 4 session kasir aktif bersamaan</li>
+</ul>
+<br>
+<h3>2.6 Asumsi dan Ketergantungan</h3>
+<br>
+<ul>
+<li>Merchant account aktif di Midtrans atau Xendit tersedia sebelum go-live</li>
+<li>Thermal printer telah terpasang dan dapat diakses melalui USB/network</li>
+<li>Perangkat kasir memiliki penyimpanan lokal minimal 2 GB untuk SQLite</li>
+<li>Pengguna memiliki literasi digital dasar</li>
+</ul>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. KEBUTUHAN FUNGSIONAL (FUNCTIONAL REQUIREMENTS)</h2>
+<br>
+<blockquote><strong>Konvensi Prioritas:</strong></blockquote>
+<blockquote>- <strong>[P1]</strong> = Must Have (wajib ada di rilis pertama)</blockquote>
+<blockquote>- <strong>[P2]</strong> = Should Have (penting, bisa menyusul sprint berikutnya)</blockquote>
+<blockquote>- <strong>[P3]</strong> = Nice to Have (opsional)</blockquote>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-01: MODUL AUTENTIKASI & SESI</h3>
+<br>
+<p><strong>FR-01.1</strong> <code>[P1]</code> Sistem HARUS menyediakan halaman login dengan field username dan password.</p>
+<br>
+<p><strong>FR-01.2</strong> <code>[P1]</code> Sistem HARUS memverifikasi kredensial pengguna terhadap database menggunakan bcrypt/Argon2 (tidak boleh plain-text atau MD5).</p>
+<br>
+<p><strong>FR-01.3</strong> <code>[P1]</code> Sistem HARUS membuat session token (JWT atau session cookie HttpOnly) setelah login berhasil.</p>
+<br>
+<p><strong>FR-01.4</strong> <code>[P1]</code> Sistem HARUS menampilkan pesan error generik saat login gagal ("Username atau password salah") tanpa mengungkap detail penyebab spesifik.</p>
+<br>
+<p><strong>FR-01.5</strong> <code>[P1]</code> Sistem HARUS mengunci akun setelah <strong>5 kali percobaan login gagal berturut-turut</strong> selama minimal 15 menit.</p>
+<br>
+<p><strong>FR-01.6</strong> <code>[P1]</code> Sistem HARUS mengakhiri sesi otomatis setelah <strong>30 menit tidak aktif</strong> (inactivity timeout).</p>
+<br>
+<p><strong>FR-01.7</strong> <code>[P1]</code> Sistem HARUS menyediakan fungsi logout yang menginvalidasi sesi di server.</p>
+<br>
+<p><strong>FR-01.8</strong> <code>[P2]</code> Sistem HARUS mendukung reset password oleh Admin (bukan self-service via email, karena environment toko).</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-02: MANAJEMEN PERAN (RBAC)</h3>
+<br>
+<p><strong>FR-02.1</strong> <code>[P1]</code> Sistem HARUS mengimplementasikan 4 role: <strong>Admin</strong>, <strong>Supervisor</strong>, <strong>Kasir</strong>, <strong>Owner</strong>.</p>
+<br>
+<p><strong>FR-02.2</strong> <code>[P1]</code> Setiap endpoint API dan halaman UI HARUS memverifikasi role pengguna sebelum memberikan akses.</p>
+<br>
+<p><strong>FR-02.3</strong> <code>[P1]</code> Matriks akses RBAC yang berlaku:</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Fitur</th><th>Admin</th><th>Supervisor</th><th>Kasir</th><th>Owner</th></tr></thead>
+<tbody>
+<tr><td>Kelola pengguna</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+<tr><td>Ubah harga produk</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+<tr><td>Ubah konfigurasi diskon</td><td>✅</td><td>❌</td><td>❌</td><td>❌</td></tr>
+<tr><td>Tambah/edit produk</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>Kelola inventori & restock</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>Proses transaksi</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr><td>Ajukan void & retur</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr><td>Setujui / konfirmasi void & retur</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+<tr><td>Beri diskon manual (≤30%)</td><td>✅</td><td>✅</td><td>✅</td><td>❌</td></tr>
+<tr><td>Override harga</td><td>✅</td><td>❌</td><td>✅</td><td>❌</td></tr>
+<tr><td>Lihat laporan</td><td>✅</td><td>✅</td><td>❌</td><td>✅</td></tr>
+<tr><td>Ekspor laporan pajak</td><td>✅</td><td>❌</td><td>❌</td><td>✅</td></tr>
+<tr><td>Lihat audit log</td><td>✅</td><td>✅</td><td>❌</td><td>❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>FR-02.4</strong> <code>[P1]</code> Sistem HARUS mencatat setiap aksi sensitif (lihat bagian FR-09: Audit Log).</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-03: MANAJEMEN PRODUK & KATEGORI</h3>
+<br>
+<p><strong>FR-03.1</strong> <code>[P1]</code> Sistem HARUS menyediakan CRUD (Create, Read, Update, Delete) produk untuk Admin.</p>
+<br>
+<p><strong>FR-03.2</strong> <code>[P1]</code> Setiap produk HARUS memiliki atribut: nama, kode SKU, kategori, harga jual, harga beli, stok saat ini, stok minimum, satuan, dan status aktif/nonaktif.</p>
+<br>
+<p><strong>FR-03.3</strong> <code>[P1]</code> Admin HARUS dapat mengatur harga jual produk secara individual.</p>
+<br>
+<p><strong>FR-03.4</strong> <code>[P1]</code> Sistem HARUS mendukung pencarian produk berdasarkan nama dan kode SKU (dengan barcode scanner atau input manual touchscreen).</p>
+<br>
+<p><strong>FR-03.5</strong> <code>[P2]</code> Sistem HARUS mendukung import produk bulk via file CSV/Excel.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-04: MODUL INVENTORI REAL-TIME</h3>
+<br>
+<p><strong>FR-04.1</strong> <code>[P1]</code> Stok produk HARUS berkurang secara otomatis dan real-time setiap kali transaksi penjualan berhasil diselesaikan.</p>
+<br>
+<p><strong>FR-04.2</strong> <code>[P1]</code> Jika transaksi dilakukan dalam mode offline, stok HARUS dikurangi di database lokal dan diperbarui ke server saat sinkronisasi.</p>
+<br>
+<p><strong>FR-04.3</strong> <code>[P1]</code> Sistem HARUS menampilkan notifikasi/peringatan kepada Admin dan Supervisor ketika stok produk mencapai atau di bawah <strong>stok minimum</strong> yang telah dikonfigurasi.</p>
+<br>
+<p><strong>FR-04.4</strong> <code>[P1]</code> Sistem HARUS mencegah transaksi produk dengan stok = 0, kecuali Admin mengaktifkan mode backorder untuk produk tertentu.</p>
+<br>
+<p><strong>FR-04.5</strong> <code>[P2]</code> Sistem HARUS menyediakan halaman riwayat pergerakan stok (stock movement history) per produk.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-05: MODUL PEMBELIAN & RESTOCK</h3>
+<br>
+<p><strong>FR-05.1</strong> <code>[P1]</code> Sistem HARUS menyediakan form pembuatan Purchase Order (PO) yang dapat diisi oleh Admin atau Supervisor.</p>
+<br>
+<p><strong>FR-05.2</strong> <code>[P1]</code> Setelah barang diterima, Admin/Supervisor HARUS dapat mengkonfirmasi penerimaan barang yang akan menambah stok secara otomatis.</p>
+<br>
+<p><strong>FR-05.3</strong> <code>[P1]</code> Sistem HARUS menyimpan riwayat setiap PO beserta status (Draft, Dikirim ke Supplier, Diterima, Dibatalkan).</p>
+<br>
+<p><strong>FR-05.4</strong> <code>[P2]</code> Sistem HARUS mendukung pencatatan data supplier (nama, kontak, alamat).</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-06: MODUL TRANSAKSI POS</h3>
+<br>
+<p><strong>FR-06.1</strong> <code>[P1]</code> Kasir HARUS dapat memulai transaksi baru dan menambahkan produk ke keranjang belanja via pencarian nama/SKU atau scan barcode.</p>
+<br>
+<p><strong>FR-06.2</strong> <code>[P1]</code> Sistem HARUS menampilkan subtotal, total diskon, PPN (jika berlaku), dan grand total secara real-time saat item ditambahkan/diubah.</p>
+<br>
+<p><strong>FR-06.3</strong> <code>[P1]</code> Sistem HARUS mendukung <strong>split bill</strong>: satu transaksi dapat dibayar dengan kombinasi beberapa metode pembayaran (tunai, QRIS, transfer bank).</p>
+<br>
+<p><strong>FR-06.4</strong> <code>[P1]</code> Kasir HARUS dapat memberikan <strong>diskon manual</strong> pada item individual atau total transaksi, dengan batas maksimum <strong>30% dari nilai yang berlaku</strong>.</p>
+<br>
+<p><strong>FR-06.5</strong> <code>[P1]</code> Kasir HARUS dapat melakukan <strong>override harga</strong> pada item individual, dengan batas bahwa harga tidak boleh lebih rendah dari harga beli (floor price), kecuali Admin mengizinkan.</p>
+<br>
+<p><strong>FR-06.6</strong> <code>[P1]</code> Setiap pemberian diskon manual dan override harga HARUS <strong>otomatis tercatat di audit log</strong> (FR-09).</p>
+<br>
+<p><strong>FR-06.7</strong> <code>[P1]</code> Sistem HARUS menghitung kembalian uang tunai secara otomatis berdasarkan nominal yang dibayarkan kasir.</p>
+<br>
+<p><strong>FR-06.8</strong> <code>[P1]</code> Setelah transaksi berhasil, sistem HARUS otomatis menawarkan opsi: cetak struk thermal atau ekspor PDF.</p>
+<br>
+<p><strong>FR-06.9</strong> <code>[P1]</code> Sistem HARUS dapat beroperasi saat offline — transaksi tunai dapat diselesaikan tanpa koneksi internet.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-07: VOID & RETUR TRANSAKSI</h3>
+<br>
+<blockquote>⚠️ <strong>Keputusan Final Stakeholder (Rev. 1.1):</strong> Void dan retur memerlukan <strong>otorisasi dua langkah</strong> untuk mencegah penyalahgunaan. Kasir hanya dapat <em>mengajukan</em> permintaan; Supervisor atau Admin yang <em>mengkonfirmasi</em>.</blockquote>
+<br>
+<p><strong>FR-07.1</strong> <code>[P1]</code> Kasir HARUS dapat <strong>mengajukan permintaan void</strong> atau <strong>retur transaksi</strong> yang sudah diproses, dengan mengisi alasan yang wajib.</p>
+<br>
+<p><strong>FR-07.2</strong> <code>[P1]</code> Permintaan void/retur dari kasir akan masuk ke antrian <strong>approval Supervisor atau Admin</strong>. Sistem HARUS menampilkan notifikasi in-app kepada Supervisor/Admin yang sedang login.</p>
+<br>
+<p><strong>FR-07.3</strong> <code>[P1]</code> Supervisor atau Admin HARUS dapat <strong>menyetujui atau menolak</strong> permintaan void/retur beserta catatan keputusan.</p>
+<br>
+<p><strong>FR-07.4</strong> <code>[P1]</code> Void/retur hanya menjadi efektif (stok dikembalikan, laporan diperbarui) setelah <strong>Supervisor atau Admin menyetujui</strong>.</p>
+<br>
+<p><strong>FR-07.5</strong> <code>[P1]</code> Jika tidak ada Supervisor/Admin online, Supervisor/Admin HARUS dapat menyetujui melalui antarmuka yang sama segera setelah login.</p>
+<br>
+<p><strong>FR-07.6</strong> <code>[P1]</code> Setiap langkah (pengajuan kasir, keputusan Supervisor/Admin) HARUS tercatat lengkap di <strong>audit log</strong> beserta: identitas masing-masing, timestamp, alasan, dan nilai transaksi.</p>
+<br>
+<p><strong>FR-07.7</strong> <code>[P2]</code> Untuk transaksi yang dibayar via payment gateway (QRIS), proses refund ke pelanggan harus dimulai melalui dashboard payment gateway (di luar sistem ini pada versi pertama).</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-08: INTEGRASI PAYMENT GATEWAY</h3>
+<br>
+<p><strong>FR-08.1</strong> <code>[P1]</code> Sistem HARUS terintegrasi langsung dengan payment gateway (Midtrans atau Xendit) untuk menerima pembayaran QRIS dan transfer bank.</p>
+<br>
+<p><strong>FR-08.2</strong> <code>[P1]</code> Sistem HARUS menampilkan QR code pembayaran kepada pelanggan dan menunggu konfirmasi pembayaran secara real-time via webhook.</p>
+<br>
+<p><strong>FR-08.3</strong> <code>[P1]</code> Sistem HARUS menangani status pembayaran: <strong>Pending</strong>, <strong>Success</strong>, <strong>Failed</strong>, <strong>Expired</strong>.</p>
+<br>
+<p><strong>FR-08.4</strong> <code>[P1]</code> Jika pembayaran digital gagal atau expired, sistem HARUS memberikan opsi mengulang atau mengganti metode pembayaran tanpa membatalkan seluruh transaksi.</p>
+<br>
+<p><strong>FR-08.5</strong> <code>[P1]</code> Sistem HARUS memverifikasi <strong>signature/HMAC</strong> setiap webhook yang masuk dari payment gateway sebelum memproses perubahan status.</p>
+<br>
+<p><strong>FR-08.6</strong> <code>[P1]</code> API key dan Secret key payment gateway HARUS disimpan di environment variable (<code>.env</code>), tidak boleh di-hardcode di source code.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-09: AUDIT LOG & ACTIVITY TRACKING</h3>
+<br>
+<p><strong>FR-09.1</strong> <code>[P1]</code> Sistem HARUS mencatat setiap aksi berikut di audit log:</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kategori</th><th>Aksi yang Dicatat</th></tr></thead>
+<tbody>
+<tr><td>Autentikasi</td><td>Login berhasil, login gagal, logout, akun terkunci</td></tr>
+<tr><td>Transaksi</td><td>Transaksi baru, void, retur</td></tr>
+<tr><td>Diskon & Override</td><td>Setiap pemberian diskon manual, setiap override harga</td></tr>
+<tr><td>Produk</td><td>Tambah, edit, hapus produk; perubahan harga</td></tr>
+<tr><td>Inventori</td><td>Perubahan stok manual, konfirmasi penerimaan PO</td></tr>
+<tr><td>Pengguna</td><td>Tambah, edit, hapus pengguna; reset password</td></tr>
+<tr><td>Laporan</td><td>Ekspor laporan pajak, akses laporan sensitif</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>FR-09.2</strong> <code>[P1]</code> Setiap entri audit log HARUS memuat: timestamp (UTC), user_id, username, role, aksi, nilai sebelum, nilai sesudah (untuk perubahan data), IP address, dan device identifier.</p>
+<br>
+<p><strong>FR-09.3</strong> <code>[P1]</code> Audit log HARUS disimpan minimal <strong>30 hari terakhir</strong> dan tidak boleh dapat dihapus oleh siapapun kecuali melalui proses otomatis sistem (purge terjadwal).</p>
+<br>
+<p><strong>FR-09.4</strong> <code>[P1]</code> Audit log hanya dapat <strong>dibaca</strong> oleh Admin dan Supervisor melalui antarmuka yang disediakan sistem.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-10: STRUK & RECEIPT</h3>
+<br>
+<p><strong>FR-10.1</strong> <code>[P1]</code> Sistem HARUS mendukung cetak struk fisik ke <strong>thermal printer</strong> yang terhubung (USB/network) menggunakan protokol ESC/POS.</p>
+<br>
+<p><strong>FR-10.2</strong> <code>[P1]</code> Struk fisik HARUS memuat: nama toko, NPWP toko, nomor transaksi, tanggal & waktu, daftar item (nama, qty, harga, diskon), subtotal, PPN, grand total, metode pembayaran, jumlah bayar, kembalian, dan nama kasir.</p>
+<br>
+<p><strong>FR-10.3</strong> <code>[P1]</code> Sistem HARUS dapat menghasilkan <strong>struk digital dalam format PDF</strong> (tersimpan di server dan dapat diunduh).</p>
+<br>
+<p><strong>FR-10.4</strong> <code>[P2]</code> Sistem HARUS dapat mencetak ulang struk transaksi yang sudah selesai dari riwayat transaksi.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-11: LAPORAN & EKSPOR</h3>
+<br>
+<p><strong>FR-11.1</strong> <code>[P1]</code> Sistem HARUS menyediakan <strong>dashboard laporan</strong> yang dapat diakses oleh Admin, Supervisor, dan Owner.</p>
+<br>
+<p><strong>FR-11.2</strong> <code>[P1]</code> Laporan HARUS mencakup: ringkasan penjualan harian/mingguan/bulanan, total pendapatan, produk terlaris, perbandingan periode.</p>
+<br>
+<p><strong>FR-11.3</strong> <code>[P1]</code> Owner HARUS dapat mengakses rekap laporan transaksi tanpa hak mengubah data apapun.</p>
+<br>
+<p><strong>FR-11.4</strong> <code>[P1]</code> Sistem HARUS menyediakan fitur <strong>ekspor data transaksi</strong> untuk keperluan audit pajak (PPN) dalam format CSV dan/atau Excel, yang memuat: nomor transaksi, tanggal, item, harga satuan, jumlah, subtotal, nilai PPN, grand total.</p>
+<br>
+<p><strong>FR-11.5</strong> <code>[P2]</code> Sistem HARUS menyediakan filter ekspor berdasarkan rentang tanggal.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>FR-12: SINKRONISASI OFFLINE-ONLINE</h3>
+<br>
+<p><strong>FR-12.1</strong> <code>[P1]</code> Sistem HARUS menyimpan semua data transaksi yang terjadi saat offline ke SQLite lokal dengan status <strong>"pending sync"</strong>.</p>
+<br>
+<p><strong>FR-12.2</strong> <code>[P1]</code> Begitu koneksi internet terdeteksi kembali, sistem HARUS <strong>otomatis memulai proses sinkronisasi</strong> data pending ke server.</p>
+<br>
+<p><strong>FR-12.3</strong> <code>[P1]</code> Sinkronisasi HARUS menggunakan <strong>timestamp transaksi</strong> sebagai dasar urutan sync (first-created-first-synced).</p>
+<br>
+<p><strong>FR-12.4</strong> <code>[P1]</code> Jika terjadi konflik data (e.g., stok produk yang sama diubah oleh 2 kasir secara offline), sistem HARUS:</p>
+<ul>
+<li>Mencatat konflik tersebut di <strong>conflict log</strong> secara otomatis</li>
+<li>Menampilkan notifikasi kepada kasir yang login dengan <strong>peringatan jelas</strong> tentang risiko perubahan stok</li>
+<li>Menampilkan <strong>UI perbandingan data</strong> (nilai lama vs. nilai baru dari masing-masing kasir) agar keputusan merge dapat dibuat dengan informasi yang cukup</li>
+<li>Kasir memiliki otoritas merge; setiap keputusan merge HARUS dicatat di conflict log beserta identitas kasir yang memutuskan</li>
+<li>Sistem HARUS mengirimkan notifikasi ringkasan merge ke Supervisor/Admin setelah proses selesai sebagai bentuk oversight</li>
+</ul>
+<br>
+<p><strong>FR-12.5</strong> <code>[P1]</code> Sistem HARUS menampilkan <strong>indikator status koneksi</strong> yang jelas di antarmuka kasir (Online/Offline/Syncing).</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. KEBUTUHAN NON-FUNGSIONAL (NFR)</h2>
+<br>
+<h3>NFR-01: Performa</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Kebutuhan</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>NFR-01.1</td><td>Waktu pemrosesan transaksi end-to-end</td><td>≤ 10 detik (P95)</td></tr>
+<tr><td>NFR-01.2</td><td>Waktu cetak struk thermal setelah konfirmasi</td><td>≤ 5 detik</td></tr>
+<tr><td>NFR-01.3</td><td>Waktu load halaman POS utama</td><td>≤ 3 detik (jaringan LAN normal)</td></tr>
+<tr><td>NFR-01.4</td><td>Waktu pencarian produk (autocomplete)</td><td>≤ 1 detik setelah ketik ≥ 2 karakter</td></tr>
+<tr><td>NFR-01.5</td><td>Throughput transaksi</td><td>≥ 4 transaksi bersamaan (4 kasir aktif)</td></tr>
+<tr><td>NFR-01.6</td><td>Kapasitas transaksi harian</td><td>Normal: 300 / Peak: 500 transaksi/hari</td></tr>
+</tbody></table></div>
+<br>
+<h3>NFR-02: Ketersediaan (Availability)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Kebutuhan</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>NFR-02.1</td><td>Uptime sistem (server)</td><td>≥ 99.5% per bulan</td></tr>
+<tr><td>NFR-02.2</td><td>Ketersediaan mode offline</td><td>100% (tidak bergantung server untuk transaksi tunai)</td></tr>
+<tr><td>NFR-02.3</td><td>Maintenance window terencana</td><td>Maksimum 2 jam/bulan, di luar jam operasional toko</td></tr>
+</tbody></table></div>
+<br>
+<h3>NFR-03: Keandalan (Reliability)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Kebutuhan</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>NFR-03.1</td><td>Error rate transaksi</td><td>< 0.5% dari total transaksi</td></tr>
+<tr><td>NFR-03.2</td><td>Data loss saat power failure</td><td>≤ 1 transaksi terakhir (SQLite WAL mode)</td></tr>
+<tr><td>NFR-03.3</td><td>Keberhasilan sinkronisasi data offline</td><td>≥ 99.9% berhasil disinkronkan</td></tr>
+</tbody></table></div>
+<br>
+<h3>NFR-04: Kegunaan (Usability)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Kebutuhan</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>NFR-04.1</td><td>Antarmuka touchscreen-optimized</td><td>Semua elemen interaktif ≥ 44×44px</td></tr>
+<tr><td>NFR-04.2</td><td>Waktu onboarding kasir baru</td><td>Kasir baru dapat memproses transaksi dasar setelah ≤ 30 menit pelatihan</td></tr>
+<tr><td>NFR-04.3</td><td>Dukungan bahasa</td><td>Bahasa Indonesia sebagai bahasa utama</td></tr>
+</tbody></table></div>
+<br>
+<h3>NFR-05: Skalabilitas</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Kebutuhan</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>NFR-05.1</td><td>Jumlah kasir aktif bersamaan</td><td>Dirancang untuk 4, dapat diperluas hingga 8 tanpa re-arsitektur</td></tr>
+<tr><td>NFR-05.2</td><td>Kapasitas data historis</td><td>Mampu menyimpan 2 tahun data transaksi (estimasi 365.000 transaksi)</td></tr>
+</tbody></table></div>
+<br>
+<h3>NFR-06: Pemeliharaan (Maintainability)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Kebutuhan</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td>NFR-06.1</td><td>Test coverage</td><td>≥ 80% untuk unit test pada business logic kritis</td></tr>
+<tr><td>NFR-06.2</td><td>Dokumentasi API</td><td>OpenAPI 3.0, up-to-date dengan setiap rilis</td></tr>
+<tr><td>NFR-06.3</td><td>Structured logging</td><td>Setiap operasi penting menghasilkan log terstruktur (JSON)</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>5. KEBUTUHAN KEAMANAN (SECURITY REQUIREMENTS)</h2>
+<br>
+<blockquote>Berbasis OWASP Top 10 2021 dan prinsip Security by Design.</blockquote>
+<br>
+<h3>SEC-01: Autentikasi & Otorisasi (OWASP A01, A07)</h3>
+<br>
+<p><strong>SEC-01.1</strong> <code>[P1]</code> Password HARUS di-hash menggunakan <strong>bcrypt</strong> (cost factor ≥ 12) atau <strong>Argon2id</strong> sebelum disimpan.</p>
+<br>
+<p><strong>SEC-01.2</strong> <code>[P1]</code> Token JWT HARUS memiliki expiry ≤ 60 menit dan HARUS diperbarui (refresh) secara silent.</p>
+<br>
+<p><strong>SEC-01.3</strong> <code>[P1]</code> Setiap request API HARUS menyertakan token otentikasi yang valid; request tanpa token atau dengan token expired HARUS ditolak dengan HTTP 401.</p>
+<br>
+<p><strong>SEC-01.4</strong> <code>[P1]</code> Setiap endpoint HARUS memverifikasi role pengguna; akses tidak terotorisasi HARUS ditolak dengan HTTP 403.</p>
+<br>
+<p><strong>SEC-01.5</strong> <code>[P1]</code> Sistem HARUS mengimplementasikan <strong>account lockout</strong> setelah 5 login gagal (lihat FR-01.5).</p>
+<br>
+<h3>SEC-02: Perlindungan Data (OWASP A02, A04)</h3>
+<br>
+<p><strong>SEC-02.1</strong> <code>[P1]</code> Semua komunikasi antara klien-server HARUS menggunakan <strong>HTTPS (TLS 1.2+)</strong>; HTTP plain tidak boleh diizinkan.</p>
+<br>
+<p><strong>SEC-02.2</strong> <code>[P1]</code> Database SQLite lokal yang menyimpan data sensitif PII HARUS dienkripsi menggunakan <strong>SQLCipher</strong> atau mekanisme enkripsi setara.</p>
+<br>
+<p><strong>SEC-02.3</strong> <code>[P1]</code> API key, secret key payment gateway, dan credential database HARUS hanya disimpan di file <strong>.env</strong> dan tidak boleh masuk ke version control (tambahkan ke <code>.gitignore</code>).</p>
+<br>
+<p><strong>SEC-02.4</strong> <code>[P1]</code> Cookie session HARUS memiliki flag <strong>HttpOnly</strong>, <strong>Secure</strong>, dan <strong>SameSite=Strict</strong>.</p>
+<br>
+<p><strong>SEC-02.5</strong> <code>[P1]</code> Data NPWP toko HARUS diperlakukan sebagai data sensitif dan hanya boleh ditampilkan di struk/laporan, bukan di log atau response API umum.</p>
+<br>
+<h3>SEC-03: Validasi Input (OWASP A03)</h3>
+<br>
+<p><strong>SEC-03.1</strong> <code>[P1]</code> Semua input dari pengguna HARUS divalidasi di sisi <strong>server</strong> (client-side validation hanya sebagai UX, bukan keamanan).</p>
+<br>
+<p><strong>SEC-03.2</strong> <code>[P1]</code> Semua query database HARUS menggunakan <strong>prepared statements</strong> atau ORM (Eloquent/Sequelize); query string building manual tidak diizinkan.</p>
+<br>
+<p><strong>SEC-03.3</strong> <code>[P1]</code> Output data ke HTML HARUS di-<strong>escape</strong> dengan benar untuk mencegah XSS.</p>
+<br>
+<p><strong>SEC-03.4</strong> <code>[P1]</code> Upload file (jika ada) HARUS divalidasi tipe dan ukurannya; file yang diupload HARUS disimpan di luar web root.</p>
+<br>
+<h3>SEC-04: Keamanan Konfigurasi (OWASP A05)</h3>
+<br>
+<p><strong>SEC-04.1</strong> <code>[P1]</code> Environment production HARUS menonaktifkan <strong>debug mode</strong> dan stack trace di response API.</p>
+<br>
+<p><strong>SEC-04.2</strong> <code>[P1]** Response header HARUS menyertakan: </code>X-Content-Type-Options: nosniff<code>, </code>X-Frame-Options: DENY<code>, </code>Content-Security-Policy`.</p>
+<br>
+<p><strong>SEC-04.3</strong> <code>[P1]</code> Sistem HARUS mengimplementasikan <strong>CORS</strong> yang hanya mengizinkan origin yang terdaftar.</p>
+<br>
+<h3>SEC-05: Proteksi Webhook (OWASP A08)</h3>
+<br>
+<p><strong>SEC-05.1</strong> <code>[P1]</code> Setiap webhook dari payment gateway HARUS diverifikasi menggunakan <strong>HMAC signature</strong> yang diberikan provider; webhook tanpa signature valid HARUS diabaikan.</p>
+<br>
+<p><strong>SEC-05.2</strong> <code>[P1]</code> Endpoint webhook HARUS menerapkan <strong>idempotency</strong> — event yang sama tidak boleh diproses dua kali.</p>
+<br>
+<h3>SEC-06: Logging Keamanan (OWASP A09)</h3>
+<br>
+<p><strong>SEC-06.1</strong> <code>[P1]</code> Sistem HARUS mencatat semua event keamanan: login gagal, akun terkunci, akses tidak terotorisasi, perubahan data sensitif.</p>
+<br>
+<p><strong>SEC-06.2</strong> <code>[P1]</code> Log keamanan TIDAK BOLEH memuat password, token, atau data kartu pembayaran.</p>
+<br>
+<p><strong>SEC-06.3</strong> <code>[P1]</code> Log HARUS disimpan dalam format terstruktur (JSON) dengan timestamp UTC.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>6. KEBUTUHAN ANTARMUKA</h2>
+<br>
+<h3>6.1 Antarmuka Pengguna (UI)</h3>
+<ul>
+<li>Aplikasi SPA berbasis React, dioptimalkan untuk tablet touchscreen</li>
+<li>Mendukung resolusi minimum 768×1024 px (landscape dan portrait)</li>
+<li>Skema warna yang kontras untuk kondisi pencahayaan toko yang bervariasi</li>
+<li>Semua elemen interaktif minimum 44×44 px (touch target WCAG 2.1)</li>
+</ul>
+<br>
+<h3>6.2 Antarmuka Hardware</h3>
+<ul>
+<li>Thermal printer via WebUSB API atau koneksi jaringan (TCP/IP port 9100)</li>
+<li>Barcode scanner via USB HID (tersimulasi sebagai keyboard input)</li>
+<li>Cash drawer (opsional) via thermal printer kick-out command (ESC/POS)</li>
+</ul>
+<br>
+<h3>6.3 Antarmuka Perangkat Lunak</h3>
+<ul>
+<li><strong>Payment Gateway API</strong>: Midtrans / Xendit REST API v2</li>
+<li><strong>PDF Generator</strong>: Library server-side (e.g., DomPDF untuk Laravel atau Puppeteer untuk Node.js)</li>
+<li><strong>SQLite Sync</strong>: Custom sync protocol via REST API dengan conflict detection</li>
+</ul>
+<br>
+<h3>6.4 Antarmuka Komunikasi</h3>
+<ul>
+<li>Protokol: HTTPS (REST API)</li>
+<li>Format data: JSON (application/json)</li>
+<li>Autentikasi API: Bearer token (JWT)</li>
+<li>Real-time: WebSocket atau Server-Sent Events untuk notifikasi status pembayaran</li>
+</ul>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>7. BATASAN DESAIN & IMPLEMENTASI</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Batasan</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td>Bahasa Backend</td><td>PHP 8.2+ (Laravel 11.x), Node.js 18+</td></tr>
+<tr><td>Frontend</td><td>React 18+, TypeScript direkomendasikan</td></tr>
+<tr><td>Database</td><td>SQLite 3.x (lokal), MySQL/PostgreSQL (server)</td></tr>
+<tr><td>Arsitektur API</td><td>RESTful, versioned (/api/v1/)</td></tr>
+<tr><td>Tidak ada hardcoded secret</td><td>Semua secret via .env</td></tr>
+<tr><td>Lisensi</td><td>Semua dependency harus open-source atau berlisensi komersial yang sah</td></tr>
+<tr><td>Ukuran bundle frontend</td><td>Maksimum 5 MB (gzipped) untuk performa offline</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>8. MATRIKS KETERLACAKAN KEBUTUHAN (RTM)</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>FR ID</th><th>Deskripsi Singkat</th><th>Modul Kode</th><th>Test Case ID</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>FR-01</td><td>Autentikasi & Sesi</td><td>AuthController</td><td>TC-AUTH-01..08</td><td>📋 Planned</td></tr>
+<tr><td>FR-02</td><td>RBAC</td><td>PermissionMiddleware</td><td>TC-RBAC-01..10</td><td>📋 Planned</td></tr>
+<tr><td>FR-03</td><td>Manajemen Produk</td><td>ProductController</td><td>TC-PROD-01..06</td><td>📋 Planned</td></tr>
+<tr><td>FR-04</td><td>Inventori Real-time</td><td>InventoryService</td><td>TC-INV-01..05</td><td>📋 Planned</td></tr>
+<tr><td>FR-05</td><td>Pembelian & Restock</td><td>PurchaseController</td><td>TC-PO-01..04</td><td>📋 Planned</td></tr>
+<tr><td>FR-06</td><td>Transaksi POS</td><td>TransactionController</td><td>TC-TRX-01..10</td><td>📋 Planned</td></tr>
+<tr><td>FR-07</td><td>Void & Retur</td><td>VoidReturnService</td><td>TC-VR-01..05</td><td>📋 Planned</td></tr>
+<tr><td>FR-08</td><td>Payment Gateway</td><td>PaymentGatewayService</td><td>TC-PAY-01..07</td><td>📋 Planned</td></tr>
+<tr><td>FR-09</td><td>Audit Log</td><td>AuditLogObserver</td><td>TC-LOG-01..05</td><td>📋 Planned</td></tr>
+<tr><td>FR-10</td><td>Struk & Receipt</td><td>ReceiptService</td><td>TC-REC-01..04</td><td>📋 Planned</td></tr>
+<tr><td>FR-11</td><td>Laporan & Ekspor</td><td>ReportController</td><td>TC-REP-01..05</td><td>📋 Planned</td></tr>
+<tr><td>FR-12</td><td>Sinkronisasi Offline</td><td>SyncService</td><td>TC-SYNC-01..06</td><td>📋 Planned</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini akan diperbarui seiring perkembangan proyek. Setiap perubahan kebutuhan harus melalui proses Change Control formal.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-SRS-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-SRS-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

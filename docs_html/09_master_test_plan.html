@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MASTER TEST PLAN (IEEE 829) — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-MTP-2026-001</div>
+  <h1>MASTER TEST PLAN (IEEE 829)</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>MASTER TEST PLAN (MTP)</h1>
+<h2>MikoMart Point of Sale (POS) System — Fase 3D</h2>
+<h3>Berdasarkan Standar IEEE 829-2008</h3>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-MTP-2026-001</td></tr>
+<tr><td><strong>Standar</strong></td><td>IEEE Std 829-2008 (Test Documentation)</td></tr>
+<tr><td><strong>Versi</strong></td><td>1.0</td></tr>
+<tr><td><strong>Tanggal</strong></td><td>16 April 2026</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. PENDAHULUAN</h2>
+<br>
+<h3>1.1 Tujuan</h3>
+<br>
+<p>Master Test Plan ini mendefinisikan strategi, ruang lingkup, sumber daya, jadwal, dan deliverable pengujian sistem MikoMart POS. Dokumen ini menerapkan prinsip <strong>Shift-Left Testing</strong> — pengujian dimulai sejak fase requirements dan berlanjut hingga produksi.</p>
+<br>
+<h3>1.2 Referensi</h3>
+<br>
+<ul>
+<li>MikoMart-SRS-2026-001 v1.1 (SRS)</li>
+<li>MikoMart-SLA-2026-001 (SLA/SLO Baseline)</li>
+<li>MikoMart-UC-2026-001 (Use Case)</li>
+<li>MikoMart-DB-2026-001 (Database Design)</li>
+<li>MikoMart-SAD-2026-001 (SAD)</li>
+<li>OWASP Testing Guide v4.2</li>
+<li>IEEE Std 829-2008</li>
+</ul>
+<br>
+<h3>1.3 Strategi Shift-Left Testing</h3>
+<br>
+<pre><code>flowchart LR
+    G0["🔵 Gate 0\nRequirements\nValidation"] --> G1
+    G1["🟣 Gate 1\nUnit Testing\n(TDD)"] --> G2
+    G2["🟡 Gate 2\nIntegration\nTesting"] --> G3
+    G3["🟠 Gate 3\nSystem Testing\n+ Security"] --> G4
+    G4["🔴 Gate 4\nPerformance\nTesting"] --> G5
+    G5["🟢 Gate 5\nUAT &\nProduction"]
+
+    style G0 fill:#1e3a8a,stroke:#60a5fa,color:#f1f5f9
+    style G1 fill:#2e1065,stroke:#a78bfa,color:#f1f5f9
+    style G2 fill:#451a03,stroke:#fbbf24,color:#f1f5f9
+    style G3 fill:#4c0519,stroke:#f87171,color:#f1f5f9
+    style G4 fill:#134e4a,stroke:#34d399,color:#f1f5f9
+    style G5 fill:#064e3b,stroke:#6ee7b7,color:#f1f5f9</code></pre>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Gate</th><th>Fase</th><th>Penanggung Jawab</th><th>Artefak</th></tr></thead>
+<tbody>
+<tr><td>Gate 0</td><td>Requirements Validation</td><td>QA Lead + Business Analyst</td><td>SRS Review Checklist</td></tr>
+<tr><td>Gate 1</td><td>Unit Testing (TDD)</td><td>Developer</td><td>PHPUnit/Pest test reports</td></tr>
+<tr><td>Gate 2</td><td>Integration Testing</td><td>Developer + QA</td><td>API test results (Postman/Pest)</td></tr>
+<tr><td>Gate 3</td><td>System + Security Testing</td><td>QA Lead</td><td>System test report + OWASP scan</td></tr>
+<tr><td>Gate 4</td><td>Performance Testing</td><td>QA + DevOps</td><td>k6 performance report</td></tr>
+<tr><td>Gate 5</td><td>UAT + Production Ready</td><td>Stakeholder + QA Lead</td><td>UAT sign-off document</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. RUANG LINGKUP PENGUJIAN</h2>
+<br>
+<h3>2.1 Yang Diuji (In-Scope)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Modul</th><th>Level Testing</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>Autentikasi & Sesi</td><td>Unit, Integration, Security</td><td>P1</td></tr>
+<tr><td>RBAC & Otorisasi</td><td>Unit, Integration, Security</td><td>P1</td></tr>
+<tr><td>Manajemen Produk</td><td>Unit, Integration</td><td>P1</td></tr>
+<tr><td>Inventori Real-time</td><td>Unit, Integration, System</td><td>P1</td></tr>
+<tr><td>Transaksi POS + Split Bill</td><td>Unit, Integration, System, Performance</td><td>P1</td></tr>
+<tr><td>Void & Retur (2-step)</td><td>Unit, Integration, System</td><td>P1</td></tr>
+<tr><td>Payment Gateway (QRIS)</td><td>Integration, System</td><td>P1</td></tr>
+<tr><td>Audit Log</td><td>Unit, Integration</td><td>P1</td></tr>
+<tr><td>Struk Thermal + PDF</td><td>Integration, System</td><td>P1</td></tr>
+<tr><td>Laporan & Ekspor Pajak</td><td>Integration, System</td><td>P1</td></tr>
+<tr><td>Sinkronisasi Offline-Online</td><td>Integration, System</td><td>P1</td></tr>
+<tr><td>Conflict Resolution</td><td>System</td><td>P1</td></tr>
+<tr><td>Security (OWASP + STRIDE)</td><td>Security Testing</td><td>P1</td></tr>
+<tr><td>Performance (SLA/SLO)</td><td>Load, Stress, Spike, Soak</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.2 Yang Tidak Diuji (Out-of-Scope untuk v1.0)</h3>
+<br>
+<ul>
+<li>Integrasi e-commerce / penjualan online</li>
+<li>Pengujian hardware fisik printer (dilakukan manual oleh tim operasional)</li>
+<li>Pengujian di luar environment yang didefinisikan (misal: browser lama IE11)</li>
+</ul>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. TEST SUITE & TEST CASES</h2>
+<br>
+<h3>3.1 TC-AUTH: Autentikasi & Sesi</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-01.1 – FR-01.8 | <strong>Alat:</strong> PHPUnit/Pest, Postman</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Input</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-AUTH-01</td><td>Login berhasil kasir</td><td>Unit/Integration</td><td>username: <code>kasir01</code>, password: <code>ValidPass123!</code></td><td>HTTP 200, token JWT dikembalikan, <code>role: cashier</code></td><td>P1</td></tr>
+<tr><td>TC-AUTH-02</td><td>Login dengan password salah</td><td>Unit</td><td>username: <code>kasir01</code>, password: <code>wrong</code></td><td>HTTP 401, pesan generik</td><td>P1</td></tr>
+<tr><td>TC-AUTH-03</td><td>Login dengan username tidak ada</td><td>Unit</td><td>username: <code>ghost</code>, password: <code>any</code></td><td>HTTP 401, pesan generik (tidak ungkap username tidak ada)</td><td>P1</td></tr>
+<tr><td>TC-AUTH-04</td><td>Account lockout setelah 5x gagal</td><td>Integration</td><td>5x login gagal berturut-turut</td><td>HTTP 423 / 401 dengan pesan terkunci di percobaan ke-5</td><td>P1</td></tr>
+<tr><td>TC-AUTH-05</td><td>Token expired setelah 60 menit</td><td>Unit</td><td>JWT token dengan expiry 1 menit lalu</td><td>HTTP 401, <code>error: Token expired</code></td><td>P1</td></tr>
+<tr><td>TC-AUTH-06</td><td>Logout menginvalidasi token di server</td><td>Integration</td><td>Token valid → POST /logout → gunakan token lagi</td><td>HTTP 401 setelah logout</td><td>P1</td></tr>
+<tr><td>TC-AUTH-07</td><td>Session timeout 30 menit inaktif</td><td>System</td><td>Token aktif; tidak ada request selama 30 menit</td><td>Auto-logout; refresh gagal</td><td>P2</td></tr>
+<tr><td>TC-AUTH-08</td><td>Reset password oleh Admin</td><td>Integration</td><td>Admin POST reset-password untuk user lain</td><td>HTTP 200; password baru di-hash; audit log tercatat</td><td>P2</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Contoh Unit Test (AAA Pattern — PHPUnit/Pest):</strong></p>
+<pre><code>it('locks account after 5 failed login attempts', function () {
+    // === ARRANGE ===
+    $kasir = User::factory()->create([
+        'username' => 'kasir01',
+        'password_hash' => Hash::make('CorrectPass!'),
+        'failed_login_attempts' => 0,
+        'is_active' => true,
+    ]);
+
+    // === ACT ===
+    for ($i = 0; $i < 5; $i++) {
+        $this->postJson('/api/v1/auth/login', [
+            'username' => 'kasir01',
+            'password' => 'WrongPassword',
+        ]);
+    }
+    $response = $this->postJson('/api/v1/auth/login', [
+        'username' => 'kasir01',
+        'password' => 'WrongPassword',
+    ]);
+
+    // === ASSERT ===
+    $response->assertStatus(401);
+    $this->assertDatabaseHas('users', [
+        'username' => 'kasir01',
+        'failed_login_attempts' => 5,
+    ]);
+    $this->assertNotNull($kasir->fresh()->locked_until);
+    $this->assertAuditLogContains('AUTH_ACCOUNT_LOCKED', $kasir->id);
+});</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.2 TC-RBAC: Manajemen Peran</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-02.1 – FR-02.4 | <strong>Alat:</strong> PHPUnit/Pest</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-RBAC-01</td><td>Kasir akses endpoint transaksi</td><td>Integration</td><td><code>role: cashier</code> GET /transactions</td><td>HTTP 200</td><td>P1</td></tr>
+<tr><td>TC-RBAC-02</td><td>Kasir akses endpoint admin (manajemen user)</td><td>Integration</td><td><code>role: cashier</code> GET /users</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-RBAC-03</td><td>Owner akses laporan</td><td>Integration</td><td><code>role: owner</code> GET /reports/daily</td><td>HTTP 200</td><td>P1</td></tr>
+<tr><td>TC-RBAC-04</td><td>Owner akses manajemen produk</td><td>Integration</td><td><code>role: owner</code> POST /products</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-RBAC-05</td><td>Supervisor tidak bisa ubah harga</td><td>Integration</td><td><code>role: supervisor</code> PATCH /products/1 (harga)</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-RBAC-06</td><td>Admin ubah harga produk</td><td>Integration</td><td><code>role: admin</code> PATCH /products/1 (harga)</td><td>HTTP 200, audit log tercatat</td><td>P1</td></tr>
+<tr><td>TC-RBAC-07</td><td>Kasir ajukan void (bukan setujui)</td><td>Integration</td><td><code>role: cashier</code> POST /voids → POST /voids/1/approve</td><td>Ajukan: 201; Approve: HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-RBAC-08</td><td>Supervisor setujui void</td><td>Integration</td><td><code>role: supervisor</code> POST /voids/1/approve</td><td>HTTP 200; stok dikembalikan</td><td>P1</td></tr>
+<tr><td>TC-RBAC-09</td><td>Request tanpa token</td><td>Integration</td><td>GET /transactions tanpa Authorization header</td><td>HTTP 401</td><td>P1</td></tr>
+<tr><td>TC-RBAC-10</td><td>JWT dengan role di-forge manual</td><td>Security</td><td>JWT payload <code>role: admin</code> di-sign ulang tanpa secret</td><td>HTTP 401 signature invalid</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Contoh Unit Test (AAA — Boundary + Authorization):</strong></p>
+<pre><code>it('prevents cashier from approving void requests', function () {
+    // === ARRANGE ===
+    $kasir = User::factory()->cashier()->create();
+    $transaction = Transaction::factory()->completed()->create();
+    $voidRequest = VoidRequest::factory()->pending()->create([
+        'transaction_id' => $transaction->id,
+        'requested_by' => $kasir->id,
+    ]);
+
+    // === ACT ===
+    $response = $this->actingAs($kasir, 'sanctum')
+        ->postJson("/api/v1/voids/{$voidRequest->id}/approve", [
+            'decision' => 'approved',
+            'notes' => 'Approved by cashier — should fail',
+        ]);
+
+    // === ASSERT ===
+    $response->assertStatus(403);
+    $this->assertDatabaseHas('void_requests', [
+        'id' => $voidRequest->id,
+        'status' => 'pending', // Status tidak berubah
+    ]);
+});</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.3 TC-PROD: Manajemen Produk</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-03.1 – FR-03.5</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Input</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-PROD-01</td><td>Create produk valid oleh Admin</td><td>Unit</td><td>POST /products: semua field valid</td><td>HTTP 201; produk ada di DB; audit log</td><td>P1</td></tr>
+<tr><td>TC-PROD-02</td><td>Create produk: SKU duplikat</td><td>Unit</td><td>POST /products: SKU sama dengan yang ada</td><td>HTTP 422, <code>sku: already taken</code></td><td>P1</td></tr>
+<tr><td>TC-PROD-03</td><td>Create produk: harga jual < harga beli</td><td>Unit</td><td>price_sell: 10000, price_buy: 15000</td><td>HTTP 422, validasi harga</td><td>P1</td></tr>
+<tr><td>TC-PROD-04</td><td>Update harga oleh Admin — audit log</td><td>Integration</td><td>PATCH /products/1: <code>price_sell: 25000</code></td><td>HTTP 200; audit log <code>value_before</code>, <code>value_after</code></td><td>P1</td></tr>
+<tr><td>TC-PROD-05</td><td>Supervisor tidak bisa update harga</td><td>Integration</td><td>PATCH /products/1 sebagai Supervisor</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-PROD-06</td><td>Soft delete produk</td><td>Unit</td><td>DELETE /products/1</td><td>HTTP 200; <code>deleted_at</code> terisi; tidak muncul di listing</td><td>P2</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.4 TC-INV: Inventori Real-Time</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-04.1 – FR-04.5</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-INV-01</td><td>Stok berkurang setelah transaksi</td><td>Integration</td><td>Transaksi 3 item; stok awal 10</td><td>Stok = 7 setelah transaksi selesai</td><td>P1</td></tr>
+<tr><td>TC-INV-02</td><td>Notifikasi stok minimum</td><td>Integration</td><td>Stok = stock_minimum</td><td>Event <code>StockMinimumReached</code> dikirim; notifikasi in-app</td><td>P1</td></tr>
+<tr><td>TC-INV-03</td><td>Transaksi ditolak saat stok = 0</td><td>Unit</td><td>Tambah produk stok 0 ke keranjang</td><td>HTTP 422, <code>stok habis</code></td><td>P1</td></tr>
+<tr><td>TC-INV-04</td><td>Konfirmasi PO menambah stok</td><td>Integration</td><td>PO received: qty 20</td><td>stock_current bertambah 20; audit log</td><td>P1</td></tr>
+<tr><td>TC-INV-05</td><td>Stok konsisten di offline dan online</td><td>System</td><td>Transaksi offline → sync → cek stok server</td><td>Stok server = stok lokal setelah sync</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.5 TC-TRX: Transaksi POS</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-06.1 – FR-06.9 | <strong>Alat:</strong> PHPUnit/Pest, Cypress (E2E)</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Input</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-TRX-01</td><td>Transaksi tunai sederhana</td><td>Integration</td><td>2 item, bayar tunai, kembalian</td><td>HTTP 201; <code>status: completed</code>; stok berkurang</td><td>P1</td></tr>
+<tr><td>TC-TRX-02</td><td>Transaksi dengan diskon item 20%</td><td>Unit</td><td>Item Rp 100.000; diskon 20%</td><td>price_final = Rp 80.000; audit log diskon</td><td>P1</td></tr>
+<tr><td>TC-TRX-03</td><td>Diskon 31% ditolak</td><td>Unit</td><td>discount_percent: 31</td><td>HTTP 422, <code>diskon tidak boleh > 30%</code></td><td>P1</td></tr>
+<tr><td>TC-TRX-04</td><td>Override harga di bawah floor price</td><td>Unit</td><td>price_override: Rp 5.000; price_buy: Rp 10.000</td><td>HTTP 422, <code>harga tidak boleh di bawah HPP</code></td><td>P1</td></tr>
+<tr><td>TC-TRX-05</td><td>Override harga valid — audit log</td><td>Integration</td><td>price_override valid → konfirmasi</td><td>HTTP 200; audit log <code>PRICE_OVERRIDE</code> tercatat</td><td>P1</td></tr>
+<tr><td>TC-TRX-06</td><td>Nomor transaksi unik</td><td>Unit</td><td>Buat 2 transaksi bersamaan</td><td>Masing-masing punya nomor transaksi unik</td><td>P1</td></tr>
+<tr><td>TC-TRX-07</td><td>Grand total = subtotal - diskon + PPN</td><td>Unit</td><td>Kalkulasi matematis</td><td>grand_total = (subtotal - discount_amount) + tax_amount</td><td>P1</td></tr>
+<tr><td>TC-TRX-08</td><td>Kembalian dihitung benar</td><td>Unit</td><td>Grand total 75.000; bayar 100.000</td><td>change_amount = 25.000</td><td>P1</td></tr>
+<tr><td>TC-TRX-09</td><td>Transaksi offline tersimpan</td><td>System</td><td>Nonaktifkan server; lakukan transaksi</td><td>Transaksi tersimpan di SQLite lokal; <code>sync_status: pending</code></td><td>P1</td></tr>
+<tr><td>TC-TRX-10</td><td>PPN dihitung dengan benar (11%)</td><td>Unit</td><td>subtotal: 100.000; tax_rate: 11%</td><td>tax_amount: 11.000</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.6 TC-SPLIT: Split Bill</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-06.3</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Input</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-SPLIT-01</td><td>Split tunai + QRIS valid</td><td>Integration</td><td>Grand total 100.000; tunai: 50.000; QRIS: 50.000</td><td>2 payment_records; <code>payment_method: split</code></td><td>P1</td></tr>
+<tr><td>TC-SPLIT-02</td><td>Total split kurang dari grand total</td><td>Unit</td><td>Grand total 100.000; split hanya 80.000</td><td>HTTP 422, <code>total pembayaran kurang</code></td><td>P1</td></tr>
+<tr><td>TC-SPLIT-03</td><td>Split 3 metode</td><td>Integration</td><td>Tunai + QRIS + Transfer</td><td>3 payment_records; total = grand_total</td><td>P2</td></tr>
+<tr><td>TC-SPLIT-04</td><td>Satu metode gagal dalam split</td><td>System</td><td>QRIS expired di tengah split</td><td>Transaksi tidak selesai; status: pending; kasir dapat retry QRIS</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.7 TC-VR: Void & Retur (Two-Step)</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-07.1 – FR-07.7</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-VR-01</td><td>Kasir ajukan void dengan alasan</td><td>Integration</td><td>POST /voids: <code>reason: "Barang rusak"</code></td><td>HTTP 201; status: <code>void_pending</code>; notifikasi ke Supervisor</td><td>P1</td></tr>
+<tr><td>TC-VR-02</td><td>Kasir ajukan void tanpa alasan</td><td>Unit</td><td>POST /voids: reason kosong</td><td>HTTP 422, <code>reason: required</code></td><td>P1</td></tr>
+<tr><td>TC-VR-03</td><td>Supervisor setujui void</td><td>Integration</td><td>POST /voids/1/approve oleh Supervisor</td><td>HTTP 200; stok dikembalikan; status: <code>voided</code>; audit log</td><td>P1</td></tr>
+<tr><td>TC-VR-04</td><td>Supervisor tolak void</td><td>Integration</td><td>POST /voids/1/reject oleh Supervisor</td><td>HTTP 200; status kembali <code>completed</code>; kasir dapat notifikasi penolakan</td><td>P1</td></tr>
+<tr><td>TC-VR-05</td><td>Kasir tidak bisa approve void sendiri</td><td>Integration</td><td>Kasir yang sama approve void-nya sendiri</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-VR-06</td><td>Void hanya valid dari status <code>completed</code></td><td>Unit</td><td>Void transaksi ber-status <code>voided</code></td><td>HTTP 409, <code>transaksi tidak dapat di-void lagi</code></td><td>P1</td></tr>
+<tr><td>TC-VR-07</td><td>Stok dikembalikan setelah void disetujui</td><td>Integration</td><td>Stok sebelum: 8; void 3 item</td><td>Stok setelah: 11</td><td>P1</td></tr>
+<tr><td>TC-VR-08</td><td>Audit log lengkap dua langkah</td><td>Integration</td><td>Ajukan → Setujui</td><td>2 entri audit log: <code>TRX_VOID_REQUESTED</code>, <code>TRX_VOID_APPROVED</code></td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.8 TC-PAY: Payment Gateway</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-08.1 – FR-08.6</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-PAY-01</td><td>QRIS payment berhasil</td><td>Integration</td><td>Mock webhook Midtrans <code>status: settlement</code></td><td>Transaksi completed; payment_record updated</td><td>P1</td></tr>
+<tr><td>TC-PAY-02</td><td>QRIS payment expired</td><td>Integration</td><td>Mock webhook <code>status: expire</code></td><td>Status: expired; kasir dapat retry</td><td>P1</td></tr>
+<tr><td>TC-PAY-03</td><td>Webhook HMAC tidak valid</td><td>Security</td><td>POST /webhooks/payment dengan signature palsu</td><td>HTTP 400; webhook diabaikan; security log</td><td>P1</td></tr>
+<tr><td>TC-PAY-04</td><td>Webhook duplikat (idempotency)</td><td>Integration</td><td>Kirim webhook yang sama 2x</td><td>Hanya diproses 1x; respons 200 untuk kedua</td><td>P1</td></tr>
+<tr><td>TC-PAY-05</td><td>API Key payment gateway tidak hardcoded</td><td>Security</td><td>Scan source code</td><td>Tidak ada <code>MIDTRANS_SERVER_KEY</code> di source code</td><td>P1</td></tr>
+<tr><td>TC-PAY-06</td><td>Fallback ke tunai jika gateway down</td><td>System</td><td>Mock gateway unavailable</td><td>Sistem menawarkan fallback tunai; tidak error 500</td><td>P1</td></tr>
+<tr><td>TC-PAY-07</td><td>Gateway response disimpan lengkap</td><td>Integration</td><td>Payment success</td><td><code>gateway_response</code> JSON tersimpan di payment_records</td><td>P2</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.9 TC-LOG: Audit Log</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-09.1 – FR-09.4</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-LOG-01</td><td>Login berhasil tercatat</td><td>Integration</td><td>Login sukses</td><td>Entri <code>AUTH_LOGIN_SUCCESS</code> di audit_logs</td><td>P1</td></tr>
+<tr><td>TC-LOG-02</td><td>Override harga tercatat</td><td>Integration</td><td>Kasir override harga</td><td>Entri <code>PRICE_OVERRIDE</code> dengan value_before, value_after</td><td>P1</td></tr>
+<tr><td>TC-LOG-03</td><td>Audit log tidak bisa dihapus oleh kasir</td><td>Security</td><td>DELETE /audit-logs/1 oleh kasir</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-LOG-04</td><td>Audit log tidak bisa dihapus oleh Admin</td><td>Security</td><td>DELETE /audit-logs/1 oleh Admin</td><td>HTTP 403 (operasi tidak tersedia di UI/API)</td><td>P1</td></tr>
+<tr><td>TC-LOG-05</td><td>Audit log tidak memuat password</td><td>Security</td><td>Cek payload audit log LOGIN</td><td>Tidak ada field <code>password</code> atau <code>password_hash</code> di JSON</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.10 TC-REC: Struk & Receipt</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-10.1 – FR-10.4</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-REC-01</td><td>Struk PDF dihasilkan saat transaksi selesai</td><td>Integration</td><td>Transaction completed</td><td>File PDF exists di storage; URL valid</td><td>P1</td></tr>
+<tr><td>TC-REC-02</td><td>PDF berisi semua field wajib</td><td>Integration</td><td>Cek konten PDF</td><td>Memuat: NPWP, nomor transaksi, item, subtotal, PPN, grand total, nama kasir</td><td>P1</td></tr>
+<tr><td>TC-REC-03</td><td>Cetak ulang struk dari riwayat</td><td>Integration</td><td>GET /transactions/1/receipt</td><td>HTTP 200; PDF tersedia</td><td>P2</td></tr>
+<tr><td>TC-REC-04</td><td>NPWP tidak muncul di response API umum</td><td>Security</td><td>GET /transactions/1 (tanpa PDF)</td><td>Field NPWP tidak ada di JSON response</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.11 TC-REP: Laporan & Ekspor Pajak</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-11.1 – FR-11.5</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-REP-01</td><td>Owner akses dashboard laporan</td><td>Integration</td><td>GET /reports/dashboard sebagai Owner</td><td>HTTP 200; data ringkasan valid</td><td>P1</td></tr>
+<tr><td>TC-REP-02</td><td>Ekspor CSV laporan pajak</td><td>Integration</td><td>POST /reports/export: rentang tanggal valid</td><td>File CSV valid; memuat kolom PPN</td><td>P1</td></tr>
+<tr><td>TC-REP-03</td><td>Kasir tidak bisa akses laporan</td><td>Integration</td><td>GET /reports/dashboard sebagai Kasir</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-REP-04</td><td>Audit log saat ekspor pajak</td><td>Integration</td><td>Owner ekspor laporan pajak</td><td>Entri <code>REPORT_TAX_EXPORTED</code> di audit_logs</td><td>P1</td></tr>
+<tr><td>TC-REP-05</td><td>Filter tanggal ekspor benar</td><td>Integration</td><td>Ekspor 1 April – 30 April</td><td>Hanya transaksi dalam rentang tersebut di file</td><td>P2</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.12 TC-SYNC: Sinkronisasi Offline-Online</h3>
+<br>
+<blockquote><strong>FR Terkait:</strong> FR-12.1 – FR-12.5</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Skenario</th><th>Expected Output</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-SYNC-01</td><td>Transaksi offline masuk sync_queue</td><td>Integration</td><td>Transaksi saat offline</td><td>Entry di sync_queue: <code>status: pending</code></td><td>P1</td></tr>
+<tr><td>TC-SYNC-02</td><td>Auto-sync saat koneksi kembali</td><td>System</td><td>Koneksi pulih → tunggu</td><td>sync_queue <code>status: synced</code>; data ada di server</td><td>P1</td></tr>
+<tr><td>TC-SYNC-03</td><td>Konflik stok terdeteksi</td><td>System</td><td>2 kasir offline ubah stok produk sama</td><td>conflict_logs terisi; notifikasi ke kasir</td><td>P1</td></tr>
+<tr><td>TC-SYNC-04</td><td>Kasir resolve konflik pilih lokal</td><td>System</td><td>Kasir pilih <code>local_wins</code></td><td><code>resolution: local_wins</code>; stok server = nilai lokal; supervisor dapat notifikasi</td><td>P1</td></tr>
+<tr><td>TC-SYNC-05</td><td>Indikator status koneksi berubah</td><td>E2E</td><td>Matikan server → nyalakan</td><td>UI berubah: Online → Offline → Syncing → Online</td><td>P1</td></tr>
+<tr><td>TC-SYNC-06</td><td>Retry sync max 3x jika gagal</td><td>Integration</td><td>Mock server error saat sync</td><td>retry_count = 3; status = failed; error_message tercatat</td><td>P2</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.13 TC-SEC: Security Testing</h3>
+<br>
+<blockquote><strong>Standar:</strong> OWASP Testing Guide v4.2, STRIDE Threat Model</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Nama Test Case</th><th>Tipe</th><th>Teknik</th><th>Expected Result</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>TC-SEC-01</td><td>SQL Injection di field login</td><td>Security</td><td><code>username: " OR 1=1 --"</code></td><td>HTTP 422 validasi gagal; bukan bypass auth</td><td>P1</td></tr>
+<tr><td>TC-SEC-02</td><td>SQL Injection di pencarian produk</td><td>Security</td><td><code>search: '; DROP TABLE products --</code></td><td>HTTP 422; tabel tidak terhapus</td><td>P1</td></tr>
+<tr><td>TC-SEC-03</td><td>XSS di nama produk</td><td>Security</td><td><code>name: <script>alert(1)</script></code></td><td>Output di-escape menjadi <code>&lt;script&gt;</code></td><td>P1</td></tr>
+<tr><td>TC-SEC-04</td><td>XSS di field alasan void</td><td>Security</td><td><code>reason: <img src=x onerror=alert(1)></code></td><td>Output di-escape</td><td>P1</td></tr>
+<tr><td>TC-SEC-05</td><td>JWT Tampering — ubah role</td><td>Security</td><td>Decode JWT → ubah <code>role: admin</code> → encode tanpa secret</td><td>HTTP 401 signature invalid</td><td>P1</td></tr>
+<tr><td>TC-SEC-06</td><td>JWT Tampering — ubah expiry</td><td>Security</td><td>Decode JWT → ubah <code>exp</code> ke masa depan → encode tanpa secret</td><td>HTTP 401 signature invalid</td><td>P1</td></tr>
+<tr><td>TC-SEC-07</td><td>Broken Access Control — IDOR</td><td>Security</td><td>Kasir akses <code>/transactions/{id}</code> milik kasir lain</td><td>HTTP 403</td><td>P1</td></tr>
+<tr><td>TC-SEC-08</td><td>Webhook tanpa HMAC signature</td><td>Security</td><td>POST /webhooks/payment tanpa header signature</td><td>HTTP 400; dicatat di security log</td><td>P1</td></tr>
+<tr><td>TC-SEC-09</td><td>Credential tidak hardcoded di source</td><td>Security</td><td>Scan dengan `git grep -r "MIDTRANS\</td><td>DB_PASS"` di source</td><td>Tidak ada hasil; hanya ada di <code>.env.example</code></td><td>P1</td></tr>
+<tr><td>TC-SEC-10</td><td>Headers keamanan hadir di response</td><td>Security</td><td>Curl ke endpoint API</td><td>Response memuat: CSP, X-Frame-Options, HSTS</td><td>P1</td></tr>
+<tr><td>TC-SEC-11</td><td>Rate limiting aktif</td><td>Security</td><td>110 request/menit ke endpoint publik</td><td>Request ke-101 mendapat HTTP 429</td><td>P1</td></tr>
+<tr><td>TC-SEC-12</td><td>Password tidak muncul di log manapun</td><td>Security</td><td>Cek audit_logs setelah login gagal</td><td>Tidak ada field <code>password</code> di entri log</td><td>P1</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. PERFORMANCE TEST PLAN</h2>
+<br>
+<blockquote><strong>Referensi SLO:</strong> MikoMart-SLA-2026-001 — Semua threshold diambil langsung dari SLO Baseline.</blockquote>
+<br>
+<h3>4.1 Alat Testing</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Alat</th><th>Kegunaan</th></tr></thead>
+<tbody>
+<tr><td><strong>k6</strong></td><td>Load testing, stress testing, spike testing</td></tr>
+<tr><td><strong>k6 Cloud</strong></td><td>Distributed load generation (opsional, jika butuh multi-region)</td></tr>
+<tr><td><strong>Grafana</strong></td><td>Visualisasi metrik k6 secara real-time</td></tr>
+<tr><td><strong>Laravel Telescope</strong></td><td>Profiling query dan response time di environment staging</td></tr>
+</tbody></table></div>
+<br>
+<h3>4.2 Skenario Pengujian</h3>
+<br>
+<h4>Skenario P-01: Baseline Test (Kondisi Normal)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Parameter</th><th>Nilai</th></tr></thead>
+<tbody>
+<tr><td><strong>VU (Virtual Users)</strong></td><td>6 (4 kasir + 1 admin + 1 supervisor)</td></tr>
+<tr><td><strong>Durasi</strong></td><td>15 menit</td></tr>
+<tr><td><strong>Target Transaksi</strong></td><td>~300 transaksi selama durasi</td></tr>
+<tr><td><strong>Tujuan</strong></td><td>Validasi performa di kondisi operasional normal</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Threshold (Pass Criteria):</strong></p>
+<pre><code>thresholds: {
+  'http_req_duration{scenario:transaction}': ['p(95)<10000'], // SLO-P-01
+  'http_req_duration{scenario:search}': ['p(95)<1000'],       // SLO-P-04
+  'http_req_duration{scenario:report}': ['p(95)<5000'],       // SLO-P-07
+  'http_req_failed': ['rate<0.005'],                          // SLO-E-01 < 0.5%
+  'http_req_duration': ['p(95)<10000'],                       // Global P95
+}</code></pre>
+<br>
+<h4>Skenario P-02: Stress Test (Peak Load)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Parameter</th><th>Nilai</th></tr></thead>
+<tbody>
+<tr><td><strong>VU</strong></td><td>Ramp-up: 4 → 8 → 12 VU selama 10 menit</td></tr>
+<tr><td><strong>Durasi</strong></td><td>30 menit total</td></tr>
+<tr><td><strong>Target Transaksi</strong></td><td>~500 transaksi (peak day simulation)</td></tr>
+<tr><td><strong>Tujuan</strong></td><td>Validasi sistem tetap dalam SLO saat peak load</td></tr>
+</tbody></table></div>
+<br>
+<h4>Skenario P-03: Soak Test (Ketahanan Jangka Panjang)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Parameter</th><th>Nilai</th></tr></thead>
+<tbody>
+<tr><td><strong>VU</strong></td><td>6 VU konstan</td></tr>
+<tr><td><strong>Durasi</strong></td><td>4 jam (simulasi shift kasir)</td></tr>
+<tr><td><strong>Tujuan</strong></td><td>Deteksi memory leak dan degradasi performa gradual</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Threshold Tambahan Soak Test:</strong></p>
+<pre><code>thresholds: {
+  'http_req_duration': ['p(95)<10000'],        // Tidak boleh degradasi
+  'checks': ['rate>0.99'],                     // 99% check harus pass
+  'iteration_duration': ['p(95)<15000'],       // Termasuk think time
+}</code></pre>
+<br>
+<h4>Skenario P-04: Spike Test (Lonjakan Mendadak)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Parameter</th><th>Nilai</th></tr></thead>
+<tbody>
+<tr><td><strong>VU</strong></td><td>2 VU → 10 VU dalam 30 detik → kembali ke 2 VU</td></tr>
+<tr><td><strong>Durasi</strong></td><td>5 menit</td></tr>
+<tr><td><strong>Tujuan</strong></td><td>Validasi sistem tidak crash saat lonjakan mendadak</td></tr>
+</tbody></table></div>
+<br>
+<h3>4.3 Skrip k6 — Transaksi Concurrent</h3>
+<br>
+<pre><code>/**
+ * MikoMart POS — k6 Performance Test Script
+ * Skenario: Transaksi Concurrent (4 Kasir Aktif)
+ *
+ * Jalankan: k6 run --out json=results.json perf-test.js
+ */
+
+import http from 'k6/http';
+import { check, sleep, group } from 'k6';
+import { Rate, Trend } from 'k6/metrics';
+
+// === Custom Metrics ===
+const transactionDuration = new Trend('transaction_duration_ms', true);
+const transactionErrors = new Rate('transaction_error_rate');
+
+// === Options ===
+export const options = {
+  scenarios: {
+    // Skenario P-02: Stress Test
+    peak_load: {
+      executor: 'ramping-vus',
+      startVUs: 0,
+      stages: [
+        { duration: '2m', target: 4 },  // Ramp up ke 4 kasir
+        { duration: '10m', target: 6 }, // Tambah admin & supervisor
+        { duration: '5m', target: 8 },  // Peak
+        { duration: '3m', target: 0 },  // Ramp down
+      ],
+      gracefulRampDown: '30s',
+    },
+  },
+  thresholds: {
+    'http_req_duration': ['p(95)<10000', 'p(99)<15000'], // SLO-P-01
+    'transaction_duration_ms': ['p(95)<10000'],
+    'transaction_error_rate': ['rate<0.005'],             // SLO-E-01
+    'http_req_failed': ['rate<0.001'],                    // SLO-E-02
+    'checks': ['rate>0.99'],
+  },
+};
+
+// === Base URL & Auth ===
+const BASE_URL = __ENV.BASE_URL || 'https://mikomart.staging.local';
+const KASIR_CREDENTIALS = [
+  { username: 'kasir01', password: __ENV.KASIR01_PASS },
+  { username: 'kasir02', password: __ENV.KASIR02_PASS },
+  { username: 'kasir03', password: __ENV.KASIR03_PASS },
+  { username: 'kasir04', password: __ENV.KASIR04_PASS },
+];
+
+/**
+ * Setup: Login semua kasir dan dapatkan token
+ * @returns {Object} Token map per kasir
+ */
+export function setup() {
+  const tokens = {};
+  KASIR_CREDENTIALS.forEach((cred, i) => {
+    const res = http.post(`${BASE_URL}/api/v1/auth/login`, JSON.stringify(cred), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+    check(res, { 'login berhasil': (r) => r.status === 200 });
+    tokens[`kasir0${i + 1}`] = res.json('data.token');
+  });
+  return tokens;
+}
+
+/**
+ * Main VU Function: Simulasi alur transaksi lengkap
+ */
+export default function (tokens) {
+  // Pilih kasir berdasarkan VU ID
+  const kasirIndex = (__VU - 1) % 4;
+  const kasirKey = `kasir0${kasirIndex + 1}`;
+  const token = tokens[kasirKey];
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+  };
+
+  const startTime = Date.now();
+
+  group('Selesaikan Transaksi POS', () => {
+    // === Step 1: Cari produk ===
+    const searchRes = http.get(
+      `${BASE_URL}/api/v1/products?search=mie&limit=5`,
+      { headers }
+    );
+    check(searchRes, {
+      'produk ditemukan': (r) => r.status === 200,
+      'search < 1 detik': (r) => r.timings.duration < 1000, // SLO-P-04
+    });
+
+    sleep(0.5);
+
+    // === Step 2: Buat transaksi ===
+    const products = searchRes.json('data');
+    if (!products || products.length === 0) return;
+
+    const cartItems = [
+      {
+        product_id: products[0].id,
+        quantity: 2,
+        discount_percent: 10,
+      },
+    ];
+
+    const transactionRes = http.post(
+      `${BASE_URL}/api/v1/transactions`,
+      JSON.stringify({
+        items: cartItems,
+        payment_method: 'cash',
+        cash_received: 100000,
+      }),
+      { headers }
+    );
+
+    const transactionOk = check(transactionRes, {
+      'transaksi berhasil': (r) => r.status === 201,
+      'transaksi < 10 detik': (r) => r.timings.duration < 10000, // SLO-P-01
+      'ada nomor transaksi': (r) => r.json('data.transaction_number') !== null,
+    });
+
+    transactionErrors.add(!transactionOk);
+
+    // === Step 3: Generate struk PDF ===
+    if (transactionOk) {
+      const txId = transactionRes.json('data.id');
+      const receiptRes = http.get(
+        `${BASE_URL}/api/v1/transactions/${txId}/receipt`,
+        { headers }
+      );
+      check(receiptRes, {
+        'PDF dihasilkan': (r) => r.status === 200,
+        'PDF < 3 detik': (r) => r.timings.duration < 3000, // SLO-P-05
+      });
+    }
+  });
+
+  // Record total transaction duration
+  transactionDuration.add(Date.now() - startTime);
+
+  // Think time (simulasi kasir input item berikutnya)
+  sleep(Math.random() * 2 + 1); // 1-3 detik
+}
+
+/**
+ * Teardown: Clear test data
+ */
+export function teardown(tokens) {
+  // Logout semua kasir test
+  Object.values(tokens).forEach((token) => {
+    http.post(`${BASE_URL}/api/v1/auth/logout`, null, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+  });
+}</code></pre>
+<br>
+<h3>4.4 Performance Test — Thresholds vs SLO Mapping</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>SLO ID</th><th>Metrik SLO</th><th>Target</th><th>k6 Threshold</th></tr></thead>
+<tbody>
+<tr><td>SLO-P-01</td><td>Transaksi end-to-end</td><td>≤ 10 detik P95</td><td><code>p(95)<10000</code></td></tr>
+<tr><td>SLO-P-02</td><td>Cetak struk thermal</td><td>≤ 5 detik P95</td><td><code>p(95)<5000</code> (thermal command)</td></tr>
+<tr><td>SLO-P-03</td><td>Load halaman POS</td><td>≤ 3 detik P95</td><td><code>p(95)<3000</code> (static asset)</td></tr>
+<tr><td>SLO-P-04</td><td>Autocomplete produk</td><td>≤ 1 detik P95</td><td><code>p(95)<1000</code></td></tr>
+<tr><td>SLO-P-05</td><td>Generate PDF</td><td>≤ 3 detik P95</td><td><code>p(95)<3000</code></td></tr>
+<tr><td>SLO-P-07</td><td>Load laporan harian</td><td>≤ 5 detik P95</td><td><code>p(95)<5000</code></td></tr>
+<tr><td>SLO-P-08</td><td>Auto-sync offline</td><td>≤ 30 detik P95</td><td><code>p(95)<30000</code> (sync endpoint)</td></tr>
+<tr><td>SLO-E-01</td><td>Error rate transaksi</td><td>< 0.5%</td><td><code>rate<0.005</code></td></tr>
+<tr><td>SLO-E-02</td><td>Error rate API 5xx</td><td>< 0.1%</td><td><code>rate<0.001</code></td></tr>
+<tr><td>SLO-T-01</td><td>Concurrent kasir</td><td>≥ 4 simultan</td><td>4 VU minimal tanpa error</td></tr>
+</tbody></table></div>
+<br>
+<h3>4.5 Performance Test — Pass/Fail Criteria</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kriteria</th><th>Pass</th><th>Fail</th></tr></thead>
+<tbody>
+<tr><td>P95 response time transaksi</td><td>≤ 10 detik</td><td>> 10 detik</td></tr>
+<tr><td>Error rate</td><td>< 0.5%</td><td>≥ 0.5%</td></tr>
+<tr><td>Zero critical errors (HTTP 500)</td><td>0 error 500</td><td>≥ 1 error 500</td></tr>
+<tr><td>Memory leak (soak test 4 jam)</td><td>Memory stabil ± 10%</td><td>Memory meningkat > 10%</td></tr>
+<tr><td>Throughput peak</td><td>≥ 500 trx/hari</td><td>< 500 trx/hari</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>5. TEST ENVIRONMENT</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Aspek</th><th>Unit/Integration</th><th>System + Security</th><th>Performance</th></tr></thead>
+<tbody>
+<tr><td><strong>Environment</strong></td><td>Development (local)</td><td>Staging</td><td>Staging (dedicated)</td></tr>
+<tr><td><strong>Database</strong></td><td>SQLite in-memory</td><td>MySQL staging + dummy data</td><td>MySQL staging (production-like dataset)</td></tr>
+<tr><td><strong>Payment Gateway</strong></td><td>Mock (stub)</td><td>Midtrans Sandbox</td><td>Midtrans Sandbox</td></tr>
+<tr><td><strong>Network</strong></td><td>localhost</td><td>LAN + simulated WAN</td><td>LAN + tc netem (network throttle)</td></tr>
+<tr><td><strong>Tools</strong></td><td>PHPUnit, Pest</td><td>Postman, Cypress, OWASP ZAP</td><td>k6, Grafana, Laravel Telescope</td></tr>
+<tr><td><strong>Data</strong></td><td>Factory/seeder</td><td>Realistic dummy data (1000 produk, 5000 transaksi)</td><td>Realistic dataset</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>6. ENTRY & EXIT CRITERIA</h2>
+<br>
+<h3>Entry Criteria (Syarat Mulai Testing)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Gate</th><th>Entry Criteria</th></tr></thead>
+<tbody>
+<tr><td>Gate 1 (Unit)</td><td>Feature branch selesai; code review passed</td></tr>
+<tr><td>Gate 2 (Integration)</td><td>Semua unit test Gate 1 PASS; migration dijalankan</td></tr>
+<tr><td>Gate 3 (System)</td><td>API endpoints terdokumentasi; semua FR P1 implemented</td></tr>
+<tr><td>Gate 4 (Performance)</td><td>Gate 3 pass; test data tersedia; staging environment ready</td></tr>
+<tr><td>Gate 5 (UAT)</td><td>Gate 4 pass; tidak ada bug Critical/High yang terbuka</td></tr>
+</tbody></table></div>
+<br>
+<h3>Exit Criteria (Syarat Selesai Testing)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Gate</th><th>Exit Criteria</th></tr></thead>
+<tbody>
+<tr><td>Gate 1</td><td>Coverage ≥ 80% untuk business logic; 0 failing test</td></tr>
+<tr><td>Gate 2</td><td>Semua API contract sesuai OpenAPI spec; 0 regression</td></tr>
+<tr><td>Gate 3</td><td>0 Critical bug; ≤ 3 High bug (dengan workaround); semua P1 TC PASS</td></tr>
+<tr><td>Gate 4</td><td>Semua k6 threshold PASS; tidak ada memory leak</td></tr>
+<tr><td>Gate 5</td><td>UAT sign-off dari Stakeholder; 0 Critical/High bug terbuka</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>7. JADWAL PENGUJIAN</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Fase Testing</th><th>Durasi Estimasi</th><th>Periode</th></tr></thead>
+<tbody>
+<tr><td>Gate 0: Requirements Review</td><td>2 hari</td><td>Sebelum sprint 1</td></tr>
+<tr><td>Gate 1: Unit Testing (per sprint)</td><td>Ongoing (per feature)</td><td>Sprint 1–6</td></tr>
+<tr><td>Gate 2: Integration Testing</td><td>1 minggu per milestone</td><td>Setiap 2 sprint</td></tr>
+<tr><td>Gate 3: System + Security Testing</td><td>2 minggu</td><td>Sprint 7</td></tr>
+<tr><td>Gate 4: Performance Testing</td><td>1 minggu</td><td>Sprint 8 (sebelum UAT)</td></tr>
+<tr><td>Gate 5: UAT</td><td>1 minggu</td><td>Sprint 8</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini adalah bagian dari Fase 3D — Master Test Plan MikoMart POS System.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-MTP-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-MTP-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

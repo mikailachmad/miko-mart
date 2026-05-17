@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MikoMart POS — Daftar Dokumen</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-top:24px;}
+.doc-card{display:block;background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:24px;text-decoration:none;transition:all .2s;}
+.doc-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(56,189,248,.1);}
+.doc-num{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;}
+.doc-title{font-size:15px;font-weight:700;color:var(--text);margin:8px 0 6px;}
+.doc-meta{font-size:12px;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">MikoMart POS System — Dokumentasi Lengkap</div>
+  <h1>DAFTAR DOKUMEN PROYEK</h1>
+  <h2>Seluruh Artifact Fase 2 – 6 &nbsp;|&nbsp; 16–17 April 2026</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Total Dokumen</div><div class="meta-value">16</div></div>
+    <div class="meta-item"><div class="meta-label">Standar</div><div class="meta-value">IEEE 830 · 1016 · 829 · 730</div></div>
+    <div class="meta-item"><div class="meta-label">ISO</div><div class="meta-value">25010 · 12207</div></div>
+    <div class="meta-item"><div class="meta-label">Keamanan</div><div class="meta-value">OWASP Top 10</div></div>
+  </div>
+</div>
+<div class="container">
+  <div class="grid">
+            <a href="01_project_charter.html" class="doc-card">
+              <div class="doc-num">MikoMart-PC-2026-001</div>
+              <div class="doc-title">PROJECT CHARTER</div>
+              <div class="doc-meta">18 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="02_srs_draft.html" class="doc-card">
+              <div class="doc-num">MikoMart-SRS-2026-001</div>
+              <div class="doc-title">SOFTWARE REQUIREMENTS SPEC</div>
+              <div class="doc-meta">44 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="03_sla_slo_baseline.html" class="doc-card">
+              <div class="doc-num">MikoMart-SLA-2026-001</div>
+              <div class="doc-title">SLA / SLO BASELINE</div>
+              <div class="doc-meta">23 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="04_software_architecture.html" class="doc-card">
+              <div class="doc-num">MikoMart-SAD-2026-001</div>
+              <div class="doc-title">SOFTWARE ARCHITECTURE (SAD)</div>
+              <div class="doc-meta">56 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="05_database_design.html" class="doc-card">
+              <div class="doc-num">MikoMart-DB-2026-001</div>
+              <div class="doc-title">DATABASE DESIGN</div>
+              <div class="doc-meta">47 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="06_api_specification.html" class="doc-card">
+              <div class="doc-num">MikoMart-API-2026-001</div>
+              <div class="doc-title">API SPECIFICATION</div>
+              <div class="doc-meta">60 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="07_use_case_specification.html" class="doc-card">
+              <div class="doc-num">MikoMart-UC-2026-001</div>
+              <div class="doc-title">USE CASE SPECIFICATION</div>
+              <div class="doc-meta">50 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="08_sqa_plan.html" class="doc-card">
+              <div class="doc-num">MikoMart-SQA-2026-001</div>
+              <div class="doc-title">SQA PLAN (IEEE 730)</div>
+              <div class="doc-meta">48 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="09_master_test_plan.html" class="doc-card">
+              <div class="doc-num">MikoMart-MTP-2026-001</div>
+              <div class="doc-title">MASTER TEST PLAN (IEEE 829)</div>
+              <div class="doc-meta">48 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="10_ui_ux_design.html" class="doc-card">
+              <div class="doc-num">MikoMart-UX-2026-001</div>
+              <div class="doc-title">UI/UX DESIGN</div>
+              <div class="doc-meta">67 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="11_uat_script.html" class="doc-card">
+              <div class="doc-num">MikoMart-UAT-2026-001</div>
+              <div class="doc-title">UAT SCRIPT</div>
+              <div class="doc-meta">40 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="12_deployment_runbook.html" class="doc-card">
+              <div class="doc-num">MikoMart-DEPLOY-2026-001</div>
+              <div class="doc-title">DEPLOYMENT & RUNBOOK</div>
+              <div class="doc-meta">36 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="13_phase5a_scaffold.html" class="doc-card">
+              <div class="doc-num">MikoMart-5A-2026-001</div>
+              <div class="doc-title">PROJECT SCAFFOLD (Fase 5A)</div>
+              <div class="doc-meta">38 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="14_phase5b_implementation.html" class="doc-card">
+              <div class="doc-num">MikoMart-5B-2026-001</div>
+              <div class="doc-title">IMPLEMENTASI MODUL (Fase 5B)</div>
+              <div class="doc-meta">73 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="15_phase5c_review.html" class="doc-card">
+              <div class="doc-num">MikoMart-5C-2026-001</div>
+              <div class="doc-title">CODE REVIEW & TECH DEBT (5C)</div>
+              <div class="doc-meta">26 KB &nbsp;·&nbsp; HTML</div>
+            </a>
+            <a href="16_project_closure_paper.html" class="doc-card">
+              <div class="doc-num">MikoMart-PCR-2026-001</div>
+              <div class="doc-title">PROJECT CLOSURE & PAPER AKADEMIK</div>
+              <div class="doc-meta">42 KB &nbsp;·&nbsp; HTML</div>
+            </a></div>
+</div>
+<div class="footer">MikoMart POS System &nbsp;|&nbsp; 16–17 April 2026 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL</div>
+</body>
+</html>

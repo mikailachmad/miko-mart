@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>UAT SCRIPT — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-UAT-2026-001</div>
+  <h1>UAT SCRIPT</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>USER ACCEPTANCE TESTING (UAT) SCRIPT</h1>
+<h2>MikoMart Point of Sale (POS) System — Fase 6A</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-UAT-2026-001</td></tr>
+<tr><td><strong>Versi</strong></td><td>1.0</td></tr>
+<tr><td><strong>Tanggal UAT</strong></td><td>[Diisi saat sesi berlangsung]</td></tr>
+<tr><td><strong>Fasilitator</strong></td><td>QA Lead</td></tr>
+<tr><td><strong>Environment</strong></td><td>Staging — https://staging.mikomart.local</td></tr>
+<tr><td><strong>Standar</strong></td><td>IEEE 829 · ISO/IEC 25010</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. INFORMASI PESERTA UAT</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Peran</th><th>Nama</th><th>Tanda Tangan</th><th>Tanggal</th></tr></thead>
+<tbody>
+<tr><td>Owner (stakeholder utama)</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>Admin</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>Supervisor</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>Kasir Representatif 1</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>Kasir Representatif 2</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>QA Lead (Fasilitator)</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. UAT OVERVIEW</h2>
+<br>
+<h3>2.1 Tujuan</h3>
+<p>Dokumen ini berisi skrip pengujian yang akan dieksekusi oleh stakeholder untuk memvalidasi bahwa sistem MikoMart POS memenuhi seluruh kebutuhan bisnis yang telah didefinisikan dalam SRS v1.1, sebelum sistem dinyatakan layak untuk go-live.</p>
+<br>
+<h3>2.2 Cakupan Pengujian</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Modul</th><th>Jumlah Skenario</th><th>Prioritas</th></tr></thead>
+<tbody>
+<tr><td>UAT-01: Autentikasi & Sesi</td><td>5</td><td>P1</td></tr>
+<tr><td>UAT-02: Transaksi POS & Pembayaran</td><td>7</td><td>P1</td></tr>
+<tr><td>UAT-03: Void & Retur (Two-Step)</td><td>4</td><td>P1</td></tr>
+<tr><td>UAT-04: Manajemen Produk & Inventori</td><td>4</td><td>P1</td></tr>
+<tr><td>UAT-05: Laporan & Ekspor Pajak</td><td>3</td><td>P2</td></tr>
+<tr><td><strong>Total</strong></td><td><strong>23</strong></td><td></td></tr>
+</tbody></table></div>
+<br>
+<h3>2.3 Definisi Hasil Pengujian</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Hasil</th><th>Definisi</th></tr></thead>
+<tbody>
+<tr><td>✅ <strong>PASS</strong></td><td>Sistem berperilaku persis seperti Expected Result</td></tr>
+<tr><td>❌ <strong>FAIL</strong></td><td>Sistem berperilaku berbeda dari Expected Result; bug wajib dicatat di Defect Log</td></tr>
+<tr><td>⚠️ <strong>PARTIAL</strong></td><td>Sebagian Expected Result terpenuhi; perlu klarifikasi</td></tr>
+<tr><td>⏭️ <strong>SKIP</strong></td><td>Skenario dilewati (tulis alasan)</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.4 Kriteria Kelulusan UAT</h3>
+<br>
+<blockquote>UAT dinyatakan <strong>LULUS</strong> jika dan hanya jika semua kondisi di bawah terpenuhi:</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Kriteria</th><th>Threshold</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>K1</td><td>Semua skenario P1 berstatus PASS</td><td>100%</td><td>[ ]</td></tr>
+<tr><td>K2</td><td>Tidak ada bug Critical yang belum ditutup</td><td>0 bug Critical open</td><td>[ ]</td></tr>
+<tr><td>K3</td><td>Bug High yang open memiliki workaround terdokumentasi</td><td>Max 3 bug High</td><td>[ ]</td></tr>
+<tr><td>K4</td><td>Sign-off diterima dari Owner, Admin, dan minimal 1 Kasir</td><td>3 tanda tangan</td><td>[ ]</td></tr>
+<tr><td>K5</td><td>Waktu respons eksekusi transaksi ≤ 10 detik (SLO-P-01)</td><td>Terverifikasi dalam UAT</td><td>[ ]</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. AKUN UAT (Staging)</h2>
+<br>
+<blockquote>⚠️ Ubah password segera setelah UAT selesai!</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Username</th><th>Password (Staging)</th><th>Role</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>uat_kasir01</code></td><td><code>UatK@s!r01</code></td><td>cashier</td><td>Kasir Meja 1</td></tr>
+<tr><td><code>uat_kasir02</code></td><td><code>UatK@s!r02</code></td><td>cashier</td><td>Kasir Meja 2</td></tr>
+<tr><td><code>uat_supervisor</code></td><td><code>UatSup@rv1sor</code></td><td>supervisor</td><td>Supervisor</td></tr>
+<tr><td><code>uat_admin</code></td><td><code>UatAdm!n2026</code></td><td>admin</td><td>Admin</td></tr>
+<tr><td><code>uat_owner</code></td><td><code>UatOwn@r9999</code></td><td>owner</td><td>Pemilik Toko</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. MODUL UAT-01: AUTENTIKASI & SESI</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-01-SC01 — Login Berhasil</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir (<code>uat_kasir01</code>)</p>
+<p><strong>Pre-condition:</strong> Sistem dalam keadaan berjalan; belum login</p>
+<br>
+<p><strong>Langkah:</strong></p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Buka https://staging.mikomart.local</td><td>Halaman login tampil dengan field Username & Password</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Masukkan Username: <code>uat_kasir01</code>, Password: <code>UatK@s!r01</code></td><td>Field terisi; tombol "Masuk" aktif</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Klik tombol "Masuk"</td><td>Loading indicator tampil kurang dari 3 detik</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Observasi halaman setelah login</td><td>Diarahkan ke POS Screen; nama "uat_kasir01" tampil di sudut kanan atas; badge role "Kasir" terlihat</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>5</td><td>Perhatikan badge status koneksi</td><td>Badge "Online" berwarna hijau tampil di header</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-01-SC02 — Login Gagal (Credential Salah)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir (<code>uat_kasir01</code>)</p>
+<p><strong>Pre-condition:</strong> Di halaman login</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Masukkan Username: <code>uat_kasir01</code>, Password: <code>passwordsalah</code></td><td>Field terisi</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Klik "Masuk"</td><td>Pesan error merah tampil: "Username atau password salah. Sisa percobaan: 4×"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>URL tetap di halaman login</td><td>Tidak diarahkan ke halaman manapun</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Field password dikosongkan otomatis</td><td>Field password kosong setelah error</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-01-SC03 — Account Lockout (5× Gagal)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Input password salah 5× berturut-turut</td><td>Setelah percobaan ke-5: pesan "Akun terkunci" dengan countdown 15 menit</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Coba login kembali saat terkunci</td><td>Tombol "Masuk" non-aktif; countdown masih berjalan</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Admin login dan reset lockout via menu Pengguna</td><td>Login admin berhasil; dapat menemukan menu reset lockout</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-01-SC04 — Inactivity Timeout (30 Menit)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Login berhasil sebagai kasir</td><td>Di POS Screen</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Diamkan browser tanpa aksi selama 30+ menit (simulator: minta fasilitator percepat dengan config dev)</td><td>Popup "Sesi Berakhir — Login kembali untuk melanjutkan" tampil otomatis</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Coba akses halaman POS setelah sesi habis</td><td>Diarahkan ke halaman login; tidak ada data transaksi yang hilang dari localStorage</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-01-SC05 — Logout</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Admin</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Login sebagai <code>uat_admin</code></td><td>Di Admin Dashboard</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Klik tombol "Keluar" di sudut kanan atas</td><td>Dialog konfirmasi: "Apakah Anda yakin ingin keluar?"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Klik "Ya, Keluar"</td><td>Diarahkan ke halaman login; sesi terhapus</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Tekan tombol Back browser</td><td>Tetap di halaman login; tidak bisa kembali ke dashboard tanpa login ulang</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>5. MODUL UAT-02: TRANSAKSI POS & PEMBAYARAN</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-02-SC01 — Transaksi Lengkap (Tunai)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir (<code>uat_kasir01</code>)</p>
+<p><strong>Pre-condition:</strong> Login berhasil; stok Mie Goreng Sedap (SKU: MGS-001) = 50</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Di POS Screen, ketik "Mie Goreng" di kolom pencarian</td><td>Daftar produk yang mengandung kata "Mie Goreng" muncul dalam ≤ 2 detik</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Klik produk "Mie Goreng Sedap" (Rp 3.500)</td><td>Produk masuk ke keranjang; jumlah = 1; subtotal = Rp 3.500 tampil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Tambah kuantitas menjadi 3 (klik tombol "+")</td><td>Jumlah = 3; subtotal = Rp 10.500; total di panel kanan update real-time</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Pilih metode pembayaran "Tunai"</td><td>Area input "Uang Diterima" muncul</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>5</td><td>Input nominal Rp 20.000</td><td>Kembalian = Rp 20.000 - (Rp 10.500 + PPN 11%) = Rp 8.345 kalkulasi benar</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>6</td><td>Klik "Proses Pembayaran"</td><td>Konfirmasi muncul; stok MGS-001 berkurang 3 (dari 50 → 47)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>7</td><td>Periksa nomor transaksi</td><td>Format TRX-YYYYMMDD-XXXX tampil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>8</td><td>Pilih opsi "Struk PDF"</td><td>PDF struk diunduh; berisi nomor transaksi, tanggal, item, total, kembalian</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-02-SC02 — Pembayaran QRIS</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Buat transaksi dengan 1 item, pilih metode "QRIS"</td><td>QR Code muncul di layar dalam ≤ 5 detik</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Observasi countdown timer</td><td>Timer 5 menit tampil; berkurang setiap detik</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>(Minta fasilitator simulasikan webhook success dari sandbox)</td><td>Status berubah menjadi "Pembayaran Diterima ✓"; struk ditawarkan</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Uji skenario expired: buat QRIS baru lalu tunggu habis</td><td>Pesan "Pembayaran kadaluarsa — Pilih metode lain atau coba lagi" muncul</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-02-SC03 — Split Bill (Dua Metode)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Buat transaksi total Rp 50.000, pilih "Split Bill"</td><td>Modal split bill terbuka</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Set Tunai: Rp 30.000, QRIS: Rp 20.000</td><td>Total split = Rp 50.000; indikator "✓ Lunas" hijau tampil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Set Tunai: Rp 20.000, QRIS: Rp 20.000 (total hanya Rp 40.000)</td><td>Indikator "Kekurangan Rp 10.000" merah tampil; tombol konfirmasi non-aktif</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Lengkapi total ke Rp 50.000, klik konfirmasi</td><td>Transaksi berhasil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-02-SC04 — Diskon Manual (Maks 30%)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Tambah produk ke keranjang, klik tombol "Diskon"</td><td>Modal diskon terbuka</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Input diskon 25%, klik Terapkan</td><td>Harga terpotong 25%; label diskon tampil di item; audit log tercatat</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Input diskon 31%</td><td>Pesan error: "Diskon tidak boleh melebihi 30%"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Input diskon 30% (batas maks)</td><td>Diterima; diskon 30% diterapkan</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-02-SC05 — Override Harga</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Tambah produk (Harga Beli: Rp 2.500, Harga Jual: Rp 3.500) ke keranjang; klik "Override Harga"</td><td>Modal override harga terbuka</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Input Rp 4.000 (di atas harga normal)</td><td>Override diterima; harga di keranjang berubah; audit log tersimpan</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Input Rp 2.000 (di bawah harga beli)</td><td>Error: "Harga tidak boleh di bawah harga beli (Rp 2.500)"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-02-SC06 — Mode Offline</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<p><strong>Pre-condition:</strong> Fasilitator putus koneksi jaringan kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Putus koneksi internet kasir (cabut kabel/matikan WiFi)</td><td>Badge header berubah menjadi "Offline — Hanya Tunai" warna merah</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Lakukan transaksi tunai Rp 10.000</td><td>Transaksi berhasil tersimpan lokal; status "pending sync" tampil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Sambungkan kembali koneksi internet</td><td>Badge berubah menjadi "Sinkronisasi..." (biru berkedip)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Tunggu sync selesai (≤ 30 detik)</td><td>Badge kembali "Online"; transaksi muncul di riwayat server</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-02-SC07 — Stok Habis (Error State)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Cari produk yang stoknya 0</td><td>Produk tampil dengan label "Stok Habis" merah; tombol tambah disabled</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Jika produk sudah di keranjang lalu stok habis (race condition)</td><td>Item di keranjang ditandai merah; tombol "Proses Pembayaran" disabled dengan pesan jelas</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>6. MODUL UAT-03: VOID & RETUR (TWO-STEP APPROVAL)</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-03-SC01 — Kasir Mengajukan Void</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir → Supervisor</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Kasir buka Riwayat Transaksi; pilih transaksi "completed"</td><td>Detail transaksi tampil; tombol "Ajukan Void" tersedia</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Klik "Ajukan Void"; form muncul; klik submit tanpa mengisi alasan</td><td>Error: "Alasan void wajib diisi"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Isi alasan "Barang rusak saat dibeli", submit</td><td>Status transaksi berubah ke "Menunggu Void"; tombol "Ajukan Void" menghilang</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Supervisor login; periksa antrian Approval Void</td><td>Void request dari kasir tampil dengan detail lengkap dan alasan</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-03-SC02 — Supervisor Menyetujui Void</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Supervisor</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Di halaman Approval Void, klik "Setujui" pada request kasir</td><td>Dialog konfirmasi muncul</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Isi catatan "Disetujui setelah verifikasi fisik barang"</td><td>Tombol "Konfirmasi Setujui" aktif</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Klik "Konfirmasi Setujui"</td><td>Status transaksi berubah "Void"; stok produk kembali bertambah</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Periksa audit log (Admin)</td><td>Dua entri tercatat: TRX_VOID_REQUESTED (kasir) + TRX_VOID_APPROVED (supervisor)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-03-SC03 — Supervisor Menolak Void</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Supervisor</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Di halaman Approval Void, klik "Tolak"</td><td>Dialog penolakan dengan field alasan wajib</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Submit tanpa mengisi alasan penolakan</td><td>Error: "Alasan penolakan wajib diisi"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Isi "Tidak sesuai kebijakan" dan konfirmasi</td><td>Status transaksi kembali "Selesai"; kasir menerima notifikasi penolakan</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-03-SC04 — Void Sudah Divoid (Error Guard)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Kasir</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Buka transaksi yang statusnya sudah "Void"</td><td>Tombol "Ajukan Void" tidak tampil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Coba akses URL void request manual via API</td><td>Response HTTP 409: "Transaksi tidak dapat di-void. Status saat ini: voided"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>7. MODUL UAT-04: MANAJEMEN PRODUK & INVENTORI</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-04-SC01 — Admin Menambah Produk Baru</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Admin (<code>uat_admin</code>)</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Masuk ke menu Produk → "Tambah Produk"</td><td>Form tambah produk terbuka</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Isi Nama: "Teh Botol 350ml", SKU: "TEH-350", Harga Beli: Rp 3.000, Harga Jual: Rp 4.000, Stok: 100, Min. Stok: 20</td><td>Semua field terisi; tidak ada error</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Input Harga Jual: Rp 2.500 (di bawah harga beli), submit</td><td>Error: "Harga jual harus lebih besar dari harga beli"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Perbaiki harga jual ke Rp 4.000 dan submit</td><td>Produk berhasil ditambah; muncul di daftar produk; audit log: PRODUCT_CREATED</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>5</td><td>Kasir coba akses menu Tambah Produk</td><td>Ditolak: "Anda tidak memiliki izin" (HTTP 403 atau redirect)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-04-SC02 — Admin Mengubah Harga Produk</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Admin</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Buka produk "Mie Goreng Sedap"; klik "Edit"</td><td>Form edit dengan nilai saat ini tampil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Ubah harga jual dari Rp 3.500 → Rp 3.800; simpan</td><td>Harga tersimpan; perubahan tampil di daftar produk</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Periksa Audit Log</td><td>Entry PRODUCT_PRICE_UPDATED dengan nilai sebelum (3500) dan sesudah (3800) tercatat</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Supervisor coba edit harga produk</td><td>Tombol edit tidak tampil atau aksi ditolak 403</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-04-SC03 — Notifikasi Stok Minimum</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Admin / Supervisor</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Fasilitator set stok "Aqua 600ml" ke angka di bawah stok minimum</td><td>—</td><td>__________</td><td>—</td></tr>
+<tr><td>2</td><td>Admin buka Dashboard</td><td>Widget "Alert Stok Minimum" menampilkan "Aqua 600ml" dengan bar merah</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Klik "Buat PO" di baris Aqua 600ml</td><td>Form Purchase Order terbuka dengan produk sudah terisi</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-04-SC04 — Konfirmasi Penerimaan Stok (Restock)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Admin</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Buka menu Purchase Order; buat PO untuk "Aqua 600ml" qty 50</td><td>PO berhasil dibuat; status "pending"</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Klik "Konfirmasi Penerimaan"; input qty yang diterima 50</td><td>Stok "Aqua 600ml" bertambah 50; alert stok minimum hilang</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Periksa riwayat transaksi stok</td><td>History penerimaan stok tercatat dengan tanggal dan qty</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>8. MODUL UAT-05: LAPORAN & EKSPOR PAJAK</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-05-SC01 — Dashboard Laporan (Owner)</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Owner (<code>uat_owner</code>)</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Login sebagai Owner</td><td>Diarahkan ke Owner Dashboard (bukan POS Screen)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Lihat widget "Transaksi Hari Ini"</td><td>Jumlah transaksi dan total pendapatan hari ini tampil akurat</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Owner coba mengakses menu Tambah Produk</td><td>Tombol tidak ada atau aksi ditolak (Owner tidak bisa CRUD produk)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-05-SC02 — Laporan Harian</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Owner / Admin</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Navigasi ke Laporan → Laporan Harian; pilih tanggal hari ini</td><td>Data laporan tampil dalam ≤ 5 detik</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Periksa rincian laporan</td><td>Total transaksi, pendapatan, diskon, PPN, dan breakdown per metode bayar tampil benar</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Pilih tanggal tanpa transaksi</td><td>Pesan "Tidak ada transaksi pada tanggal ini" tampil (bukan error kosong)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>UAT-05-SC03 — Ekspor Laporan Pajak</h3>
+<br>
+<p><strong>Role yang menguji:</strong> Owner / Admin</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Aksi</th><th>Expected Result</th><th>Actual Result</th><th>Hasil</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Navigasi ke Ekspor Pajak; pilih periode bulan ini; format CSV</td><td>Proses ekspor dimulai; loading indicator tampil</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>2</td><td>Unduh file yang dihasilkan</td><td>File CSV dapat dibuka di spreadsheet; berisi kolom: nomor transaksi, tanggal, subtotal, PPN, grand total</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>3</td><td>Periksa apakah NPWP ada di file</td><td>NPWP toko tampil di header file CSV (bukan di halaman web)</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+<tr><td>4</td><td>Kasir coba akses menu Ekspor Pajak</td><td>Menu tidak tersedia atau akses ditolak 403</td><td>__________</td><td>[ ]✅ [ ]❌</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Catatan:</strong> ________________________________________________</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>9. DEFECT LOG</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>No.</th><th>ID Bug</th><th>Skenario</th><th>Deskripsi Bug</th><th>Severity</th><th>Status</th><th>Diselesaikan Tanggal</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>BUG-001</td><td>__________</td><td>__________</td><td>Critical / High / Medium / Low</td><td>Open / Closed</td><td>__________</td></tr>
+<tr><td>2</td><td>BUG-002</td><td>__________</td><td>__________</td><td>__________</td><td>__________</td><td>__________</td></tr>
+<tr><td>3</td><td>BUG-003</td><td>__________</td><td>__________</td><td>__________</td><td>__________</td><td>__________</td></tr>
+<tr><td>4</td><td>BUG-004</td><td>__________</td><td>__________</td><td>__________</td><td>__________</td><td>__________</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>10. RINGKASAN HASIL UAT</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Modul</th><th>Total Skenario</th><th>PASS</th><th>FAIL</th><th>SKIP</th><th>% Pass</th></tr></thead>
+<tbody>
+<tr><td>UAT-01: Autentikasi</td><td>5</td><td>__</td><td>__</td><td>__</td><td>__%</td></tr>
+<tr><td>UAT-02: Transaksi POS</td><td>7</td><td>__</td><td>__</td><td>__</td><td>__%</td></tr>
+<tr><td>UAT-03: Void & Retur</td><td>4</td><td>__</td><td>__</td><td>__</td><td>__%</td></tr>
+<tr><td>UAT-04: Produk & Inventori</td><td>4</td><td>__</td><td>__</td><td>__</td><td>__%</td></tr>
+<tr><td>UAT-05: Laporan & Pajak</td><td>3</td><td>__</td><td>__</td><td>__</td><td>__%</td></tr>
+<tr><td><strong>TOTAL</strong></td><td><strong>23</strong></td><td>__</td><td>__</td><td>__</td><td><strong>__%</strong></td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>11. SIGN-OFF UAT</h2>
+<br>
+<blockquote>Dengan menandatangani dokumen ini, stakeholder menyatakan bahwa sistem MikoMart POS dinyatakan <strong>LAYAK / TIDAK LAYAK</strong> untuk go-live.</blockquote>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Nama</th><th>Jabatan</th><th>Keputusan</th><th>Catatan</th><th>TTD</th><th>Tanggal</th></tr></thead>
+<tbody>
+<tr><td>_________________</td><td>Owner</td><td>LAYAK / TIDAK LAYAK</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>_________________</td><td>Admin</td><td>LAYAK / TIDAK LAYAK</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>_________________</td><td>Kasir Representatif</td><td>LAYAK / TIDAK LAYAK</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+<tr><td>_________________</td><td>QA Lead</td><td>LAYAK / TIDAK LAYAK</td><td>_________________</td><td>_________________</td><td>__________</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini adalah bagian dari Fase 6A — UAT Script MikoMart POS System.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-UAT-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-UAT-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

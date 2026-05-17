@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DATABASE DESIGN — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+/* ── Mermaid override ── */
+.mermaid{background:#0f172a;border:1px solid var(--border);border-radius:12px;
+  padding:24px;overflow-x:auto;margin:16px 0;}
+.mermaid svg{max-width:100%;height:auto;}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.0/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#1e293b',
+      primaryTextColor: '#f1f5f9',
+      primaryBorderColor: '#38bdf8',
+      lineColor: '#818cf8',
+      secondaryColor: '#273348',
+      tertiaryColor: '#0f172a',
+      background: '#0f172a',
+      mainBkg: '#1e293b',
+      nodeBorder: '#38bdf8',
+      clusterBkg: '#1e293b',
+      titleColor: '#38bdf8',
+      edgeLabelBackground: '#1e293b',
+      attributeBackgroundColorEven: '#1e293b',
+      attributeBackgroundColorOdd: '#273348',
+    },
+    er: { diagramPadding: 20, layoutDirection: 'TB', minEntityWidth: 100 }
+  });
+</script>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-DB-2026-001</div>
+  <h1>DATABASE DESIGN</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>DATABASE DESIGN DOCUMENT</h1>
+<h2>MikoMart Point of Sale (POS) System — Fase 3B</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-DB-2026-001</td></tr>
+<tr><td><strong>Versi</strong></td><td>1.0</td></tr>
+<tr><td><strong>Tanggal</strong></td><td>16 April 2026</td></tr>
+<tr><td><strong>Database Engine</strong></td><td>SQLite 3.x (lokal kasir, WAL mode) + MySQL 8.x (server pusat)</td></tr>
+<tr><td><strong>ORM</strong></td><td>Laravel Eloquent</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. ENTITY RELATIONSHIP DIAGRAM (ERD)</h2>
+<br>
+<blockquote><strong>Keterangan Penanda:</strong></blockquote>
+<blockquote>- <code>// 🔐 PII</code> — Kolom mengandung Personally Identifiable Information, <strong>WAJIB dienkripsi</strong> (SQLCipher di lokal)</blockquote>
+<blockquote>- <code>// 🔒 SENSITIVE</code> — Data bisnis sensitif, akses hanya melalui role tertentu</blockquote>
+<br>
+<div class="mermaid">
+erDiagram
+
+    %% ============ USER & RBAC ============
+    roles {
+        int id PK
+        varchar name "admin|supervisor|cashier|owner"
+        text permissions "JSON array of permissions"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    users {
+        int id PK
+        int role_id FK
+        varchar full_name "// 🔐 PII"
+        varchar username "// 🔐 PII - unique"
+        varchar password_hash "// bcrypt Argon2id - NEVER expose"
+        varchar device_id "tablet identifier"
+        boolean is_active
+        int failed_login_attempts
+        timestamp locked_until
+        timestamp last_login_at
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at "soft delete"
+    }
+
+    %% ============ PRODUCT & INVENTORY ============
+    categories {
+        int id PK
+        varchar name
+        varchar slug "unique"
+        text description
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    products {
+        int id PK
+        int category_id FK
+        varchar name
+        varchar sku "unique // 🔒 SENSITIVE"
+        decimal price_sell "// 🔒 SENSITIVE - 15 digit, 2 decimal"
+        decimal price_buy "// 🔒 SENSITIVE - floor price"
+        int stock_current
+        int stock_minimum "notification threshold"
+        varchar unit "pcs|kg|liter|box"
+        boolean is_active
+        boolean allow_backorder
+        timestamp created_at
+        timestamp updated_at
+        timestamp deleted_at "soft delete"
+    }
+
+    %% ============ SUPPLIER & PURCHASE ORDER ============
+    suppliers {
+        int id PK
+        varchar name
+        varchar contact_phone
+        varchar contact_email
+        text address
+        boolean is_active
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    purchase_orders {
+        int id PK
+        int supplier_id FK
+        int created_by FK "users.id"
+        int confirmed_by FK "users.id nullable"
+        varchar po_number "unique"
+        enum status "draft|sent|received|cancelled"
+        decimal total_amount "// 🔒 SENSITIVE"
+        text notes
+        timestamp sent_at
+        timestamp received_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    purchase_order_items {
+        int id PK
+        int purchase_order_id FK
+        int product_id FK
+        int quantity_ordered
+        int quantity_received
+        decimal unit_price "// 🔒 SENSITIVE"
+        decimal subtotal "// 🔒 SENSITIVE"
+    }
+
+    %% ============ TRANSACTION ============
+    transactions {
+        int id PK
+        int cashier_id FK "users.id // 🔐 PII"
+        varchar transaction_number "unique - e.g. TRX-20260416-0001"
+        enum status "pending|completed|void_pending|voided|return_pending|returned"
+        decimal subtotal "// 🔒 SENSITIVE"
+        decimal discount_amount "// 🔒 SENSITIVE"
+        decimal tax_amount "PPN // 🔒 SENSITIVE"
+        decimal grand_total "// 🔒 SENSITIVE"
+        enum payment_method "cash|qris|transfer|split"
+        decimal cash_received
+        decimal change_amount
+        boolean is_offline_transaction
+        varchar sync_status "synced|pending|conflict"
+        text notes
+        int void_requested_by FK "users.id nullable // 🔐 PII"
+        int void_approved_by FK "users.id nullable // 🔐 PII"
+        text void_reason
+        timestamp voided_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    transaction_items {
+        int id PK
+        int transaction_id FK
+        int product_id FK
+        varchar product_name "snapshot at time of sale"
+        decimal price_original "// 🔒 SENSITIVE"
+        decimal price_override "nullable // 🔒 SENSITIVE"
+        int discount_percent "0-30"
+        decimal discount_amount "// 🔒 SENSITIVE"
+        decimal price_final "// 🔒 SENSITIVE"
+        int quantity
+        decimal subtotal "// 🔒 SENSITIVE"
+    }
+
+    payment_records {
+        int id PK
+        int transaction_id FK
+        enum method "cash|qris|transfer"
+        decimal amount "// 🔒 SENSITIVE"
+        varchar gateway_order_id "Midtrans/Xendit order ID"
+        varchar gateway_transaction_id
+        enum gateway_status "pending|success|failed|expired"
+        text gateway_response "JSON"
+        varchar webhook_signature "HMAC for verification"
+        timestamp paid_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% ============ AUDIT & SYNC ============
+    audit_logs {
+        int id PK
+        int user_id FK "// 🔐 PII"
+        varchar username "snapshot // 🔐 PII"
+        varchar role "snapshot"
+        varchar action "SCREAMING_SNAKE_CASE"
+        varchar resource_type
+        varchar resource_id
+        json value_before
+        json value_after
+        text reason
+        varchar ip_address
+        varchar device_id
+        timestamp created_at "immutable - no updated_at"
+    }
+
+    sync_queues {
+        int id PK
+        varchar device_id
+        int cashier_id FK
+        varchar resource_type "transaction|stock_adjustment"
+        int resource_id
+        json payload
+        enum status "pending|syncing|synced|failed|conflict"
+        int retry_count
+        text error_message
+        timestamp synced_at
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    conflict_logs {
+        int id PK
+        int sync_queue_id FK
+        varchar resource_type
+        int resource_id
+        json value_local "data from offline device"
+        json value_server "data from server"
+        json value_resolved "merged result"
+        int resolved_by FK "users.id"
+        varchar resolved_by_name "// 🔐 PII snapshot"
+        enum resolution "local_wins|server_wins|manual_merge"
+        timestamp resolved_at
+        timestamp created_at
+    }
+
+    store_settings {
+        int id PK
+        varchar key "unique"
+        text value "encrypted for sensitive keys"
+        varchar description
+        boolean is_sensitive "flag for encryption"
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    %% ============ RELATIONSHIPS ============
+    users }o--|| roles : "belongs to"
+    products }o--|| categories : "belongs to"
+    purchase_orders }o--|| suppliers : "associated with"
+    purchase_orders }o--|| users : "created_by"
+    purchase_order_items }o--|| purchase_orders : "belongs to"
+    purchase_order_items }o--|| products : "references"
+    transactions }o--|| users : "cashier_id"
+    transaction_items }o--|| transactions : "belongs to"
+    transaction_items }o--|| products : "references"
+    payment_records }o--|| transactions : "belongs to"
+    audit_logs }o--|| users : "recorded for"
+    sync_queues }o--|| users : "cashier_id"
+    conflict_logs }o--|| sync_queues : "belongs to"
+    conflict_logs }o--|| users : "resolved_by"
+</div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. KAMUS DATA (DATA DICTIONARY)</h2>
+<br>
+<h3>2.1 Tabel: <code>roles</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK, AUTO_INCREMENT</td><td>—</td><td>Identifier unik role</td></tr>
+<tr><td><code>name</code></td><td>VARCHAR(50)</td><td>NOT NULL, UNIQUE</td><td>—</td><td>Nama role: <code>admin</code>, <code>supervisor</code>, <code>cashier</code>, <code>owner</code></td></tr>
+<tr><td><code>permissions</code></td><td>JSON</td><td>NOT NULL</td><td><code>[]</code></td><td>Array string permission yang dimiliki role</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>Waktu pembuatan</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>Waktu pembaruan terakhir</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.2 Tabel: <code>users</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK, AUTO_INCREMENT</td><td>—</td><td>Identifier unik pengguna</td></tr>
+<tr><td><code>role_id</code></td><td>INT UNSIGNED</td><td>FK → roles.id, NOT NULL</td><td>—</td><td>Role pengguna</td></tr>
+<tr><td><code>full_name</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>—</td><td>🔐 <strong>PII</strong> — Nama lengkap, dienkripsi di SQLite lokal</td></tr>
+<tr><td><code>username</code></td><td>VARCHAR(50)</td><td>NOT NULL, UNIQUE</td><td>—</td><td>🔐 <strong>PII</strong> — Username login, lowercase, alphanumeric</td></tr>
+<tr><td><code>password_hash</code></td><td>VARCHAR(255)</td><td>NOT NULL</td><td>—</td><td>Hash bcrypt (cost≥12) atau Argon2id</td></tr>
+<tr><td><code>device_id</code></td><td>VARCHAR(100)</td><td>NULLABLE</td><td>NULL</td><td>Identifier tablet kasir</td></tr>
+<tr><td><code>is_active</code></td><td>BOOLEAN</td><td>NOT NULL</td><td>TRUE</td><td>Status akun aktif</td></tr>
+<tr><td><code>failed_login_attempts</code></td><td>TINYINT UNSIGNED</td><td>NOT NULL</td><td>0</td><td>Counter gagal login, reset saat berhasil</td></tr>
+<tr><td><code>locked_until</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>Waktu kunci berakhir (NULL = tidak terkunci)</td></tr>
+<tr><td><code>last_login_at</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>Timestamp login terakhir berhasil</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>deleted_at</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>Soft delete timestamp</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Index:</strong> <code>idx_users_username</code> ON (<code>username</code>), <code>idx_users_role_id</code> ON (<code>role_id</code>)</p>
+<br>
+<h3>2.3 Tabel: <code>categories</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK, AUTO_INCREMENT</td><td>—</td><td>—</td></tr>
+<tr><td><code>name</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>—</td><td>Nama kategori produk</td></tr>
+<tr><td><code>slug</code></td><td>VARCHAR(120)</td><td>NOT NULL, UNIQUE</td><td>—</td><td>URL-friendly identifier</td></tr>
+<tr><td><code>description</code></td><td>TEXT</td><td>NULLABLE</td><td>NULL</td><td>Deskripsi opsional</td></tr>
+<tr><td><code>is_active</code></td><td>BOOLEAN</td><td>NOT NULL</td><td>TRUE</td><td>—</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.4 Tabel: <code>products</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK, AUTO_INCREMENT</td><td>—</td><td>—</td></tr>
+<tr><td><code>category_id</code></td><td>INT UNSIGNED</td><td>FK → categories.id, NOT NULL</td><td>—</td><td>Kategori produk</td></tr>
+<tr><td><code>name</code></td><td>VARCHAR(200)</td><td>NOT NULL</td><td>—</td><td>Nama produk (terindeks untuk pencarian)</td></tr>
+<tr><td><code>sku</code></td><td>VARCHAR(50)</td><td>NOT NULL, UNIQUE</td><td>—</td><td>🔒 <strong>SENSITIVE</strong> — Stock Keeping Unit / barcode</td></tr>
+<tr><td><code>price_sell</code></td><td>DECIMAL(15,2)</td><td>NOT NULL, CHECK > 0</td><td>—</td><td>🔒 Harga jual, harus > harga beli</td></tr>
+<tr><td><code>price_buy</code></td><td>DECIMAL(15,2)</td><td>NOT NULL, CHECK ≥ 0</td><td>—</td><td>🔒 Harga beli / floor price</td></tr>
+<tr><td><code>stock_current</code></td><td>INT</td><td>NOT NULL</td><td>0</td><td>Stok saat ini</td></tr>
+<tr><td><code>stock_minimum</code></td><td>INT</td><td>NOT NULL</td><td>5</td><td>Threshold notifikasi stok minimum</td></tr>
+<tr><td><code>unit</code></td><td>VARCHAR(20)</td><td>NOT NULL</td><td>'pcs'</td><td>Satuan: pcs, kg, liter, box, dll</td></tr>
+<tr><td><code>is_active</code></td><td>BOOLEAN</td><td>NOT NULL</td><td>TRUE</td><td>—</td></tr>
+<tr><td><code>allow_backorder</code></td><td>BOOLEAN</td><td>NOT NULL</td><td>FALSE</td><td>Izinkan transaksi saat stok = 0</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>deleted_at</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>Soft delete</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Index:</strong> <code>idx_products_sku</code> ON (<code>sku</code>), <code>FULLTEXT idx_products_name</code> ON (<code>name</code>), <code>idx_products_stock</code> ON (<code>stock_current</code>)</p>
+<br>
+<h3>2.5 Tabel: <code>transactions</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK, AUTO_INCREMENT</td><td>—</td><td>—</td></tr>
+<tr><td><code>cashier_id</code></td><td>INT UNSIGNED</td><td>FK → users.id, NOT NULL</td><td>—</td><td>🔐 <strong>PII</strong> — ID kasir yang memproses</td></tr>
+<tr><td><code>transaction_number</code></td><td>VARCHAR(30)</td><td>NOT NULL, UNIQUE</td><td>—</td><td>Format: <code>TRX-YYYYMMDD-XXXX</code></td></tr>
+<tr><td><code>status</code></td><td>ENUM</td><td>NOT NULL</td><td>'completed'</td><td><code>pending</code>, <code>completed</code>, <code>void_pending</code>, <code>voided</code>, <code>return_pending</code>, <code>returned</code></td></tr>
+<tr><td><code>subtotal</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>—</td><td>🔒 Total sebelum diskon dan pajak</td></tr>
+<tr><td><code>discount_amount</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>0.00</td><td>🔒 Total diskon</td></tr>
+<tr><td><code>tax_amount</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>0.00</td><td>🔒 Nilai PPN</td></tr>
+<tr><td><code>grand_total</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>—</td><td>🔒 Total yang harus dibayar</td></tr>
+<tr><td><code>payment_method</code></td><td>ENUM</td><td>NOT NULL</td><td>—</td><td><code>cash</code>, <code>qris</code>, <code>transfer</code>, <code>split</code></td></tr>
+<tr><td><code>cash_received</code></td><td>DECIMAL(15,2)</td><td>NULLABLE</td><td>NULL</td><td>Nominal uang diterima (jika tunai)</td></tr>
+<tr><td><code>change_amount</code></td><td>DECIMAL(15,2)</td><td>NULLABLE</td><td>NULL</td><td>Kembalian</td></tr>
+<tr><td><code>is_offline_transaction</code></td><td>BOOLEAN</td><td>NOT NULL</td><td>FALSE</td><td>Flag transaksi saat offline</td></tr>
+<tr><td><code>sync_status</code></td><td>VARCHAR(20)</td><td>NOT NULL</td><td>'synced'</td><td><code>synced</code>, <code>pending</code>, <code>conflict</code></td></tr>
+<tr><td><code>void_requested_by</code></td><td>INT UNSIGNED</td><td>FK → users.id, NULLABLE</td><td>NULL</td><td>🔐 <strong>PII</strong> — Kasir yang mengajukan void</td></tr>
+<tr><td><code>void_approved_by</code></td><td>INT UNSIGNED</td><td>FK → users.id, NULLABLE</td><td>NULL</td><td>🔐 <strong>PII</strong> — Admin/Supervisor yang approve</td></tr>
+<tr><td><code>void_reason</code></td><td>TEXT</td><td>NULLABLE</td><td>NULL</td><td>Alasan void/retur</td></tr>
+<tr><td><code>voided_at</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>—</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>Waktu transaksi</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Index:</strong> <code>idx_transactions_number</code> ON (<code>transaction_number</code>), <code>idx_transactions_cashier_date</code> ON (<code>cashier_id</code>, <code>created_at</code>), <code>idx_transactions_status</code> ON (<code>status</code>)</p>
+<br>
+<h3>2.6 Tabel: <code>transaction_items</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK</td><td>—</td><td>—</td></tr>
+<tr><td><code>transaction_id</code></td><td>INT UNSIGNED</td><td>FK → transactions.id, NOT NULL</td><td>—</td><td>—</td></tr>
+<tr><td><code>product_id</code></td><td>INT UNSIGNED</td><td>FK → products.id, NOT NULL</td><td>—</td><td>—</td></tr>
+<tr><td><code>product_name</code></td><td>VARCHAR(200)</td><td>NOT NULL</td><td>—</td><td>Snapshot nama produk saat transaksi</td></tr>
+<tr><td><code>price_original</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>—</td><td>🔒 Harga normal saat transaksi</td></tr>
+<tr><td><code>price_override</code></td><td>DECIMAL(15,2)</td><td>NULLABLE</td><td>NULL</td><td>🔒 Harga setelah override (jika ada)</td></tr>
+<tr><td><code>discount_percent</code></td><td>TINYINT</td><td>NOT NULL, CHECK 0-30</td><td>0</td><td>Persen diskon 0–30%</td></tr>
+<tr><td><code>discount_amount</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>0.00</td><td>🔒 Nilai diskon dalam Rupiah</td></tr>
+<tr><td><code>price_final</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>—</td><td>🔒 Harga akhir per satuan</td></tr>
+<tr><td><code>quantity</code></td><td>INT</td><td>NOT NULL, CHECK > 0</td><td>—</td><td>Jumlah item</td></tr>
+<tr><td><code>subtotal</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>—</td><td>🔒 price_final × quantity</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.7 Tabel: <code>payment_records</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK</td><td>—</td><td>—</td></tr>
+<tr><td><code>transaction_id</code></td><td>INT UNSIGNED</td><td>FK → transactions.id, NOT NULL</td><td>—</td><td>—</td></tr>
+<tr><td><code>method</code></td><td>ENUM</td><td>NOT NULL</td><td>—</td><td><code>cash</code>, <code>qris</code>, <code>transfer</code></td></tr>
+<tr><td><code>amount</code></td><td>DECIMAL(15,2)</td><td>NOT NULL</td><td>—</td><td>🔒 Nominal pembayaran ini</td></tr>
+<tr><td><code>gateway_order_id</code></td><td>VARCHAR(100)</td><td>NULLABLE, UNIQUE</td><td>NULL</td><td>ID order dari Midtrans/Xendit</td></tr>
+<tr><td><code>gateway_transaction_id</code></td><td>VARCHAR(100)</td><td>NULLABLE</td><td>NULL</td><td>ID transaksi dari gateway</td></tr>
+<tr><td><code>gateway_status</code></td><td>ENUM</td><td>NOT NULL</td><td>'pending'</td><td><code>pending</code>, <code>success</code>, <code>failed</code>, <code>expired</code></td></tr>
+<tr><td><code>gateway_response</code></td><td>JSON</td><td>NULLABLE</td><td>NULL</td><td>Response lengkap dari gateway</td></tr>
+<tr><td><code>webhook_signature</code></td><td>VARCHAR(255)</td><td>NULLABLE</td><td>NULL</td><td>HMAC signature untuk verifikasi idempotency</td></tr>
+<tr><td><code>paid_at</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>Waktu konfirmasi pembayaran</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Index:</strong> <code>idx_payment_gateway_order</code> UNIQUE ON (<code>gateway_order_id</code>), <code>idx_payment_gateway_txn</code> ON (<code>gateway_transaction_id</code>)</p>
+<br>
+<h3>2.8 Tabel: <code>audit_logs</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>BIGINT UNSIGNED</td><td>PK, AUTO_INCREMENT</td><td>—</td><td>—</td></tr>
+<tr><td><code>user_id</code></td><td>INT UNSIGNED</td><td>FK → users.id, NOT NULL</td><td>—</td><td>🔐 <strong>PII</strong></td></tr>
+<tr><td><code>username</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>—</td><td>🔐 <strong>PII</strong> Snapshot username</td></tr>
+<tr><td><code>role</code></td><td>VARCHAR(20)</td><td>NOT NULL</td><td>—</td><td>Snapshot role saat aksi</td></tr>
+<tr><td><code>action</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>—</td><td>Konstanta SCREAMING_SNAKE_CASE</td></tr>
+<tr><td><code>resource_type</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>—</td><td>Nama tabel/entitas yang diubah</td></tr>
+<tr><td><code>resource_id</code></td><td>VARCHAR(50)</td><td>NULLABLE</td><td>NULL</td><td>ID resource yang diubah</td></tr>
+<tr><td><code>value_before</code></td><td>JSON</td><td>NULLABLE</td><td>NULL</td><td>Nilai sebelum perubahan</td></tr>
+<tr><td><code>value_after</code></td><td>JSON</td><td>NULLABLE</td><td>NULL</td><td>Nilai setelah perubahan</td></tr>
+<tr><td><code>reason</code></td><td>TEXT</td><td>NULLABLE</td><td>NULL</td><td>Alasan aksi (untuk void, diskon, dll)</td></tr>
+<tr><td><code>ip_address</code></td><td>VARCHAR(45)</td><td>NOT NULL</td><td>—</td><td>IPv4 atau IPv6</td></tr>
+<tr><td><code>device_id</code></td><td>VARCHAR(100)</td><td>NULLABLE</td><td>NULL</td><td>Identifier perangkat kasir</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td><strong>IMMUTABLE</strong> — tidak ada updated_at</td></tr>
+</tbody></table></div>
+<br>
+<blockquote>⚠️ <strong>Keamanan Audit Log:</strong> Tabel ini <strong>TIDAK BOLEH</strong> memiliki operasi UPDATE atau DELETE. Gunakan MySQL <code>REVOKE UPDATE, DELETE ON audit_logs FROM app_user;</code>. Purge otomatis dilakukan via scheduled job, bukan manual.</blockquote>
+<br>
+<p><strong>Index:</strong> <code>idx_audit_user_date</code> ON (<code>user_id</code>, <code>created_at</code>), <code>idx_audit_action</code> ON (<code>action</code>), <code>idx_audit_resource</code> ON (<code>resource_type</code>, <code>resource_id</code>)</p>
+<br>
+<h3>2.9 Tabel: <code>sync_queues</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK</td><td>—</td><td>—</td></tr>
+<tr><td><code>device_id</code></td><td>VARCHAR(100)</td><td>NOT NULL</td><td>—</td><td>Identifier tablet kasir asal</td></tr>
+<tr><td><code>cashier_id</code></td><td>INT UNSIGNED</td><td>FK → users.id, NOT NULL</td><td>—</td><td>Kasir pemilik data</td></tr>
+<tr><td><code>resource_type</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>—</td><td><code>transaction</code>, <code>stock_adjustment</code></td></tr>
+<tr><td><code>resource_id</code></td><td>INT UNSIGNED</td><td>NOT NULL</td><td>—</td><td>ID resource di database lokal</td></tr>
+<tr><td><code>payload</code></td><td>JSON</td><td>NOT NULL</td><td>—</td><td>Data lengkap untuk disinkronkan</td></tr>
+<tr><td><code>status</code></td><td>ENUM</td><td>NOT NULL</td><td>'pending'</td><td><code>pending</code>, <code>syncing</code>, <code>synced</code>, <code>failed</code>, <code>conflict</code></td></tr>
+<tr><td><code>retry_count</code></td><td>TINYINT</td><td>NOT NULL</td><td>0</td><td>Jumlah percobaan ulang, max 3</td></tr>
+<tr><td><code>error_message</code></td><td>TEXT</td><td>NULLABLE</td><td>NULL</td><td>Pesan error jika gagal</td></tr>
+<tr><td><code>synced_at</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>Waktu sync berhasil</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.10 Tabel: <code>conflict_logs</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK</td><td>—</td><td>—</td></tr>
+<tr><td><code>sync_queue_id</code></td><td>INT UNSIGNED</td><td>FK → sync_queues.id</td><td>—</td><td>Referensi antrian yang berkonflik</td></tr>
+<tr><td><code>resource_type</code></td><td>VARCHAR(50)</td><td>NOT NULL</td><td>—</td><td>Tipe resource</td></tr>
+<tr><td><code>resource_id</code></td><td>INT UNSIGNED</td><td>NOT NULL</td><td>—</td><td>ID resource yang berkonflik</td></tr>
+<tr><td><code>value_local</code></td><td>JSON</td><td>NOT NULL</td><td>—</td><td>Data dari perangkat offline</td></tr>
+<tr><td><code>value_server</code></td><td>JSON</td><td>NOT NULL</td><td>—</td><td>Data dari server pusat</td></tr>
+<tr><td><code>value_resolved</code></td><td>JSON</td><td>NULLABLE</td><td>NULL</td><td>Hasil akhir setelah merge</td></tr>
+<tr><td><code>resolved_by</code></td><td>INT UNSIGNED</td><td>FK → users.id, NULLABLE</td><td>NULL</td><td>Kasir yang melakukan merge</td></tr>
+<tr><td><code>resolved_by_name</code></td><td>VARCHAR(100)</td><td>NULLABLE</td><td>NULL</td><td>🔐 <strong>PII</strong> Snapshot nama kasir</td></tr>
+<tr><td><code>resolution</code></td><td>ENUM</td><td>NULLABLE</td><td>NULL</td><td><code>local_wins</code>, <code>server_wins</code>, <code>manual_merge</code></td></tr>
+<tr><td><code>resolved_at</code></td><td>TIMESTAMP</td><td>NULLABLE</td><td>NULL</td><td>—</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+</tbody></table></div>
+<br>
+<h3>2.11 Tabel: <code>store_settings</code></h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kolom</th><th>Tipe</th><th>Constraint</th><th>Default</th><th>Keterangan</th></tr></thead>
+<tbody>
+<tr><td><code>id</code></td><td>INT UNSIGNED</td><td>PK</td><td>—</td><td>—</td></tr>
+<tr><td><code>key</code></td><td>VARCHAR(100)</td><td>NOT NULL, UNIQUE</td><td>—</td><td>Kunci konfigurasi, e.g. <code>store.npwp</code></td></tr>
+<tr><td><code>value</code></td><td>TEXT</td><td>NOT NULL</td><td>—</td><td>Nilai konfigurasi (enkripsi jika <code>is_sensitive=true</code>)</td></tr>
+<tr><td><code>description</code></td><td>VARCHAR(255)</td><td>NULLABLE</td><td>NULL</td><td>Deskripsi penggunaan</td></tr>
+<tr><td><code>is_sensitive</code></td><td>BOOLEAN</td><td>NOT NULL</td><td>FALSE</td><td>Jika TRUE, nilai dienkripsi AES-256</td></tr>
+<tr><td><code>created_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+<tr><td><code>updated_at</code></td><td>TIMESTAMP</td><td>NOT NULL</td><td>NOW()</td><td>—</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Data awal yang kritikal:</strong> <code>store.npwp</code> (🔒 SENSITIVE, dienkripsi), <code>store.name</code>, <code>store.address</code>, <code>store.tax_rate</code> (default: 11%), <code>store.max_discount_percent</code> (default: 30)</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. MIGRATION & ROLLBACK STRATEGY</h2>
+<br>
+<h3>3.1 Prinsip Zero-Downtime Migration</h3>
+<br>
+<p>Sistem wajib menerapkan pola <strong>Expand-Contract</strong> agar deployment tidak menyebabkan downtime:</p>
+<br>
+<pre><code>Fase Expand:   Tambah kolom baru (nullable) → Deploy kode baru yang menulis ke kedua kolom
+Fase Migrate:  Jalankan data migration job untuk isi kolom baru dari data lama
+Fase Contract: Deploy kode yang hanya baca kolom baru → Hapus kolom lama (boleh down() di sini)</code></pre>
+<br>
+<blockquote>⚠️ <strong>LARANGAN:</strong> Jangan pernah <code>DROP COLUMN</code> atau <code>RENAME COLUMN</code> dalam satu migration tanpa fase Expand-Contract, kecuali kolom tersebut belum pernah digunakan di produksi.</blockquote>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.2 Urutan Eksekusi Migration</h3>
+<br>
+<pre><code>001_create_roles_table.php
+002_create_users_table.php            ← depends on: roles
+003_create_categories_table.php
+004_create_suppliers_table.php
+005_create_products_table.php         ← depends on: categories
+006_create_purchase_orders_table.php  ← depends on: suppliers, users
+007_create_purchase_order_items.php   ← depends on: purchase_orders, products
+008_create_transactions_table.php     ← depends on: users
+009_create_transaction_items_table.php← depends on: transactions, products
+010_create_payment_records_table.php  ← depends on: transactions
+011_create_audit_logs_table.php       ← depends on: users
+012_create_sync_queues_table.php      ← depends on: users
+013_create_conflict_logs_table.php    ← depends on: sync_queues, users
+014_create_store_settings_table.php
+015_seed_roles_and_admin.php          ← Seeder wajib — bukan migration DDL</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.3 Contoh Migration: <code>002_create_users_table.php</code></h3>
+<br>
+<pre><code><?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+/**
+ * Migration: Create users table
+ *
+ * Security:
+ * - full_name dan username dienkripsi di SQLite lokal via SQLCipher
+ * - password_hash menggunakan Argon2id (cost factor dikonfigurasi di AppServiceProvider)
+ * - Soft delete diaktifkan untuk mencegah data loss
+ *
+ * @return void
+ */
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     * Buat tabel users dengan semua kolom keamanan.
+     */
+    public function up(): void
+    {
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('role_id')
+                  ->constrained('roles')
+                  ->restrictOnDelete(); // Jangan hapus role jika masih ada user
+
+            // PII — dienkripsi di storage lokal (SQLCipher)
+            $table->string('full_name', 100);
+            $table->string('username', 50)->unique();
+
+            // Password — WAJIB Argon2id, minimal cost 12
+            $table->string('password_hash', 255);
+
+            $table->string('device_id', 100)->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->unsignedTinyInteger('failed_login_attempts')->default(0);
+            $table->timestamp('locked_until')->nullable();
+            $table->timestamp('last_login_at')->nullable();
+
+            $table->timestamps();
+            $table->softDeletes(); // deleted_at column
+
+            // Indexes untuk performa
+            $table->index('role_id', 'idx_users_role_id');
+            $table->index('is_active', 'idx_users_active');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     * WAJIB: down() harus ada untuk rollback support.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('users');
+    }
+};</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.4 Contoh Migration: <code>008_create_transactions_table.php</code></h3>
+<br>
+<pre><code><?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+/**
+ * Migration: Create transactions table
+ *
+ * Catatan desain:
+ * - Menyimpan snapshot data (cashier name di audit log, bukan FK saja)
+ * - sync_status diperlukan untuk arsitektur offline-first
+ * - void_requested_by dan void_approved_by untuk two-step approval
+ */
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('transactions', function (Blueprint $table) {
+            $table->id();
+
+            // PII — kasir yang memproses transaksi
+            $table->foreignId('cashier_id')
+                  ->constrained('users')
+                  ->restrictOnDelete();
+
+            $table->string('transaction_number', 30)->unique();
+
+            $table->enum('status', [
+                'pending',
+                'completed',
+                'void_pending',
+                'voided',
+                'return_pending',
+                'returned'
+            ])->default('completed');
+
+            // Finansial — semua DECIMAL(15,2) untuk akurasi Rupiah
+            $table->decimal('subtotal', 15, 2);
+            $table->decimal('discount_amount', 15, 2)->default(0.00);
+            $table->decimal('tax_amount', 15, 2)->default(0.00); // PPN
+            $table->decimal('grand_total', 15, 2);
+
+            $table->enum('payment_method', ['cash', 'qris', 'transfer', 'split']);
+            $table->decimal('cash_received', 15, 2)->nullable();
+            $table->decimal('change_amount', 15, 2)->nullable();
+
+            // Offline-first fields
+            $table->boolean('is_offline_transaction')->default(false);
+            $table->string('sync_status', 20)->default('synced');
+
+            $table->text('notes')->nullable();
+
+            // Two-step void/return approval
+            $table->foreignId('void_requested_by')
+                  ->nullable()
+                  ->constrained('users')
+                  ->nullOnDelete();
+
+            $table->foreignId('void_approved_by')
+                  ->nullable()
+                  ->constrained('users')
+                  ->nullOnDelete();
+
+            $table->text('void_reason')->nullable();
+            $table->timestamp('voided_at')->nullable();
+
+            $table->timestamps();
+
+            // Indexes untuk performa laporan dan filter
+            $table->index(['cashier_id', 'created_at'], 'idx_transactions_cashier_date');
+            $table->index('status', 'idx_transactions_status');
+            $table->index('sync_status', 'idx_transactions_sync');
+            $table->index('created_at', 'idx_transactions_date');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('transactions');
+    }
+};</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.5 Contoh Migration: <code>011_create_audit_logs_table.php</code></h3>
+<br>
+<pre><code><?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
+
+/**
+ * Migration: Create audit_logs table
+ *
+ * Security Design:
+ * - Tidak ada kolom updated_at (immutable by design)
+ * - Setelah migration, revoke privilege UPDATE dan DELETE dari app_user
+ * - Hanya scheduled system job yang boleh purge (via DB transaction terpisah)
+ */
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('audit_logs', function (Blueprint $table) {
+            $table->bigIncrements('id'); // BIGINT untuk volume tinggi
+
+            // PII — snapshot untuk mencegah data loss jika user dihapus
+            $table->unsignedInteger('user_id');
+            $table->string('username', 50);
+            $table->string('role', 20);
+
+            $table->string('action', 100); // SCREAMING_SNAKE_CASE
+            $table->string('resource_type', 50);
+            $table->string('resource_id', 50)->nullable();
+
+            // JSON untuk fleksibilitas perubahan skema di masa depan
+            $table->json('value_before')->nullable();
+            $table->json('value_after')->nullable();
+
+            $table->text('reason')->nullable();
+            $table->string('ip_address', 45);
+            $table->string('device_id', 100)->nullable();
+
+            // IMMUTABLE: hanya created_at, tidak ada updated_at
+            $table->timestamp('created_at')->useCurrent();
+
+            $table->index(['user_id', 'created_at'], 'idx_audit_user_date');
+            $table->index('action', 'idx_audit_action');
+            $table->index(['resource_type', 'resource_id'], 'idx_audit_resource');
+        });
+
+        // Revoke UPDATE dan DELETE dari application database user
+        // (Hanya di MySQL/MariaDB — skip untuk SQLite lokal)
+        if (config('database.default') === 'mysql') {
+            $appUser = config('database.connections.mysql.username');
+            DB::statement("REVOKE UPDATE, DELETE ON audit_logs FROM '{$appUser}'@'%'");
+        }
+    }
+
+    public function down(): void
+    {
+        // Restore privileges sebelum drop (untuk rollback yang bersih)
+        if (config('database.default') === 'mysql') {
+            $appUser = config('database.connections.mysql.username');
+            DB::statement("GRANT UPDATE, DELETE ON audit_logs TO '{$appUser}'@'%'");
+        }
+
+        Schema::dropIfExists('audit_logs');
+    }
+};</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.6 Rollback Playbook</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Skenario</th><th>Langkah Rollback</th><th>Risiko</th></tr></thead>
+<tbody>
+<tr><td><strong>Migration gagal di tengah jalan</strong></td><td>Jalankan <code>php artisan migrate:rollback --step=1</code>; periksa log error; perbaiki migration</td><td>Rendah — atomik per file</td></tr>
+<tr><td><strong>Bug ditemukan setelah deploy ke staging</strong></td><td><code>php artisan migrate:rollback</code> → fix kode → <code>php artisan migrate</code></td><td>Rendah — tidak ada data produksi</td></tr>
+<tr><td><strong>Bug kritis di produksi (data belum banyak)</strong></td><td>1. Matikan maintenance mode sementara; 2. Rollback migration via CLI; 3. Deploy versi sebelumnya</td><td>Sedang — ada risiko kehilangan data baru</td></tr>
+<tr><td><strong>DROP COLUMN yang sudah dipakai</strong></td><td>Tidak bisa di-rollback otomatis; restore dari backup yang dibuat SEBELUM migration</td><td>Tinggi — <strong>WAJIB backup dulu</strong></td></tr>
+<tr><td><strong>Data migration salah (populate data)</strong></td><td>Jalankan rollback migration data, bukan skema; kembalikan dari backup</td><td>Tinggi — perlu verifikasi manual</td></tr>
+</tbody></table></div>
+<br>
+<h3>3.7 Aturan Wajib Migration</h3>
+<br>
+<pre><code>✅ Setiap file migration WAJIB memiliki fungsi down() yang berfungsi penuh
+✅ Test down() di environment lokal sebelum push ke repository
+✅ Backup database produksi WAJIB dilakukan SEBELUM menjalankan migration apapun
+✅ Migration yang melibatkan DROP harus melalui proses Expand-Contract (minimal 2 deployment)
+✅ Setiap migration file hanya berisi SATU perubahan logis
+✅ Gunakan nama file yang deskriptif: {timestamp}_{action}_{table}_table.php
+✅ Jalankan migration di jam non-peak (22.00–06.00 WIB)</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. STRATEGI INDEKS & PERFORMA QUERY</h2>
+<br>
+<h3>4.1 Query Kritis yang Dioptimalkan</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Query</th><th>Tabel</th><th>Indeks yang Digunakan</th><th>Estimasi Performa</th></tr></thead>
+<tbody>
+<tr><td>Cari produk by SKU/barcode</td><td>products</td><td><code>idx_products_sku</code></td><td>< 1ms (exact match)</td></tr>
+<tr><td>Cari produk by nama</td><td>products</td><td>FULLTEXT <code>idx_products_name</code></td><td>< 50ms</td></tr>
+<tr><td>Cek stok sebelum transaksi</td><td>products</td><td>PK lookup</td><td>< 1ms</td></tr>
+<tr><td>Laporan penjualan per hari</td><td>transactions</td><td><code>idx_transactions_date</code></td><td>< 100ms (300 trx/hari)</td></tr>
+<tr><td>Riwayat transaksi kasir</td><td>transactions</td><td><code>idx_transactions_cashier_date</code></td><td>< 50ms</td></tr>
+<tr><td>Audit log per pengguna</td><td>audit_logs</td><td><code>idx_audit_user_date</code></td><td>< 100ms (30 hari)</td></tr>
+<tr><td>Sync queue pending</td><td>sync_queues</td><td><code>status</code> index</td><td>< 10ms</td></tr>
+</tbody></table></div>
+<br>
+<h3>4.2 Pertimbangan Pagination</h3>
+<br>
+<p>Semua query list WAJIB menggunakan <strong>cursor-based pagination</strong> (bukan offset) untuk tabel besar:</p>
+<ul>
+<li><code>audit_logs</code>: cursor by <code>id</code> (bukan <code>OFFSET</code>)</li>
+<li><code>transactions</code>: cursor by <code>created_at, id</code></li>
+<li>Maksimum 50 record per halaman</li>
+</ul>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini adalah bagian dari Fase 3B — Perancangan Database MikoMart POS.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-DB-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-DB-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

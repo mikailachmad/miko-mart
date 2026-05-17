@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SLA / SLO BASELINE — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-SLA-2026-001</div>
+  <h1>SLA / SLO BASELINE</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>SERVICE LEVEL AGREEMENT / SERVICE LEVEL OBJECTIVES BASELINE</h1>
+<h2>MikoMart Point of Sale (POS) System</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-SLA-2026-001</td></tr>
+<tr><td><strong>Versi</strong></td><td>1.0</td></tr>
+<tr><td><strong>Tanggal Efektif</strong></td><td>16 April 2026</td></tr>
+<tr><td><strong>Periode Review</strong></td><td>Setiap 3 bulan sekali</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. TUJUAN DOKUMEN</h2>
+<br>
+<p>Dokumen ini menetapkan <strong>Service Level Objectives (SLO)</strong> dan <strong>Service Level Agreements (SLA)</strong> sebagai baseline terukur untuk sistem MikoMart POS. Dokumen ini menjadi acuan antara tim teknis dan stakeholder bisnis dalam mengevaluasi kualitas layanan sistem secara objektif.</p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. DEFINISI LAYANAN</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Komponen</th><th>Deskripsi</th></tr></thead>
+<tbody>
+<tr><td><strong>Layanan Utama</strong></td><td>Pemrosesan transaksi POS (online & offline mode)</td></tr>
+<tr><td><strong>Layanan Pendukung</strong></td><td>Sinkronisasi data, laporan, payment gateway, cetak struk</td></tr>
+<tr><td><strong>Pengguna Layanan</strong></td><td>4 kasir aktif bersamaan; Admin, Supervisor, Owner</td></tr>
+<tr><td><strong>Jam Operasional</strong></td><td>Disesuaikan jam buka toko (diasumsikan 08.00–22.00 WIB, 7 hari/minggu)</td></tr>
+<tr><td><strong>Lingkungan Target</strong></td><td>Produksi (toko MikoMart)</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. SERVICE LEVEL OBJECTIVES (SLO)</h2>
+<br>
+<h3>3.1 Performa Response Time</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Metrik</th><th>Kondisi</th><th>Target (P95)</th><th>Target (P99)</th><th>Catatan</th></tr></thead>
+<tbody>
+<tr><td><strong>SLO-P-01</strong></td><td>Waktu pemrosesan transaksi end-to-end</td><td>Peak (500 trx/hari)</td><td>≤ 10 detik</td><td>≤ 15 detik</td><td>Dari klik "Bayar" hingga struk tampil</td></tr>
+<tr><td><strong>SLO-P-02</strong></td><td>Waktu cetak struk thermal</td><td>Normal & Peak</td><td>≤ 5 detik</td><td>≤ 8 detik</td><td>Dari konfirmasi transaksi hingga printer mulai mencetak</td></tr>
+<tr><td><strong>SLO-P-03</strong></td><td>Waktu load halaman POS utama</td><td>LAN normal</td><td>≤ 3 detik</td><td>≤ 5 detik</td><td>First meaningful paint</td></tr>
+<tr><td><strong>SLO-P-04</strong></td><td>Waktu autocomplete pencarian produk</td><td>Normal</td><td>≤ 1 detik</td><td>≤ 2 detik</td><td>Setelah input ≥2 karakter</td></tr>
+<tr><td><strong>SLO-P-05</strong></td><td>Waktu generate PDF struk</td><td>Normal</td><td>≤ 3 detik</td><td>≤ 5 detik</td><td>Server-side rendering</td></tr>
+<tr><td><strong>SLO-P-06</strong></td><td>Waktu konfirmasi pembayaran QRIS</td><td>Bergantung gateway</td><td>≤ 30 detik</td><td>≤ 60 detik</td><td>Batas timeout payment gateway</td></tr>
+<tr><td><strong>SLO-P-07</strong></td><td>Waktu load laporan harian</td><td>Normal</td><td>≤ 5 detik</td><td>≤ 10 detik</td><td>Aggregasi data 1 hari</td></tr>
+<tr><td><strong>SLO-P-08</strong></td><td>Waktu auto-sinkronisasi data offline</td><td>Saat koneksi kembali</td><td>≤ 30 detik</td><td>≤ 60 detik</td><td>Untuk backlog ≤ 100 transaksi</td></tr>
+</tbody></table></div>
+<br>
+<blockquote><strong>Definisi P95</strong>: 95% dari seluruh request dalam jendela waktu 1 jam harus memenuhi target ini.</blockquote>
+<blockquote><strong>Definisi P99</strong>: 99% dari seluruh request harus memenuhi target ini.</blockquote>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.2 Availability (Ketersediaan)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Metrik</th><th>Target</th><th>Perhitungan</th></tr></thead>
+<tbody>
+<tr><td><strong>SLO-A-01</strong></td><td>Uptime server/backend</td><td><strong>≥ 99.5%</strong> per bulan</td><td>Maksimum downtime: ~3.65 jam/bulan</td></tr>
+<tr><td><strong>SLO-A-02</strong></td><td>Availability mode offline (transaksi tunai)</td><td><strong>100%</strong></td><td>Tidak bergantung pada konektivitas server</td></tr>
+<tr><td><strong>SLO-A-03</strong></td><td>Scheduled maintenance window</td><td>Max. <strong>2 jam/bulan</strong></td><td>Di luar jam operasional toko (22.00–08.00 WIB)</td></tr>
+</tbody></table></div>
+<br>
+<pre><code>Kalkulasi Uptime Budget per Bulan (30 hari):
+
+  Total waktu: 30 × 24 = 720 jam
+  Uptime 99.5% = 720 × 0.995 = 716.4 jam uptime
+  Downtime budget = 720 - 716.4 = 3.6 jam (~216 menit/bulan)
+  Maintenance terjadwal: 2 jam (dipotong dari budget)
+  Sisa budget insiden tak terduga: ~96 menit/bulan</code></pre>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Kualifikasi Downtime</th><th>Contoh</th><th>Hitungan ke Downtime?</th></tr></thead>
+<tbody>
+<tr><td>Scheduled maintenance (diumumkan 24 jam sebelumnya)</td><td>Upgrade server malam hari</td><td>❌ Tidak dihitung</td></tr>
+<tr><td>Gangguan payment gateway (force majeure)</td><td>Midtrans down nasional</td><td>❌ Tidak dihitung (diluar kontrol)</td></tr>
+<tr><td>Bug aplikasi menyebabkan layanan tidak bisa diakses</td><td>Server error 500 massal</td><td>✅ Dihitung</td></tr>
+<tr><td>Database corruption</td><td>Stok tidak terbaca</td><td>✅ Dihitung</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.3 Error Rate</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Metrik</th><th>Target</th><th>Definisi Error</th></tr></thead>
+<tbody>
+<tr><td><strong>SLO-E-01</strong></td><td>Error rate transaksi POS</td><td><strong>< 0.5%</strong> dari total transaksi</td><td>Transaksi gagal bukan karena kesalahan pengguna</td></tr>
+<tr><td><strong>SLO-E-02</strong></td><td>Error rate API (HTTP 5xx)</td><td><strong>< 0.1%</strong> dari total API call</td><td>Server-side error di luar timeout gateway</td></tr>
+<tr><td><strong>SLO-E-03</strong></td><td>Kegagalan sinkronisasi offline</td><td><strong>< 0.1%</strong> dari total sync attempt</td><td>Data pending yang akhirnya gagal tersinkronisasi</td></tr>
+<tr><td><strong>SLO-E-04</strong></td><td>Kegagalan cetak thermal printer</td><td><strong>< 1%</strong> dari total transaksi</td><td>Kegagalan komunikasi ke printer</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.4 Throughput</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Metrik</th><th>Target</th></tr></thead>
+<tbody>
+<tr><td><strong>SLO-T-01</strong></td><td>Kapasitas transaksi bersamaan</td><td>≥ 4 transaksi simultan (4 kasir aktif)</td></tr>
+<tr><td><strong>SLO-T-02</strong></td><td>Peak throughput harian</td><td>500 transaksi/hari tanpa degradasi performa</td></tr>
+<tr><td><strong>SLO-T-03</strong></td><td>Sesi aktif bersamaan</td><td>≥ 6 sesi (4 kasir + Admin + Supervisor)</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. RECOVERY OBJECTIVES (RTO & RPO)</h2>
+<br>
+<h3>4.1 Definisi</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Term</th><th>Definisi</th></tr></thead>
+<tbody>
+<tr><td><strong>RTO</strong> (Recovery Time Objective)</td><td>Waktu maksimum sistem boleh tidak berfungsi setelah insiden sebelum layanan dipulihkan</td></tr>
+<tr><td><strong>RPO</strong> (Recovery Point Objective)</td><td>Jumlah data maksimum yang boleh hilang setelah insiden (diukur dalam waktu)</td></tr>
+</tbody></table></div>
+<br>
+<h3>4.2 Target RTO & RPO per Skenario</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Skenario</th><th>RTO</th><th>RPO</th><th>Strategi Pemulihan</th></tr></thead>
+<tbody>
+<tr><td><strong>Server backend down</strong> (crash/restart)</td><td>≤ 15 menit</td><td>0 (transaksi offline tetap berjalan)</td><td>Auto-restart; kasir lanjut offline mode</td></tr>
+<tr><td><strong>Database server corrupt</strong></td><td>≤ 2 jam</td><td>≤ 5 menit</td><td>Restore dari backup otomatis terbaru; SQLite WAL mode</td></tr>
+<tr><td><strong>Kegagalan sinkronisasi massal</strong></td><td>≤ 30 menit</td><td>0 (data tersimpan lokal)</td><td>Retry mekanisme otomatis; manual trigger sync</td></tr>
+<tr><td><strong>Kegagalan seluruh server (force restart)</strong></td><td>≤ 30 menit</td><td>≤ 15 menit</td><td>Backup terjadwal setiap 15 menit (incremental)</td></tr>
+<tr><td><strong>Perangkat kasir mati mendadak</strong></td><td>≤ 5 menit</td><td>≤ 1 transaksi terakhir</td><td>SQLite WAL mode; data tersimpan pre-commit</td></tr>
+<tr><td><strong>Kegagalan payment gateway</strong></td><td>N/A (fallback tunai)</td><td>0</td><td>Fallback ke pembayaran tunai; retry setelah gateway pulih</td></tr>
+</tbody></table></div>
+<br>
+<h3>4.3 Strategi Backup</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Jenis Backup</th><th>Frekuensi</th><th>Retensi</th><th>Lokasi</th></tr></thead>
+<tbody>
+<tr><td>Backup database lokal SQLite (tiap kasir)</td><td>Setiap 15 menit (incremental)</td><td>7 hari terakhir</td><td>Lokal perangkat + NAS toko</td></tr>
+<tr><td>Backup database server</td><td>Setiap malam pukul 00.00 WIB</td><td>30 hari terakhir</td><td>Server + external storage</td></tr>
+<tr><td>Backup audit log</td><td>Setiap hari</td><td>30 hari terakhir</td><td>Server (append-only)</td></tr>
+<tr><td>Backup konfigurasi sistem</td><td>Setiap kali ada perubahan</td><td>Unlimited (version-controlled)</td><td>Git repository</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>5. MONITORING & ALERTING</h2>
+<br>
+<h3>5.1 Metrik yang Dimonitor</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Metrik</th><th>Alat (Tools)</th><th>Threshold Alert</th></tr></thead>
+<tbody>
+<tr><td>Response time API</td><td>Laravel Telescope / custom middleware</td><td>> 10 detik → alert</td></tr>
+<tr><td>Error rate HTTP 5xx</td><td>Server log aggregator</td><td>> 0.1% dalam 5 menit → alert</td></tr>
+<tr><td>Status sinkronisasi</td><td>Custom dashboard admin</td><td>Pending sync > 50 item → alert</td></tr>
+<tr><td>Stok minimum</td><td>Inventory service</td><td>Stok ≤ threshold → notifikasi in-app</td></tr>
+<tr><td>Status koneksi server</td><td>Health check endpoint <code>/api/health</code></td><td>Downtime > 2 menit → alert</td></tr>
+<tr><td>Disk usage database</td><td>OS monitoring</td><td>> 80% kapasitas → alert</td></tr>
+</tbody></table></div>
+<br>
+<h3>5.2 Health Check Endpoint</h3>
+<br>
+<pre><code>GET /api/v1/health
+Response 200 OK:
+{
+  "status": "healthy",
+  "timestamp": "2026-04-16T15:00:00Z",
+  "database": "connected",
+  "payment_gateway": "reachable",
+  "version": "1.0.0"
+}</code></pre>
+<br>
+<h3>5.3 Eskalasi Insiden</h3>
+<br>
+<pre><code>flowchart TD
+    A[Insiden Terdeteksi] --> B{Severity?}
+    B -->|P1: Seluruh sistem down| C[Alert langsung ke Lead Dev + Admin]
+    B -->|P2: Fitur utama terdegradasi| D[Alert ke Lead Dev dalam 5 menit]
+    B -->|P3: Fitur minor bermasalah| E[Log ke bug tracker, fix di sprint berikutnya]
+    C --> F[RTO: 15-30 menit]
+    D --> G[RTO: 2 jam]
+    E --> H[RTO: Sprint berikutnya]</code></pre>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Severity</th><th>Definisi</th><th>Contoh</th><th>Target Respons</th><th>Target Resolusi</th></tr></thead>
+<tbody>
+<tr><td><strong>P1 — Kritis</strong></td><td>Seluruh sistem tidak bisa diakses</td><td>Server down, login tidak bisa</td><td>≤ 5 menit</td><td>≤ 30 menit</td></tr>
+<tr><td><strong>P2 — Tinggi</strong></td><td>Fitur utama tidak berfungsi</td><td>Transaksi gagal, payment error</td><td>≤ 15 menit</td><td>≤ 2 jam</td></tr>
+<tr><td><strong>P3 — Sedang</strong></td><td>Fitur pendukung terganggu</td><td>Laporan lambat, PDF gagal</td><td>≤ 1 jam</td><td>≤ 1 hari kerja</td></tr>
+<tr><td><strong>P4 — Rendah</strong></td><td>Kosmetik / UX minor</td><td>Tombol posisi kurang ideal</td><td>≤ 1 hari</td><td>Sprint berikutnya</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>6. PENGUKURAN & PELAPORAN SLO</h2>
+<br>
+<h3>6.1 Frekuensi Pelaporan</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Laporan</th><th>Frekuensi</th><th>Penerima</th><th>Format</th></tr></thead>
+<tbody>
+<tr><td>SLO Dashboard real-time</td><td>Selalu tersedia (live)</td><td>Admin, Lead Dev</td><td>Web dashboard</td></tr>
+<tr><td>Laporan SLO mingguan</td><td>Setiap Senin</td><td>Lead Dev</td><td>Ringkasan teks</td></tr>
+<tr><td>Laporan SLO bulanan</td><td>Awal bulan</td><td>Admin, Owner, Lead Dev</td><td>PDF report</td></tr>
+<tr><td>Post-incident review</td><td>Setelah setiap insiden P1/P2</td><td>Seluruh tim</td><td>Dokumen RCA</td></tr>
+</tbody></table></div>
+<br>
+<h3>6.2 Definisi Pelanggaran SLO</h3>
+<br>
+<p>SLO dianggap <strong>dilanggar</strong> (SLO breach) jika:</p>
+<ul>
+<li>Uptime server < 99.5% dalam bulan kalender berjalan</li>
+<li>Error rate transaksi ≥ 0.5% dalam jendela 24 jam</li>
+<li>P95 response time transaksi > 10 detik selama ≥ 1 jam berturut-turut</li>
+<li>RTO tidak terpenuhi setelah insiden P1/P2</li>
+</ul>
+<br>
+<h3>6.3 Konsekuensi Pelanggaran SLO (Internal)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Tingkat Pelanggaran</th><th>Konsekuensi</th></tr></thead>
+<tbody>
+<tr><td>Pertama</td><td>Post-mortem wajib; action plan dalam 48 jam</td></tr>
+<tr><td>Kedua dalam 1 bulan</td><td>Review arsitektur; alokasi sprint khusus perbaikan</td></tr>
+<tr><td>Ketiga atau lebih</td><td>Eskalasi ke Project Sponsor; possible hotfix release</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>7. RINGKASAN EKSEKUTIF SLO BASELINE</h2>
+<br>
+<pre><code>╔══════════════════════════════════════════════════════════════╗
+║              MIKOMART POS — SLO BASELINE SUMMARY             ║
+╠══════════════════════════════════════════════════════════════╣
+║  PERFORMA                                                    ║
+║  ├─ Transaksi end-to-end (P95)    : ≤ 10 detik              ║
+║  ├─ Cetak struk thermal (P95)     : ≤ 5 detik               ║
+║  └─ Konfirmasi QRIS (P95)         : ≤ 30 detik              ║
+║                                                              ║
+║  AVAILABILITY                                                ║
+║  ├─ Server uptime                 : ≥ 99.5% / bulan         ║
+║  └─ Mode offline (transaksi tunai): 100%                     ║
+║                                                              ║
+║  ERROR RATE                                                  ║
+║  ├─ Error transaksi               : < 0.5%                  ║
+║  └─ Error API (5xx)               : < 0.1%                  ║
+║                                                              ║
+║  KAPASITAS                                                   ║
+║  ├─ Normal                        : 300 trx/hari            ║
+║  └─ Peak                          : 500 trx/hari            ║
+║                                                              ║
+║  RECOVERY                                                    ║
+║  ├─ RTO (server down)             : ≤ 15 menit              ║
+║  ├─ RTO (database corrupt)        : ≤ 2 jam                 ║
+║  └─ RPO (data loss maksimal)      : ≤ 1 transaksi / 15 mnt  ║
+╚══════════════════════════════════════════════════════════════╝</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>8. PERSETUJUAN DOKUMEN</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Peran</th><th>Nama</th><th>Tanda Tangan</th><th>Tanggal</th></tr></thead>
+<tbody>
+<tr><td>Project Sponsor</td><td>__________________</td><td>__________________</td><td>__________</td></tr>
+<tr><td>Lead Developer</td><td>__________________</td><td>__________________</td><td>__________</td></tr>
+<tr><td>QA Lead</td><td>__________________</td><td>__________________</td><td>__________</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini akan direvisi setiap 3 bulan atau setelah insiden major. Target SLO dapat disesuaikan berdasarkan data observasi aktual setelah sistem berjalan selama 1 bulan pertama di produksi.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-SLA-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-SLA-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

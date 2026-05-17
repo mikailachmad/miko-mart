@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SOFTWARE ARCHITECTURE (SAD) — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-SAD-2026-001</div>
+  <h1>SOFTWARE ARCHITECTURE (SAD)</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>SOFTWARE ARCHITECTURE DOCUMENT (SAD)</h1>
+<h2>MikoMart Point of Sale (POS) System — Fase 3C</h2>
+<h3>Berdasarkan Standar IEEE 1016</h3>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-SAD-2026-001</td></tr>
+<tr><td><strong>Standar</strong></td><td>IEEE Std 1016-2009 (Software Design Description)</td></tr>
+<tr><td><strong>Versi</strong></td><td>1.0</td></tr>
+<tr><td><strong>Tanggal</strong></td><td>16 April 2026</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. PENDAHULUAN</h2>
+<br>
+<h3>1.1 Tujuan Dokumen</h3>
+<br>
+<p>Dokumen ini mendeskripsikan arsitektur perangkat lunak MikoMart POS secara menyeluruh, meliputi: decomposisi komponen, pola arsitektur, keputusan desain (ADR), strategi deployment, dan arsitektur keamanan. Dokumen ini ditujukan untuk engineer, QA, dan stakeholder teknis.</p>
+<br>
+<h3>1.2 Ruang Lingkup Arsitektur</h3>
+<br>
+<p>Arsitektur mencakup:</p>
+<ul>
+<li><strong>Frontend</strong>: React 18 SPA (Single Page Application) dengan kemampuan offline-first</li>
+<li><strong>Backend API</strong>: PHP Laravel 11 (REST API)  </li>
+<li><strong>Real-time Service</strong>: Node.js 18 + WebSocket (notifikasi live)</li>
+<li><strong>Database Lokal</strong>: SQLite 3.x dengan mode WAL + enkripsi SQLCipher</li>
+<li><strong>Database Server</strong>: SQLite/MySQL 8.x (server pusat)</li>
+<li><strong>Infrastruktur</strong>: On-premise server di toko + internet untuk integrasi payment</li>
+</ul>
+<br>
+<h3>1.3 Referensi</h3>
+<br>
+<ul>
+<li>IEEE Std 1016-2009: Software Design Description</li>
+<li>SRS MikoMart-SRS-2026-001 v1.1</li>
+<li>OWASP Top 10 2021</li>
+<li>STRIDE Threat Model (Microsoft)</li>
+<li>Laravel 11.x Documentation</li>
+<li>React 18 Offline-First Patterns</li>
+</ul>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. ARCHITECTURE DIAGRAM (SVG BERLAYER INTERAKTIF)</h2>
+<br>
+<blockquote><strong>Panduan Layer & Warna:</strong></blockquote>
+<blockquote>- 🔵 <strong>Client Layer</strong> (<code>#1e40af</code>) — React SPA, Browser, Hardware</blockquote>
+<blockquote>- 🟦 <strong>Gateway Layer</strong> (<code>#0d9488</code>) — Nginx Reverse Proxy, SSL Termination</blockquote>
+<blockquote>- 🟣 <strong>Services Layer</strong> (<code>#7c3aed</code>) — Laravel API, Node.js RT, Background Jobs</blockquote>
+<blockquote>- 🟢 <strong>Data Layer</strong> (<code>#0d9488</code> darker) — SQLite Lokal, MySQL Server, File Storage</blockquote>
+<blockquote>- 🟡 <strong>Observability Layer</strong> (<code>#d97706</code>) — Logging, Monitoring, Alerting</blockquote>
+<br>
+<p><div style="overflow-x:auto; background:#0f172a; padding:24px; border-radius:12px;"></p>
+<br>
+<div class="svg-wrap">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 860" width="1080" height="860" font-family="Inter, Segoe UI, sans-serif">
+  <defs>
+    <style>
+      .layer-bg-client  { fill:#0c1a3b; stroke:#1e40af; stroke-width:1.5; }
+      .layer-bg-gateway { fill:#0c2a28; stroke:#0d9488; stroke-width:1.5; }
+      .layer-bg-service { fill:#1a0b3b; stroke:#7c3aed; stroke-width:1.5; }
+      .layer-bg-data    { fill:#0c2820; stroke:#059669; stroke-width:1.5; }
+      .layer-bg-obs     { fill:#2c1900; stroke:#d97706; stroke-width:1.5; }
+      .comp-box { rx:8; ry:8; }
+      .comp-client  { fill:#1e3a8a; stroke:#60a5fa; stroke-width:1.5; }
+      .comp-gateway { fill:#134e4a; stroke:#2dd4bf; stroke-width:1.5; }
+      .comp-service { fill:#2e1065; stroke:#a78bfa; stroke-width:1.5; }
+      .comp-data    { fill:#064e3b; stroke:#34d399; stroke-width:1.5; }
+      .comp-obs     { fill:#451a03; stroke:#fbbf24; stroke-width:1.5; }
+      .comp-ext     { fill:#1e293b; stroke:#94a3b8; stroke-width:1.5; stroke-dasharray:4,3; }
+      .comp-label   { fill:#f1f5f9; font-size:10px; text-anchor:middle; font-weight:600; }
+      .comp-sublabel{ fill:#94a3b8; font-size:8.5px; text-anchor:middle; }
+      .layer-title  { font-size:11px; font-weight:800; letter-spacing:1; }
+      .arrow-line   { stroke-width:1.5; fill:none; marker-end:url(#arrNorm); }
+      .arrow-ws     { stroke:#f59e0b; stroke-width:1.5; fill:none; stroke-dasharray:5,3; marker-end:url(#arrAmber); }
+      .arrow-sync   { stroke:#34d399; stroke-width:1.5; fill:none; stroke-dasharray:4,4; marker-end:url(#arrGreen); }
+      .logo-main    { fill:#38bdf8; font-size:20px; font-weight:800; }
+      .badge        { rx:4; fill:#334155; }
+      .badge-text   { fill:#94a3b8; font-size:9px; }
+    </style>
+    <marker id="arrNorm" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0,7 2.5,0 5" fill="#64748b"/>
+    </marker>
+    <marker id="arrAmber" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0,7 2.5,0 5" fill="#f59e0b"/>
+    </marker>
+    <marker id="arrGreen" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0,7 2.5,0 5" fill="#34d399"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1080" height="860" fill="#0f172a" rx="12"/>
+
+  <!-- Title -->
+  <text x="540" y="34" class="logo-main" text-anchor="middle">🏗 MikoMart POS — System Architecture</text>
+  <text x="540" y="53" fill="#64748b" font-size="11" text-anchor="middle">IEEE 1016 | Layered Architecture | Versi 1.0 | 16 April 2026</text>
+
+  <!-- ==================== LAYER 1: CLIENT ==================== -->
+  <rect x="20" y="64" width="1040" height="148" rx="10" class="layer-bg-client"/>
+  <text x="36" y="82" class="layer-title" fill="#60a5fa">① CLIENT LAYER</text>
+
+  <!-- React SPA Kasir 1 -->
+  <rect x="36" y="90" width="130" height="108" rx="8" class="comp-client"/>
+  <text x="101" y="114" class="comp-label">🖥 React SPA</text>
+  <text x="101" y="128" class="comp-sublabel">Kasir Terminal 1</text>
+  <rect x="50" y="136" width="72" height="14" rx="3" fill="#1e3a8a" stroke="#3b82f6" stroke-width="0.8"/>
+  <text x="86" y="147" class="comp-sublabel" fill="#93c5fd">Service Worker</text>
+  <rect x="50" y="154" width="72" height="14" rx="3" fill="#1e3a8a" stroke="#3b82f6" stroke-width="0.8"/>
+  <text x="86" y="165" class="comp-sublabel" fill="#93c5fd">SQLite (Lokal)</text>
+  <rect x="50" y="172" width="72" height="16" rx="3" fill="#064e3b" stroke="#34d399" stroke-width="0.8"/>
+  <text x="86" y="183" class="comp-sublabel" fill="#34d399">🔒 SQLCipher</text>
+
+  <!-- React SPA Kasir 2 -->
+  <rect x="180" y="90" width="130" height="108" rx="8" class="comp-client"/>
+  <text x="245" y="114" class="comp-label">🖥 React SPA</text>
+  <text x="245" y="128" class="comp-sublabel">Kasir Terminal 2</text>
+  <rect x="194" y="136" width="72" height="14" rx="3" fill="#1e3a8a" stroke="#3b82f6" stroke-width="0.8"/>
+  <text x="230" y="147" class="comp-sublabel" fill="#93c5fd">Service Worker</text>
+  <rect x="194" y="154" width="72" height="14" rx="3" fill="#1e3a8a" stroke="#3b82f6" stroke-width="0.8"/>
+  <text x="230" y="165" class="comp-sublabel" fill="#93c5fd">SQLite (Lokal)</text>
+  <rect x="194" y="172" width="72" height="16" rx="3" fill="#064e3b" stroke="#34d399" stroke-width="0.8"/>
+  <text x="230" y="183" class="comp-sublabel" fill="#34d399">🔒 SQLCipher</text>
+
+  <!-- React SPA Kasir 3 & 4 (simplified) -->
+  <rect x="324" y="90" width="120" height="108" rx="8" class="comp-client" opacity="0.7"/>
+  <text x="384" y="140" class="comp-label">🖥 Terminal</text>
+  <text x="384" y="154" class="comp-sublabel">Kasir 3 & 4</text>
+  <text x="384" y="170" class="comp-sublabel">(Same as above)</text>
+
+  <!-- Admin / Supervisor Dashboard -->
+  <rect x="458" y="90" width="130" height="108" rx="8" class="comp-client" style="stroke:#f472b6"/>
+  <text x="523" y="110" class="comp-label" fill="#f9a8d4">👤 React SPA</text>
+  <text x="523" y="124" class="comp-sublabel">Admin Dashboard</text>
+  <text x="523" y="140" class="comp-sublabel">Supervisor View</text>
+  <rect x="472" y="150" width="100" height="14" rx="3" fill="#1e3a8a" stroke="#f472b6" stroke-width="0.8"/>
+  <text x="522" y="161" class="comp-sublabel" fill="#f9a8d4">Audit Log Viewer</text>
+  <rect x="472" y="168" width="100" height="14" rx="3" fill="#1e3a8a" stroke="#f472b6" stroke-width="0.8"/>
+  <text x="522" y="179" class="comp-sublabel" fill="#f9a8d4">Void Approval Queue</text>
+
+  <!-- Owner Dashboard -->
+  <rect x="602" y="90" width="120" height="108" rx="8" class="comp-client" style="stroke:#fbbf24"/>
+  <text x="662" y="110" class="comp-label" fill="#fde68a">📊 React SPA</text>
+  <text x="662" y="124" class="comp-sublabel">Owner Dashboard</text>
+  <text x="662" y="140" class="comp-sublabel">Read-Only Reports</text>
+  <rect x="614" y="152" width="96" height="14" rx="3" fill="#1e3a8a" stroke="#fbbf24" stroke-width="0.8"/>
+  <text x="662" y="163" class="comp-sublabel" fill="#fde68a">Tax Export (CSV/XLS)</text>
+
+  <!-- Hardware -->
+  <rect x="736" y="90" width="140" height="108" rx="8" class="comp-ext"/>
+  <text x="806" y="110" class="comp-label" fill="#cbd5e1">🖨 Hardware</text>
+  <text x="806" y="124" class="comp-sublabel">Thermal Printer (ESC/POS)</text>
+  <text x="806" y="138" class="comp-sublabel">Barcode Scanner (HID)</text>
+  <text x="806" y="152" class="comp-sublabel">Cash Drawer (ESC/POS)</text>
+  <rect x="748" y="162" width="116" height="14" rx="3" fill="#0f172a" stroke="#6b7280" stroke-width="0.8"/>
+  <text x="806" y="173" class="comp-sublabel">WebUSB / TCP:9100</text>
+
+  <!-- External: Payment GW -->
+  <rect x="892" y="90" width="152" height="108" rx="8" class="comp-ext"/>
+  <text x="968" y="110" class="comp-label" fill="#cbd5e1">💳 Payment Gateway</text>
+  <text x="968" y="124" class="comp-sublabel">Midtrans / Xendit</text>
+  <text x="968" y="140" class="comp-sublabel">QRIS / VA / Transfer</text>
+  <rect x="904" y="152" width="128" height="14" rx="3" fill="#0f172a" stroke="#6b7280" stroke-width="0.8"/>
+  <text x="968" y="163" class="comp-sublabel">HTTPS REST API</text>
+  <rect x="904" y="170" width="128" height="14" rx="3" fill="#0f172a" stroke="#f59e0b" stroke-width="0.8"/>
+  <text x="968" y="181" class="comp-sublabel" fill="#fde68a">Webhook (HMAC-SHA512)</text>
+
+  <!-- ==================== LAYER 2: GATEWAY ==================== -->
+  <rect x="20" y="224" width="1040" height="80" rx="10" class="layer-bg-gateway"/>
+  <text x="36" y="242" class="layer-title" fill="#2dd4bf">② API GATEWAY LAYER</text>
+
+  <!-- Nginx -->
+  <rect x="36" y="250" width="220" height="44" rx="8" class="comp-gateway"/>
+  <text x="146" y="268" class="comp-label" fill="#99f6e4">🔀 Nginx Reverse Proxy</text>
+  <text x="146" y="282" class="comp-sublabel">SSL/TLS Termination (TLS 1.3) | Rate Limiting | CORS</text>
+
+  <!-- Load Balancer note -->
+  <rect x="270" y="250" width="220" height="44" rx="8" class="comp-gateway"/>
+  <text x="380" y="268" class="comp-label" fill="#99f6e4">🛡 Security Headers</text>
+  <text x="380" y="282" class="comp-sublabel">CSP | X-Frame-Options | HSTS | X-Content-Type</text>
+
+  <!-- Auth Middleware -->
+  <rect x="504" y="250" width="180" height="44" rx="8" class="comp-gateway"/>
+  <text x="594" y="268" class="comp-label" fill="#99f6e4">🔑 Auth Middleware</text>
+  <text x="594" y="282" class="comp-sublabel">JWT Verify | RBAC Check | Rate Limit</text>
+
+  <!-- Webhook endpoint -->
+  <rect x="698" y="250" width="180" height="44" rx="8" class="comp-gateway"/>
+  <text x="788" y="268" class="comp-label" fill="#99f6e4">🪝 Webhook Endpoint</text>
+  <text x="788" y="282" class="comp-sublabel">HMAC Verify | Idempotency | IP Whitelist</text>
+
+  <!-- API Versioning -->
+  <rect x="892" y="250" width="152" height="44" rx="8" class="comp-gateway"/>
+  <text x="968" y="268" class="comp-label" fill="#99f6e4">📌 API Versioning</text>
+  <text x="968" y="282" class="comp-sublabel">/api/v1/* | OpenAPI 3.0</text>
+
+  <!-- ==================== LAYER 3: SERVICES ==================== -->
+  <rect x="20" y="316" width="1040" height="180" rx="10" class="layer-bg-service"/>
+  <text x="36" y="334" class="layer-title" fill="#a78bfa">③ SERVICES LAYER</text>
+
+  <!-- Laravel API -->
+  <rect x="36" y="342" width="180" height="140" rx="8" class="comp-service"/>
+  <text x="126" y="362" class="comp-label" fill="#c4b5fd">⚙ Laravel 11 API</text>
+  <text x="126" y="376" class="comp-sublabel">PHP 8.2</text>
+  <text x="126" y="392" class="comp-sublabel">AuthController</text>
+  <text x="126" y="406" class="comp-sublabel">ProductController</text>
+  <text x="126" y="420" class="comp-sublabel">TransactionController</text>
+  <text x="126" y="434" class="comp-sublabel">ReportController</text>
+  <text x="126" y="448" class="comp-sublabel">SyncController</text>
+  <text x="126" y="462" class="comp-sublabel">AuditLogObserver</text>
+
+  <!-- Node.js RT -->
+  <rect x="230" y="342" width="160" height="140" rx="8" class="comp-service"/>
+  <text x="310" y="362" class="comp-label" fill="#c4b5fd">⚡ Node.js 18</text>
+  <text x="310" y="376" class="comp-sublabel">WebSocket Server</text>
+  <text x="310" y="392" class="comp-sublabel">Payment Status RT</text>
+  <text x="310" y="406" class="comp-sublabel">Void Notification</text>
+  <text x="310" y="420" class="comp-sublabel">Stock Alert Push</text>
+  <text x="310" y="436" class="comp-sublabel">Sync Status Broadcast</text>
+
+  <!-- Background Jobs -->
+  <rect x="404" y="342" width="160" height="140" rx="8" class="comp-service"/>
+  <text x="484" y="362" class="comp-label" fill="#c4b5fd">⏰ Background Jobs</text>
+  <text x="484" y="376" class="comp-sublabel">Laravel Queue (Redis)</text>
+  <text x="484" y="392" class="comp-sublabel">SyncJob</text>
+  <text x="484" y="406" class="comp-sublabel">AuditLogPurger</text>
+  <text x="484" y="420" class="comp-sublabel">StockMinimumChecker</text>
+  <text x="484" y="436" class="comp-sublabel">PaymentStatusPoller</text>
+  <text x="484" y="452" class="comp-sublabel">PDFReceiptGenerator</text>
+
+  <!-- Domain Services -->
+  <rect x="578" y="342" width="180" height="140" rx="8" class="comp-service"/>
+  <text x="668" y="362" class="comp-label" fill="#c4b5fd">🏢 Domain Services</text>
+  <text x="668" y="378" class="comp-sublabel">TransactionService</text>
+  <text x="668" y="392" class="comp-sublabel">InventoryService</text>
+  <text x="668" y="406" class="comp-sublabel">PaymentGatewayService</text>
+  <text x="668" y="420" class="comp-sublabel">ReceiptService (ESC/POS)</text>
+  <text x="668" y="434" class="comp-sublabel">SyncService</text>
+  <text x="668" y="448" class="comp-sublabel">ConflictResolverService</text>
+  <text x="668" y="462" class="comp-sublabel">AuditLogService</text>
+
+  <!-- Auth & Permission -->
+  <rect x="772" y="342" width="160" height="140" rx="8" class="comp-service"/>
+  <text x="852" y="362" class="comp-label" fill="#c4b5fd">🔐 Auth & Permission</text>
+  <text x="852" y="378" class="comp-sublabel">Sanctum / JWT</text>
+  <text x="852" y="392" class="comp-sublabel">RBAC Middleware</text>
+  <text x="852" y="406" class="comp-sublabel">PermissionGate</text>
+  <text x="852" y="420" class="comp-sublabel">Argon2id Hasher</text>
+  <text x="852" y="436" class="comp-sublabel">AccountLockoutService</text>
+  <text x="852" y="452" class="comp-sublabel">SessionInvalidator</text>
+
+  <!-- Report & Export -->
+  <rect x="946" y="342" width="100" height="140" rx="8" class="comp-service"/>
+  <text x="996" y="362" class="comp-label" fill="#c4b5fd">📊 Reports</text>
+  <text x="996" y="378" class="comp-sublabel">DomPDF</text>
+  <text x="996" y="392" class="comp-sublabel">CSV/Excel</text>
+  <text x="996" y="406" class="comp-sublabel">Tax Export</text>
+  <text x="996" y="420" class="comp-sublabel">Dashboard</text>
+  <text x="996" y="436" class="comp-sublabel">Aggregator</text>
+
+  <!-- ==================== LAYER 4: DATA ==================== -->
+  <rect x="20" y="508" width="1040" height="100" rx="10" class="layer-bg-data"/>
+  <text x="36" y="526" class="layer-title" fill="#34d399">④ DATA LAYER</text>
+
+  <!-- SQLite Local -->
+  <rect x="36" y="534" width="200" height="60" rx="8" class="comp-data"/>
+  <text x="136" y="556" class="comp-label" fill="#6ee7b7">🗄 SQLite 3.x (Local)</text>
+  <text x="136" y="570" class="comp-sublabel">WAL Mode | SQLCipher Encrypted</text>
+  <text x="136" y="584" class="comp-sublabel">Per-Device | Offline-First</text>
+
+  <!-- MySQL Server -->
+  <rect x="250" y="534" width="200" height="60" rx="8" class="comp-data"/>
+  <text x="350" y="556" class="comp-label" fill="#6ee7b7">🗄 MySQL 8.x (Server)</text>
+  <text x="350" y="570" class="comp-sublabel">Master Database | 30-Day Retention</text>
+  <text x="350" y="584" class="comp-sublabel">InnoDB | Full-text Index</text>
+
+  <!-- File Storage -->
+  <rect x="464" y="534" width="180" height="60" rx="8" class="comp-data"/>
+  <text x="554" y="556" class="comp-label" fill="#6ee7b7">📁 File Storage</text>
+  <text x="554" y="570" class="comp-sublabel">PDF Receipts | Export Files</text>
+  <text x="554" y="584" class="comp-sublabel">Local Disk (outside webroot)</text>
+
+  <!-- Redis Cache -->
+  <rect x="658" y="534" width="160" height="60" rx="8" class="comp-data"/>
+  <text x="738" y="556" class="comp-label" fill="#6ee7b7">⚡ Redis</text>
+  <text x="738" y="570" class="comp-sublabel">Queue Backend | Session Cache</text>
+  <text x="738" y="584" class="comp-sublabel">Rate Limit Counters</text>
+
+  <!-- Backup Storage -->
+  <rect x="832" y="534" width="210" height="60" rx="8" class="comp-data" style="stroke:#059669"/>
+  <text x="937" y="556" class="comp-label" fill="#6ee7b7">💾 Backup Storage</text>
+  <text x="937" y="570" class="comp-sublabel">DB Backup (Daily) | Audit Log Archive</text>
+  <text x="937" y="584" class="comp-sublabel">NAS / External Drive</text>
+
+  <!-- ==================== LAYER 5: OBSERVABILITY ==================== -->
+  <rect x="20" y="620" width="1040" height="80" rx="10" class="layer-bg-obs"/>
+  <text x="36" y="638" class="layer-title" fill="#fbbf24">⑤ OBSERVABILITY LAYER</text>
+
+  <!-- Structured Logging -->
+  <rect x="36" y="646" width="180" height="44" rx="8" class="comp-obs"/>
+  <text x="126" y="664" class="comp-label" fill="#fde68a">📋 Structured Logging</text>
+  <text x="126" y="678" class="comp-sublabel">JSON Format | UTC Timestamp | Monolog</text>
+
+  <!-- Health Check -->
+  <rect x="230" y="646" width="160" height="44" rx="8" class="comp-obs"/>
+  <text x="310" y="664" class="comp-label" fill="#fde68a">❤ Health Check</text>
+  <text x="310" y="678" class="comp-sublabel">/api/health | DB | Gateway | Queue</text>
+
+  <!-- Performance Monitor -->
+  <rect x="404" y="646" width="180" height="44" rx="8" class="comp-obs"/>
+  <text x="494" y="664" class="comp-label" fill="#fde68a">⏱ Performance Monitor</text>
+  <text x="494" y="678" class="comp-sublabel">Laravel Telescope | Query Tracker</text>
+
+  <!-- Error Tracking -->
+  <rect x="598" y="646" width="160" height="44" rx="8" class="comp-obs"/>
+  <text x="678" y="664" class="comp-label" fill="#fde68a">🚨 Error Tracking</text>
+  <text x="678" y="678" class="comp-sublabel">Sentry / Custom ErrorHandler</text>
+
+  <!-- Alert System -->
+  <rect x="772" y="646" width="160" height="44" rx="8" class="comp-obs"/>
+  <text x="852" y="664" class="comp-label" fill="#fde68a">🔔 Alert System</text>
+  <text x="852" y="678" class="comp-sublabel">Slack / Email on P1/P2 events</text>
+
+  <!-- Audit Trail -->
+  <rect x="946" y="646" width="100" height="44" rx="8" class="comp-obs"/>
+  <text x="996" y="664" class="comp-label" fill="#fde68a">📜 Audit Trail</text>
+  <text x="996" y="678" class="comp-sublabel">Immutable Log</text>
+
+  <!-- ==================== ARROWS ==================== -->
+  <!-- Client → Gateway -->
+  <line x1="540" y1="212" x2="540" y2="224" stroke="#60a5fa" stroke-width="2" marker-end="url(#arrNorm)"/>
+
+  <!-- Gateway → Services -->
+  <line x1="540" y1="304" x2="540" y2="316" stroke="#2dd4bf" stroke-width="2" marker-end="url(#arrNorm)"/>
+
+  <!-- Services → Data -->
+  <line x1="540" y1="496" x2="540" y2="508" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrNorm)"/>
+
+  <!-- Services → Observability -->
+  <line x1="450" y1="496" x2="450" y2="620" stroke="#d97706" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrAmber)"/>
+
+  <!-- WebSocket (amber dashed) -->
+  <line x1="310" y1="212" x2="310" y2="342" class="arrow-ws"/>
+  <text x="320" y="278" fill="#f59e0b" font-size="9">WSS</text>
+
+  <!-- SQLite Sync (green dashed) -->
+  <line x1="136" y1="212" x2="136" y2="534" class="arrow-sync"/>
+  <text x="145" y="440" fill="#34d399" font-size="9">Sync</text>
+
+  <!-- Payment Gateway webhook callback -->
+  <line x1="968" y1="198" x2="788" y2="250" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrAmber)"/>
+  <text x="900" y="230" fill="#f59e0b" font-size="9">webhook</text>
+
+  <!-- Legend -->
+  <rect x="20" y="712" width="1040" height="128" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+  <text x="540" y="730" fill="#94a3b8" font-size="11" text-anchor="middle" font-weight="700">ARCHITECTURE LEGEND</text>
+
+  <rect x="36" y="740" width="14" height="14" fill="#1e3a8a" stroke="#60a5fa" stroke-width="1" rx="2"/>
+  <text x="58" y="752" fill="#60a5fa" font-size="10">Client Layer (React SPA)</text>
+
+  <rect x="200" y="740" width="14" height="14" fill="#134e4a" stroke="#2dd4bf" stroke-width="1" rx="2"/>
+  <text x="222" y="752" fill="#2dd4bf" font-size="10">Gateway Layer (Nginx)</text>
+
+  <rect x="380" y="740" width="14" height="14" fill="#2e1065" stroke="#a78bfa" stroke-width="1" rx="2"/>
+  <text x="402" y="752" fill="#a78bfa" font-size="10">Services Layer (Laravel+Node)</text>
+
+  <rect x="580" y="740" width="14" height="14" fill="#064e3b" stroke="#34d399" stroke-width="1" rx="2"/>
+  <text x="602" y="752" fill="#34d399" font-size="10">Data Layer (SQLite+MySQL)</text>
+
+  <rect x="760" y="740" width="14" height="14" fill="#451a03" stroke="#fbbf24" stroke-width="1" rx="2"/>
+  <text x="782" y="752" fill="#fbbf24" font-size="10">Observability (Logs+Alerts)</text>
+
+  <rect x="940" y="740" width="14" height="14" fill="#1e293b" stroke="#94a3b8" stroke-width="1" rx="2" stroke-dasharray="3,2"/>
+  <text x="962" y="752" fill="#94a3b8" font-size="10">External System</text>
+
+  <line x1="36" y1="775" x2="66" y2="775" stroke="#64748b" stroke-width="2" marker-end="url(#arrNorm)"/>
+  <text x="74" y="779" fill="#94a3b8" font-size="10">HTTPS Request</text>
+
+  <line x1="180" y1="775" x2="210" y2="775" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrAmber)"/>
+  <text x="218" y="779" fill="#f59e0b" font-size="10">WebSocket (WSS)</text>
+
+  <line x1="320" y1="775" x2="350" y2="775" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrGreen)"/>
+  <text x="358" y="779" fill="#34d399" font-size="10">Offline Sync</text>
+
+  <!-- Stack badges -->
+  <rect x="36" y="792" width="80" height="18" rx="4" fill="#1e293b" stroke="#3b82f6" stroke-width="0.8"/>
+  <text x="76" y="805" fill="#93c5fd" font-size="9" text-anchor="middle">React 18 + TS</text>
+
+  <rect x="126" y="792" width="80" height="18" rx="4" fill="#1e293b" stroke="#8b5cf6" stroke-width="0.8"/>
+  <text x="166" y="805" fill="#c4b5fd" font-size="9" text-anchor="middle">Laravel 11</text>
+
+  <rect x="216" y="792" width="80" height="18" rx="4" fill="#1e293b" stroke="#22c55e" stroke-width="0.8"/>
+  <text x="256" y="805" fill="#86efac" font-size="9" text-anchor="middle">Node.js 18 WS</text>
+
+  <rect x="306" y="792" width="80" height="18" rx="4" fill="#1e293b" stroke="#06b6d4" stroke-width="0.8"/>
+  <text x="346" y="805" fill="#67e8f9" font-size="9" text-anchor="middle">SQLite + MySQL</text>
+
+  <rect x="396" y="792" width="80" height="18" rx="4" fill="#1e293b" stroke="#f59e0b" stroke-width="0.8"/>
+  <text x="436" y="805" fill="#fde68a" font-size="9" text-anchor="middle">Redis Queue</text>
+
+  <rect x="486" y="792" width="80" height="18" rx="4" fill="#1e293b" stroke="#e11d48" stroke-width="0.8"/>
+  <text x="526" y="805" fill="#fda4af" font-size="9" text-anchor="middle">OWASP Secured</text>
+
+  <rect x="576" y="792" width="80" height="18" rx="4" fill="#1e293b" stroke="#0d9488" stroke-width="0.8"/>
+  <text x="616" y="805" fill="#5eead4" font-size="9" text-anchor="middle">Offline-First PWA</text>
+</svg>
+</div>
+<br>
+<p></div></p>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. KOMPONEN ARSITEKTUR</h2>
+<br>
+<h3>3.1 Frontend (Client Layer)</h3>
+<br>
+<p><strong>Teknologi:</strong> React 18, TypeScript, Vite, Zustand (state management), Workbox (Service Worker)</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Komponen</th><th>Deskripsi</th></tr></thead>
+<tbody>
+<tr><td><strong>React SPA</strong></td><td>Single-Page Application, dioptimalkan untuk tablet touchscreen. Semua halaman dirender client-side.</td></tr>
+<tr><td><strong>Service Worker (Workbox)</strong></td><td>Mengabstraksi koneksi — mengantri request saat offline dan mengirimnya saat online. Cache strategy: Network-First untuk API, Cache-First untuk static assets.</td></tr>
+<tr><td><strong>SQLite Lokal (SQLCipher)</strong></td><td>Database lokal yang dienkripsi. Menyimpan transaksi, produk, dan konfigurasi untuk operasi offline. Diakses via <code>sql.js</code> atau <code>absurd-sql</code>.</td></tr>
+<tr><td><strong>Zustand Store</strong></td><td>State management global: cart, user session, sync status, notification queue. Persisted ke <code>localStorage</code> (non-sensitive) dan SQLite (sensitive).</td></tr>
+</tbody></table></div>
+<br>
+<h3>3.2 API Gateway Layer</h3>
+<br>
+<p><strong>Teknologi:</strong> Nginx 1.24+, SSL/TLS (Let's Encrypt / self-signed untuk on-premise)</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Komponen</th><th>Deskripsi</th></tr></thead>
+<tbody>
+<tr><td><strong>Nginx Reverse Proxy</strong></td><td>Meneruskan semua request ke Laravel atau Node.js berdasarkan path (<code>/api/<em></code> → Laravel, <code>/ws/</em></code> → Node.js). Terminasi TLS dilakukan di sini.</td></tr>
+<tr><td><strong>Rate Limiter</strong></td><td>Nginx <code>limit_req_zone</code> — max 100 req/menit per IP untuk endpoint publik; 300 req/menit untuk klien terautentikasi.</td></tr>
+<tr><td><strong>Security Headers</strong></td><td><code>Content-Security-Policy</code>, <code>Strict-Transport-Security</code>, <code>X-Frame-Options: DENY</code>, <code>X-Content-Type-Options: nosniff</code>.</td></tr>
+<tr><td><strong>Webhook Endpoint</strong></td><td>Endpoint khusus <code>/api/v1/webhooks/payment</code> — hanya menerima POST dari IP whitelist payment gateway.</td></tr>
+</tbody></table></div>
+<br>
+<h3>3.3 Services Layer</h3>
+<br>
+<p><strong>Teknologi:</strong> PHP 8.2 (Laravel 11), Node.js 18 (ws library), Laravel Queues (Redis)</p>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Komponen</th><th>Deskripsi</th></tr></thead>
+<tbody>
+<tr><td><strong>Laravel API</strong></td><td>Controller-Service-Repository pattern. Semua query menggunakan Eloquent ORM. Validasi input via FormRequest.</td></tr>
+<tr><td><strong>Node.js WebSocket</strong></td><td>Server-Sent Events / WebSocket untuk notifikasi real-time: status pembayaran QRIS, void approval notification, stok minimum alert.</td></tr>
+<tr><td><strong>Background Jobs</strong></td><td><code>SyncJob</code> memproses antrian sinkronisasi. <code>AuditLogPurger</code> menghapus log > 30 hari (via cron). <code>StockMinimumChecker</code> berjalan setiap 15 menit.</td></tr>
+<tr><td><strong>Domain Services</strong></td><td>Business logic dikemas dalam Service classes yang dapat diuji secara unit.</td></tr>
+</tbody></table></div>
+<br>
+<h3>3.4 Data Layer</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Komponen</th><th>Teknologi</th><th>Deskripsi</th></tr></thead>
+<tbody>
+<tr><td><strong>SQLite Lokal</strong></td><td>SQLite 3.x + SQLCipher</td><td>Database terenkripsi per perangkat kasir. Mode WAL untuk keandalan.</td></tr>
+<tr><td><strong>MySQL Server</strong></td><td>MySQL 8.0+</td><td>Database pusat. Semua data yang telah tersinkronisasi tersimpan di sini.</td></tr>
+<tr><td><strong>Redis</strong></td><td>Redis 7+</td><td>Backend antrian Laravel Queue dan cache session.</td></tr>
+<tr><td><strong>File Storage</strong></td><td>Local disk</td><td>PDF struk dan file ekspor disimpan di luar web root (<code>/storage/app/private/</code>).</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. GIT WORKFLOW</h2>
+<br>
+<h3>4.1 Strategi Branching: Gitflow</h3>
+<br>
+<pre><code>gitGraph
+   commit id: "Initial Setup" tag: "v0.1.0"
+
+   branch develop
+   checkout develop
+   commit id: "Setup Laravel + React"
+   commit id: "Database migrations"
+
+   branch feature/auth-rbac
+   checkout feature/auth-rbac
+   commit id: "FR-01: Login & JWT"
+   commit id: "FR-02: RBAC Middleware"
+   commit id: "SEC-01: Password Hashing"
+
+   checkout develop
+   merge feature/auth-rbac id: "Merge auth-rbac"
+
+   branch feature/inventory
+   checkout feature/inventory
+   commit id: "FR-03: Product CRUD"
+   commit id: "FR-04: Stock Real-time"
+   commit id: "FR-05: Purchase Order"
+
+   checkout develop
+   merge feature/inventory id: "Merge inventory"
+
+   branch feature/pos-transaction
+   checkout feature/pos-transaction
+   commit id: "FR-06: POS Screen"
+   commit id: "FR-07: Void 2-step"
+   commit id: "FR-08: Payment Gateway"
+
+   checkout develop
+   merge feature/pos-transaction id: "Merge pos-transaction"
+
+   branch release/v1.0.0
+   checkout release/v1.0.0
+   commit id: "Version bump 1.0.0"
+   commit id: "Final QA fixes"
+
+   checkout main
+   merge release/v1.0.0 tag: "v1.0.0"
+
+   checkout develop
+   merge release/v1.0.0
+
+   branch hotfix/payment-webhook
+   checkout hotfix/payment-webhook
+   commit id: "Fix HMAC verify bug"
+
+   checkout main
+   merge hotfix/payment-webhook tag: "v1.0.1"
+
+   checkout develop
+   merge hotfix/payment-webhook</code></pre>
+<br>
+<h3>4.2 Naming Convention Branch</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Tipe</th><th>Format</th><th>Contoh</th></tr></thead>
+<tbody>
+<tr><td>Feature</td><td><code>feature/<FR-ID>-<short-desc></code></td><td><code>feature/FR-06-pos-transaction</code></td></tr>
+<tr><td>Bug fix</td><td><code>fix/<issue-id>-<short-desc></code></td><td><code>fix/123-void-stock-not-restored</code></td></tr>
+<tr><td>Hotfix</td><td><code>hotfix/<issue-id>-<short-desc></code></td><td><code>hotfix/456-payment-hmac-verify</code></td></tr>
+<tr><td>Release</td><td><code>release/v<major>.<minor>.<patch></code></td><td><code>release/v1.0.0</code></td></tr>
+<tr><td>Chore</td><td><code>chore/<desc></code></td><td><code>chore/update-dependencies</code></td></tr>
+</tbody></table></div>
+<br>
+<h3>4.3 Commit Message Convention (Conventional Commits)</h3>
+<br>
+<pre><code><type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]</code></pre>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Type</th><th>Kapan Digunakan</th></tr></thead>
+<tbody>
+<tr><td><code>feat</code></td><td>Fitur baru (FR baru)</td></tr>
+<tr><td><code>fix</code></td><td>Perbaikan bug</td></tr>
+<tr><td><code>sec</code></td><td>Perubahan terkait keamanan</td></tr>
+<tr><td><code>refactor</code></td><td>Refactoring tanpa perubahan perilaku</td></tr>
+<tr><td><code>test</code></td><td>Penambahan/perubahan test</td></tr>
+<tr><td><code>docs</code></td><td>Perubahan dokumentasi</td></tr>
+<tr><td><code>chore</code></td><td>Update dependency, konfigurasi CI/CD</td></tr>
+<tr><td><code>perf</code></td><td>Optimasi performa</td></tr>
+</tbody></table></div>
+<br>
+<p><strong>Contoh:</strong></p>
+<pre><code>feat(transaction): implement split bill payment (FR-06.3)
+
+Support multiple payment methods in a single transaction.
+- Add PaymentRecord model for each payment segment
+- Validate that sum of split payments equals grand_total
+- Update ReceiptService to show split payment breakdown
+
+Closes #42
+Refs: FR-06.3, UC-F02</code></pre>
+<br>
+<h3>4.4 Branch Protection Rules</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Branch</th><th>Rules</th></tr></thead>
+<tbody>
+<tr><td><code>main</code></td><td>Protected: require PR, 1 approval, semua CI harus pass; no direct push</td></tr>
+<tr><td><code>develop</code></td><td>Protected: require PR, 1 approval; CI must pass</td></tr>
+<tr><td><code>release/*</code></td><td>Protected: require PR dari develop; hanya Lead Dev yang bisa merge ke main</td></tr>
+<tr><td><code>hotfix/*</code></td><td>Boleh dibuat dari main; harus merge ke main DAN develop</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>5. ENVIRONMENT STRATEGY</h2>
+<br>
+<h3>5.1 Tiga Environment</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Aspek</th><th>Development</th><th>Staging</th><th>Production</th></tr></thead>
+<tbody>
+<tr><td><strong>Tujuan</strong></td><td>Development harian developer</td><td>UAT, QA testing, demo</td><td>Operasional toko nyata</td></tr>
+<tr><td><strong>Database</strong></td><td>SQLite lokal + MySQL lokal</td><td>MySQL staging (data dummy)</td><td>MySQL produksi (data nyata)</td></tr>
+<tr><td><strong>Debug Mode</strong></td><td>ON</td><td>OFF</td><td>OFF</td></tr>
+<tr><td><strong>Error Display</strong></td><td>Penuh (stack trace)</td><td>Generik</td><td>Generik</td></tr>
+<tr><td><strong>Payment Gateway</strong></td><td>Sandbox (Midtrans/Xendit)</td><td>Sandbox</td><td>Production</td></tr>
+<tr><td><strong>Email/Notif</strong></td><td>Log ke file</td><td>Test inbox</td><td>Real channel</td></tr>
+<tr><td><strong>HTTPS</strong></td><td>Opsional (localhost)</td><td>Wajib (self-signed ok)</td><td>Wajib (valid cert)</td></tr>
+<tr><td><strong>Log Level</strong></td><td>DEBUG</td><td>INFO</td><td>WARNING + ERROR</td></tr>
+<tr><td><strong>Cache</strong></td><td>Disabled</td><td>Enabled</td><td>Enabled + Redis</td></tr>
+<tr><td><strong>Queue</strong></td><td>Sync (langsung)</td><td>Redis</td><td>Redis</td></tr>
+<tr><td><strong>Backup</strong></td><td>Tidak</td><td>Mingguan</td><td>Harian (00.00 WIB)</td></tr>
+</tbody></table></div>
+<br>
+<h3>5.2 Environment Variables (.env)</h3>
+<br>
+<pre><code># =============================================
+# MIKOMART POS — ENVIRONMENT CONFIGURATION
+# JANGAN PERNAH COMMIT FILE INI KE GIT!
+# =============================================
+
+APP_NAME="MikoMart POS"
+APP_ENV=production          # local | staging | production
+APP_KEY=base64:...          # php artisan key:generate
+APP_DEBUG=false             # WAJIB false di production
+APP_URL=https://mikomart.local
+
+# Database Server
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=mikomart_pos
+DB_USERNAME=mikomart_app
+DB_PASSWORD=                # DIISI dari secret manager / manual
+
+# SQLite Encryption Key (untuk SQLCipher di lokal)
+SQLITE_ENCRYPTION_KEY=      # Kunci enkripsi 32-char minimum
+
+# Payment Gateway (Midtrans)
+MIDTRANS_SERVER_KEY=        # RAHASIAKAN
+MIDTRANS_CLIENT_KEY=        # RAHASIAKAN
+MIDTRANS_IS_PRODUCTION=true # false untuk sandbox
+MIDTRANS_WEBHOOK_SECRET=    # Untuk HMAC verification
+
+# JWT
+JWT_SECRET=                 # 64-char random secret
+JWT_EXPIRY_MINUTES=60
+
+# Redis
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=             # DIISI jika Redis memerlukan auth
+REDIS_PORT=6379
+
+# Store Configuration (diisi via admin panel, bukan .env)
+# STORE_NPWP → disimpan di store_settings table (encrypted)</code></pre>
+<br>
+<h3>5.3 Deployment Pipeline</h3>
+<br>
+<pre><code>flowchart LR
+    A[Developer\nPush ke feature/*] --> B{Pull Request\nReview}
+    B -->|Approved| C[Merge ke develop]
+    C --> D[CI: Unit Tests\nPHP Artisan Test]
+    D --> E{Tests Pass?}
+    E -->|✅ Yes| F[Auto Deploy\nto Staging]
+    E -->|❌ No| G[Notify Developer\nFix & Retry]
+    F --> H[QA Testing\non Staging]
+    H --> I{QA Sign-off?}
+    I -->|✅ Yes| J[Create Release Branch\nrelease/vX.Y.Z]
+    I -->|❌ No| K[Create Bug Issue\nFix in develop]
+    J --> L[Final smoke test\non Staging]
+    L --> M[Merge to main\n+ Tag vX.Y.Z]
+    M --> N[Backup Production DB]
+    N --> O[Run Migrations\nphp artisan migrate]
+    O --> P[Deploy to Production\nphp artisan optimize]
+    P --> Q[Health Check\nGET /api/health]
+    Q -->|✅ Healthy| R[🚀 Go Live!]
+    Q -->|❌ Unhealthy| S[Rollback\nRestore Previous Version]</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>6. SECURITY ARCHITECTURE</h2>
+<br>
+<h3>6.1 Threat Model (STRIDE)</h3>
+<br>
+<p><strong>STRIDE</strong> adalah framework ancaman Microsoft (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege).</p>
+<br>
+<h4>6.1.1 SPOOFING (Pemalsuan Identitas)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Skenario Ancaman</th><th>Komponen Target</th><th>Mitigasi</th></tr></thead>
+<tbody>
+<tr><td>T-SP-01</td><td>Penyerang menebak password kasir yang lemah</td><td>Auth endpoint</td><td>Argon2id hashing; account lockout 5x gagal; password minimum 8 karakter</td></tr>
+<tr><td>T-SP-02</td><td>Token JWT dicuri dan digunakan kembali</td><td>Client ↔ API</td><td>Token expiry 60 menit; HTTPS wajib; <code>HttpOnly</code> cookie; refresh token invalidation</td></tr>
+<tr><td>T-SP-03</td><td>Webhook palsu dikirim untuk konfirmasi pembayaran fiktif</td><td>Webhook endpoint</td><td>HMAC-SHA512 signature verification wajib; IP whitelist payment gateway</td></tr>
+</tbody></table></div>
+<br>
+<h4>6.1.2 TAMPERING (Manipulasi Data)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Skenario Ancaman</th><th>Komponen Target</th><th>Mitigasi</th></tr></thead>
+<tbody>
+<tr><td>T-TM-01</td><td>Kasir memanipulasi payload transaksi di client-side</td><td>API endpoint</td><td>Validasi semua input di server-side (FormRequest Laravel); tidak percaya data dari client</td></tr>
+<tr><td>T-TM-02</td><td>Manipulasi diskon melebihi 30% via API langsung</td><td>TransactionController</td><td>Validasi server-side: <code>discount_percent</code> ≤ 30; <code>price_final</code> ≥ <code>price_buy</code>; audit log setiap override</td></tr>
+<tr><td>T-TM-03</td><td>Modifikasi data offline di SQLite sebelum sync</td><td>SyncController</td><td>Verifikasi checksum payload sync; verifikasi user_id konsisten dengan token; conflict detection</td></tr>
+<tr><td>T-TM-04</td><td>SQL Injection melalui input pencarian produk</td><td>ProductController</td><td>Eloquent ORM dengan prepared statements wajib; input sanitization</td></tr>
+</tbody></table></div>
+<br>
+<h4>6.1.3 REPUDIATION (Penyangkalan)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Skenario Ancaman</th><th>Komponen Target</th><th>Mitigasi</th></tr></thead>
+<tbody>
+<tr><td>T-RP-01</td><td>Kasir menyangkal telah memberikan diskon berlebih</td><td>Audit Log</td><td>Setiap diskon/override wajib tercatat di <code>audit_logs</code> dengan user_id, timestamp, nilai sebelum-sesudah</td></tr>
+<tr><td>T-RP-02</td><td>Admin menyangkal telah mengubah harga produk</td><td>Audit Log</td><td>Semua CRUD produk dan perubahan harga dicatat di audit log (<code>value_before</code>, <code>value_after</code>)</td></tr>
+<tr><td>T-RP-03</td><td>Sengketa pembayaran — pelanggan klaim tidak bayar</td><td>payment_records</td><td>Simpan <code>gateway_response</code> JSON lengkap; webhook timestamp; <code>gateway_transaction_id</code></td></tr>
+</tbody></table></div>
+<br>
+<h4>6.1.4 INFORMATION DISCLOSURE (Kebocoran Informasi)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Skenario Ancaman</th><th>Komponen Target</th><th>Mitigasi</th></tr></thead>
+<tbody>
+<tr><td>T-ID-01</td><td>Stack trace Laravel bocor ke pengguna saat error</td><td>API response</td><td><code>APP_DEBUG=false</code> di production; custom error handler mengembalikan response generik</td></tr>
+<tr><td>T-ID-02</td><td>Data PII pengguna (nama, username) bocor via API</td><td>User endpoint</td><td>Response API hanya mengembalikan field yang diperlukan; tidak ada field <code>password_hash</code> di response</td></tr>
+<tr><td>T-ID-03</td><td>NPWP toko muncul di log sistem</td><td>Logger</td><td>SEC-06.2: Log TIDAK boleh memuat data NPWP; filter PII sebelum logging</td></tr>
+<tr><td>T-ID-04</td><td>SQLite lokal dapat dibaca jika tablet dicuri</td><td>Local DB</td><td>SQLCipher enkripsi dengan kunci yang disimpan di secure keystore perangkat</td></tr>
+</tbody></table></div>
+<br>
+<h4>6.1.5 DENIAL OF SERVICE (Penolakan Layanan)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Skenario Ancaman</th><th>Komponen Target</th><th>Mitigasi</th></tr></thead>
+<tbody>
+<tr><td>T-DS-01</td><td>Flood request ke API dari perangkat kasir</td><td>API Gateway</td><td>Rate limiter Nginx: 300 req/menit per IP terotentikasi; 100 req/menit untuk unauthenticated</td></tr>
+<tr><td>T-DS-02</td><td>Antrian sinkronisasi penuh menyebabkan DB overload</td><td>SyncJob</td><td>Batching sync: max 50 records per job; back-pressure mechanism; retry limit 3x</td></tr>
+<tr><td>T-DS-03</td><td>Upload laporan sangat besar memblokir server</td><td>ReportController</td><td>Pagination wajib; ekspor besar diproses as background job dan diunduh setelah selesai</td></tr>
+</tbody></table></div>
+<br>
+<h4>6.1.6 ELEVATION OF PRIVILEGE (Eskalasi Hak Akses)</h4>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>ID</th><th>Skenario Ancaman</th><th>Komponen Target</th><th>Mitigasi</th></tr></thead>
+<tbody>
+<tr><td>T-EP-01</td><td>Kasir mengakses endpoint yang hanya untuk Admin</td><td>RBAC Middleware</td><td><code>PermissionGate</code> diverifikasi di setiap request; RBAC matrix di-enforce di server</td></tr>
+<tr><td>T-EP-02</td><td>Supervisor menyetujui void tanpa kasir mengajukan</td><td>VoidReturnService</td><td>State machine: void hanya bisa disetujui jika status <code>void_pending</code>; kasir wajib mengajukan dulu</td></tr>
+<tr><td>T-EP-03</td><td>Manipulasi role dalam JWT payload</td><td>JWT Middleware</td><td>JWT ditandatangani dengan secret; role diambil dari database berdasarkan <code>user_id</code> di klaim JWT, bukan dari klaim role langsung</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>6.2 Peta Mitigasi OWASP Top 10 2021</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>OWASP ID</th><th>Kategori</th><th>Ancaman Relevan</th><th>Kontrol yang Diimplementasikan</th></tr></thead>
+<tbody>
+<tr><td><strong>A01</strong></td><td>Broken Access Control</td><td>T-EP-01, T-EP-02, T-EP-03</td><td>RBAC middleware di semua endpoint; object-level authorization; deny by default</td></tr>
+<tr><td><strong>A02</strong></td><td>Cryptographic Failures</td><td>T-ID-04, T-SP-01</td><td>Argon2id password hashing; SQLCipher untuk SQLite lokal; TLS 1.3 minimum</td></tr>
+<tr><td><strong>A03</strong></td><td>Injection</td><td>T-TM-04</td><td>Eloquent ORM (prepared statements); FormRequest validation; FULLTEXT search via Laravel</td></tr>
+<tr><td><strong>A04</strong></td><td>Insecure Design</td><td>T-TM-02, T-RP-01</td><td>2-step void approval; diskon validation di domain service; threat model di SA fase ini</td></tr>
+<tr><td><strong>A05</strong></td><td>Security Misconfiguration</td><td>T-ID-01</td><td><code>APP_DEBUG=false</code>; security headers via Nginx; CORS whitelist; no default credentials</td></tr>
+<tr><td><strong>A06</strong></td><td>Vulnerable Components</td><td>—</td><td>Composer dan npm audit di CI pipeline; dependency update policy setiap sprint</td></tr>
+<tr><td><strong>A07</strong></td><td>Auth Failures</td><td>T-SP-01, T-SP-02</td><td>Account lockout; JWT expiry 60 menit; session invalidation; brute-force protection</td></tr>
+<tr><td><strong>A08</strong></td><td>Software & Data Integrity</td><td>T-SP-03</td><td>HMAC-SHA512 webhook verification; idempotency key untuk payment webhook</td></tr>
+<tr><td><strong>A09</strong></td><td>Logging & Monitoring Failures</td><td>T-RP-01, T-RP-02</td><td>Immutable audit_logs; structured JSON logging; security event alerting; Sentry</td></tr>
+<tr><td><strong>A10</strong></td><td>SSRF</td><td>—</td><td>Whitelist URL untuk outbound request ke payment gateway; tidak ada user-controlled URL fetch</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>6.3 Security Control per Layer Arsitektur</h3>
+<br>
+<pre><code>flowchart TB
+    A["🌐 Internet / LAN"] --> B
+
+    subgraph GL ["② Gateway Layer — Security Boundary"]
+        B["Nginx: TLS 1.3\nRate Limit: 300 req/min\nSecurity Headers\nCORS Whitelist"]
+    end
+
+    B --> C
+
+    subgraph SL ["③ Services Layer — Business Logic Security"]
+        C["JWT Verify\nRBAC PermissionGate\nFormRequest Validate\nAudit Log Observer"]
+        C --> D["Domain Services\n- Discount Limit Check\n- Floor Price Check\n- Void State Machine"]
+        D --> E["PaymentGatewayService\n- HMAC Verify\n- Idempotency Check\n- Sandbox/Prod Toggle"]
+    end
+
+    C --> F
+
+    subgraph DL ["④ Data Layer — Data Security"]
+        F["MySQL: App User\nREVOKE DELETE ON audit_logs\nQuery via Eloquent ORM\nNo Raw SQL allowed"]
+        G["SQLite (Local)\nSQLCipher Encrypted\nWAL Mode\nKeystore-managed key"]
+        H["File Storage\nOutside webroot\nAccess via signed URL\nNo direct access"]
+    end
+
+    subgraph OL ["⑤ Observability — Security Monitoring"]
+        I["Security Events:\nFailed Login, Account Lock\nUnauthorized Access\nWebhook Signature Fail"]
+        J["No PII in Logs\nNo Tokens\nNo NPWP\nNo Financial Amounts"]
+    end
+
+    C --> OL
+    F --> OL</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>7. ARCHITECTURE DECISION RECORDS (ADR)</h2>
+<br>
+<h3>ADR-001: Offline-First dengan SQLite + Service Worker</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Aspek</th><th>Keputusan</th></tr></thead>
+<tbody>
+<tr><td><strong>Konteks</strong></td><td>4 kasir aktif di toko; koneksi internet tidak dijamin stabil</td></tr>
+<tr><td><strong>Keputusan</strong></td><td>Implementasi offline-first: React SPA + Service Worker + SQLite lokal</td></tr>
+<tr><td><strong>Alternatif</strong></td><td>Full online (langsung ke server)</td></tr>
+<tr><td><strong>Alasan</strong></td><td>Transaksi tunai harus tetap berjalan saat offline; downtime server tidak boleh mempengaruhi operasi kasir</td></tr>
+<tr><td><strong>Konsekuensi</strong></td><td>Kompleksitas sinkronisasi dan conflict resolution meningkat; SQLCipher diperlukan untuk keamanan data lokal</td></tr>
+</tbody></table></div>
+<br>
+<h3>ADR-002: Laravel (PHP) untuk Backend API</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Aspek</th><th>Keputusan</th></tr></thead>
+<tbody>
+<tr><td><strong>Konteks</strong></td><td>Pilihan stack backend — PHP atau Node.js penuh</td></tr>
+<tr><td><strong>Keputusan</strong></td><td>Laravel 11 (PHP 8.2) untuk REST API utama</td></tr>
+<tr><td><strong>Alternatif</strong></td><td>Express.js atau NestJS (Node.js penuh)</td></tr>
+<tr><td><strong>Alasan</strong></td><td>Laravel memiliki ekosistem lengkap: Eloquent ORM, FormRequest validation, Queue, Middleware, Sanctum auth; developer lebih banyak berbasis PHP di Indonesia</td></tr>
+<tr><td><strong>Konsekuensi</strong></td><td>Node.js hanya digunakan untuk WebSocket real-time (lebih efisien untuk event streaming)</td></tr>
+</tbody></table></div>
+<br>
+<h3>ADR-003: Node.js WebSocket untuk Real-time Notification</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Aspek</th><th>Keputusan</th></tr></thead>
+<tbody>
+<tr><td><strong>Konteks</strong></td><td>Status pembayaran QRIS dan void approval perlu notifikasi real-time</td></tr>
+<tr><td><strong>Keputusan</strong></td><td>Node.js WebSocket server terpisah dari Laravel API</td></tr>
+<tr><td><strong>Alternatif</strong></td><td>Laravel Broadcasting dengan Pusher atau SSE</td></tr>
+<tr><td><strong>Alasan</strong></td><td>WebSocket lebih efisien untuk banyak koneksi simultan; Node.js event-loop lebih optimal untuk I/O intensif</td></tr>
+<tr><td><strong>Konsekuensi</strong></td><td>Diperlukan satu service Node.js tambahan; Nginx harus route <code>/ws/*</code> ke Node.js</td></tr>
+</tbody></table></div>
+<br>
+<h3>ADR-004: Two-Step Void/Return Approval</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Aspek</th><th>Keputusan</th></tr></thead>
+<tbody>
+<tr><td><strong>Konteks</strong></td><td>Risiko penyalahgunaan void oleh kasir</td></tr>
+<tr><td><strong>Keputusan</strong></td><td>Kasir hanya mengajukan; Supervisor/Admin yang menyetujui</td></tr>
+<tr><td><strong>Alternatif</strong></td><td>Kasir mandiri (sesuai jawaban awal)</td></tr>
+<tr><td><strong>Alasan</strong></td><td>Mencegah fraud; memberikan oversight kepada manajemen; setiap langkah tercatat di audit log</td></tr>
+<tr><td><strong>Konsekuensi</strong></td><td>Kasir perlu menunggu approval — diperlukan SLA void approval internal (target: ≤ 5 menit)</td></tr>
+</tbody></table></div>
+<br>
+<h3>ADR-005: Gitflow sebagai Branching Strategy</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Aspek</th><th>Keputusan</th></tr></thead>
+<tbody>
+<tr><td><strong>Konteks</strong></td><td>Tim kecil (≤5 developer); perlu track milestone dan hotfix</td></tr>
+<tr><td><strong>Keputusan</strong></td><td>Gitflow dengan branch: main, develop, feature/<em>, release/</em>, hotfix/*</td></tr>
+<tr><td><strong>Alternatif</strong></td><td>Trunk-based development</td></tr>
+<tr><td><strong>Alasan</strong></td><td>Gitflow lebih sesuai untuk proyek dengan milestone tetap dan siklus rilis terencana (seperti jadwal UAT); lebih mudah di-enforce untuk tim baru</td></tr>
+<tr><td><strong>Konsekuensi</strong></td><td>Lebih banyak branch management overhead vs trunk-based; butuh disiplin untuk tidak delay merge</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>8. QUALITY ATTRIBUTES (ISO/IEC 25010)</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Atribut</th><th>Target</th><th>Mekanisme</th></tr></thead>
+<tbody>
+<tr><td><strong>Keandalan</strong></td><td>Error rate < 0.5%</td><td>SQLite WAL mode; retry mechanism di sync; transaction rollback</td></tr>
+<tr><td><strong>Ketersediaan</strong></td><td>99.5% uptime server; 100% offline mode</td><td>Offline-first; health check endpoint; auto-restart</td></tr>
+<tr><td><strong>Keamanan</strong></td><td>Zero data breach</td><td>OWASP mitigations; STRIDE threat model; RBAC; audit log</td></tr>
+<tr><td><strong>Performa</strong></td><td>Transaksi ≤ 10 detik P95</td><td>Indexed queries; caching; background jobs untuk non-critical</td></tr>
+<tr><td><strong>Keterpeliharaan</strong></td><td>Test coverage ≥ 80%</td><td>Unit test dengan PHPUnit/Pest; integration test; OpenAPI docs</td></tr>
+<tr><td><strong>Portabilitas</strong></td><td>Deploy di on-premise server toko</td><td>Docker-ready; environment config via .env</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini adalah bagian dari Fase 3C — Software Architecture Document MikoMart POS System.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-SAD-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-SAD-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>

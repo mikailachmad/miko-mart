@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>DEPLOYMENT & RUNBOOK — MikoMart POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#0f172a;--surface:#1e293b;--surface2:#273348;--border:#334155;
+  --accent:#38bdf8;--accent2:#818cf8;--green:#34d399;--yellow:#fbbf24;
+  --red:#f87171;--orange:#fb923c;--text:#f1f5f9;--muted:#94a3b8;--code-bg:#0d1117;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);line-height:1.75;font-size:15px;}
+a{color:var(--accent);}
+
+/* ── Hero ── */
+.hero{background:linear-gradient(135deg,#0c1a3b 0%,#1a0b3b 50%,#0c2820 100%);
+  padding:56px 40px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(56,189,248,.1) 0%,transparent 70%);}
+.hero-badge{display:inline-block;background:rgba(56,189,248,.15);border:1px solid rgba(56,189,248,.4);
+  color:var(--accent);padding:6px 18px;border-radius:999px;font-size:11px;font-weight:700;
+  letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px;position:relative;}
+.hero h1{font-size:2.6rem;font-weight:800;background:linear-gradient(135deg,#38bdf8,#818cf8);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:10px;position:relative;}
+.hero h2{font-size:1.2rem;color:var(--muted);font-weight:400;position:relative;}
+.hero-meta{display:flex;justify-content:center;gap:28px;margin-top:28px;flex-wrap:wrap;position:relative;}
+.meta-item{text-align:center;}
+.meta-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.meta-value{font-size:13px;font-weight:600;color:var(--accent);margin-top:4px;}
+
+/* ── Container ── */
+.container{max-width:1100px;margin:0 auto;padding:44px 28px;}
+
+/* ── Headings ── */
+h1,h2,h3,h4,h5{font-weight:700;color:var(--text);margin:28px 0 14px;}
+h1{font-size:2rem;color:var(--accent);}
+h2{font-size:1.5rem;color:var(--accent);border-bottom:1px solid var(--border);padding-bottom:10px;}
+h3{font-size:1.15rem;color:var(--accent2);}
+h4{font-size:1rem;color:var(--yellow);}
+p{color:var(--muted);margin-bottom:14px;}
+
+/* ── Table ── */
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin:16px 0;}
+th{background:var(--surface2);color:var(--muted);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:1px;padding:11px 14px;text-align:left;border-bottom:2px solid var(--border);}
+td{padding:11px 14px;border-bottom:1px solid rgba(51,65,85,.5);vertical-align:top;color:var(--muted);}
+td strong,th strong{color:var(--accent2);}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ── Code / Pre ── */
+pre,code{font-family:'JetBrains Mono','Fira Code',monospace;}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
+  padding:20px;font-size:12px;color:#e2e8f0;overflow-x:auto;margin:16px 0;line-height:1.6;}
+code{background:rgba(56,189,248,.1);color:var(--accent);padding:2px 7px;border-radius:4px;font-size:12px;}
+pre code{background:none;color:inherit;padding:0;}
+
+/* ── Blockquote ── */
+blockquote{border-left:3px solid var(--accent);padding:12px 20px;
+  background:rgba(56,189,248,.06);border-radius:0 8px 8px 0;margin:16px 0;color:var(--muted);}
+
+/* ── Lists ── */
+ul,ol{padding-left:24px;margin:10px 0;}
+li{color:var(--muted);margin-bottom:6px;}
+
+/* ── Section card ── */
+.section{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px;margin-bottom:24px;}
+
+/* ── Badges ── */
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;
+  border-radius:999px;font-size:11px;font-weight:700;}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3);}
+.badge-yellow{background:rgba(251,191,36,.15);color:var(--yellow);border:1px solid rgba(251,191,36,.3);}
+.badge-red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3);}
+.badge-orange{background:rgba(251,146,60,.15);color:var(--orange);border:1px solid rgba(251,146,60,.3);}
+.badge-blue{background:rgba(56,189,248,.15);color:var(--accent);border:1px solid rgba(56,189,248,.3);}
+
+/* ── SVG wrapper ── */
+.svg-wrap{overflow-x:auto;background:#0f172a;padding:20px;border-radius:12px;border:1px solid var(--border);}
+.svg-wrap svg{max-width:100%;height:auto;}
+
+/* ── Footer ── */
+.footer{background:var(--surface);border-top:1px solid var(--border);padding:28px;
+  text-align:center;color:var(--muted);font-size:12.5px;margin-top:40px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">MikoMart-DEPLOY-2026-001</div>
+  <h1>DEPLOYMENT & RUNBOOK</h1>
+  <h2>MikoMart Point of Sale (POS) System</h2>
+  <div class="hero-meta">
+    <div class="meta-item"><div class="meta-label">Versi</div><div class="meta-value">1.0</div></div>
+    <div class="meta-item"><div class="meta-label">Tanggal</div><div class="meta-value">16–17 April 2026</div></div>
+    <div class="meta-item"><div class="meta-label">Status</div><div class="meta-value">Final</div></div>
+    <div class="meta-item"><div class="meta-label">Klasifikasi</div><div class="meta-value">INTERNAL — CONFIDENTIAL</div></div>
+  </div>
+</div>
+
+<div class="container">
+<h1>DEPLOYMENT DOCUMENT & OPERATIONAL RUNBOOK</h1>
+<h2>MikoMart Point of Sale (POS) System — Fase 6B</h2>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Field</th><th>Detail</th></tr></thead>
+<tbody>
+<tr><td><strong>Nama Sistem</strong></td><td>MikoMart Point of Sale (POS) System</td></tr>
+<tr><td><strong>Nomor Dokumen</strong></td><td>MikoMart-DEPLOY-2026-001</td></tr>
+<tr><td><strong>Versi</strong></td><td>1.0</td></tr>
+<tr><td><strong>Target Go-Live</strong></td><td>[Diisi setelah UAT sign-off]</td></tr>
+<tr><td><strong>Deployment Lead</strong></td><td>DevOps Engineer</td></tr>
+<tr><td><strong>Approval Required</strong></td><td>QA Lead + Project Manager</td></tr>
+<tr><td><strong>Klasifikasi</strong></td><td>INTERNAL — CONFIDENTIAL</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>1. PRE-DEPLOYMENT CHECKLIST</h2>
+<br>
+<blockquote>✅ = selesai | ❌ = belum / gagal | N/A = tidak berlaku</blockquote>
+<blockquote><strong>WAJIB semua item ✅ sebelum deployment dimulai.</strong></blockquote>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>1.1 Infrastructure & Environment</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Item</th><th>PIC</th><th>Status</th><th>Catatan</th></tr></thead>
+<tbody>
+<tr><td>INF-01</td><td>Server production siap dan dapat diakses via SSH</td><td>DevOps</td><td>[ ]</td><td>—</td></tr>
+<tr><td>INF-02</td><td>SSL/TLS certificate valid (tidak expired < 30 hari)</td><td>DevOps</td><td>[ ]</td><td><code>openssl s_client -connect api.mikomart.local:443 -servername api.mikomart.local</code></td></tr>
+<tr><td>INF-03</td><td>Nginx/reverse proxy dikonfigurasi dan berjalan</td><td>DevOps</td><td>[ ]</td><td>—</td></tr>
+<tr><td>INF-04</td><td>MySQL 8.x production instance berjalan</td><td>DevOps</td><td>[ ]</td><td>—</td></tr>
+<tr><td>INF-05</td><td>Redis berjalan dan dapat diakses</td><td>DevOps</td><td>[ ]</td><td><code>redis-cli ping</code> → PONG</td></tr>
+<tr><td>INF-06</td><td>Node.js WebSocket server siap</td><td>DevOps</td><td>[ ]</td><td>—</td></tr>
+<tr><td>INF-07</td><td>Queue worker (Horizon/Supervisor) terkonfigurasi</td><td>DevOps</td><td>[ ]</td><td>—</td></tr>
+<tr><td>INF-08</td><td>Storage direktori punya permission yang benar (775)</td><td>DevOps</td><td>[ ]</td><td><code>ls -la storage/ && ls -la bootstrap/cache/</code></td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>1.2 Security Checklist</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Item</th><th>PIC</th><th>Status</th><th>Catatan</th></tr></thead>
+<tbody>
+<tr><td>SEC-01</td><td><code>.env</code> production tidak mengandung <code>APP_DEBUG=true</code></td><td>DevOps</td><td>[ ]</td><td><code>grep APP_DEBUG .env</code> → harus <code>false</code></td></tr>
+<tr><td>SEC-02</td><td><code>APP_KEY</code> production unik dan aman (bukan dev key)</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>SEC-03</td><td><code>JWT_SECRET</code> production ≥ 64 karakter random</td><td>DevOps</td><td>[ ]</td><td>`cat .env \</td><td>grep JWT_SECRET \</td><td>wc -c`</td></tr>
+<tr><td>SEC-04</td><td>Midtrans/Xendit menggunakan production key (bukan sandbox)</td><td>DevOps</td><td>[ ]</td><td><code>grep MIDTRANS_IS_PRODUCTION .env</code> → <code>true</code></td></tr>
+<tr><td>SEC-05</td><td>SQLite <code>SQLITE_ENCRYPTION_KEY</code> berbeda dari dev/staging</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>SEC-06</td><td>OWASP ZAP scan terakhir: 0 High/Critical findings</td><td>QA Lead</td><td>[ ]</td><td>Tanggal scan: __________</td></tr>
+<tr><td>SEC-07</td><td>Firewall: hanya port 80, 443, 22 (IP whitelist) yang terbuka</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>SEC-08</td><td>Akun default database TIDAK digunakan (<code>root</code> disabled)</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>SEC-09</td><td>File <code>.env</code>, <code>.git</code>, <code>storage/</code> tidak dapat diakses dari web</td><td>DevOps</td><td>[ ]</td><td><code>curl -I https://api.mikomart.local/.env</code> → 403</td></tr>
+<tr><td>SEC-10</td><td>HMAC webhook secret dikonfigurasi dan berbeda dari staging</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>1.3 Database</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Item</th><th>PIC</th><th>Status</th><th>Catatan</th></tr></thead>
+<tbody>
+<tr><td>DB-01</td><td><strong>Backup database production diambil dan diverifikasi</strong></td><td>DevOps</td><td>[ ]</td><td>Format: <code>mikomart_prod_backup_YYYYMMDD_HHMMSS.sql.gz</code></td></tr>
+<tr><td>DB-02</td><td>Backup dapat direstorasi (uji di environment clone)</td><td>DevOps</td><td>[ ]</td><td>Wajib diverifikasi sebelum deployment</td></tr>
+<tr><td>DB-03</td><td>Migration siap dijalankan dan sudah diuji di staging</td><td>Lead Dev</td><td>[ ]</td><td><code>php artisan migrate:status</code> di staging = semua Applied</td></tr>
+<tr><td>DB-04</td><td>Setiap migration memiliki fungsi <code>down()</code> yang valid</td><td>Lead Dev</td><td>[ ]</td><td></td></tr>
+<tr><td>DB-05</td><td>Expand-contract pattern diterapkan (tidak ada breaking migration)</td><td>Lead Dev</td><td>[ ]</td><td></td></tr>
+<tr><td>DB-06</td><td>Koneksi database dari Laravel ke MySQL terverifikasi</td><td>DevOps</td><td>[ ]</td><td><code>php artisan tinker --execute="DB::connection()->getPdo();"</code></td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>1.4 Application Build</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Item</th><th>PIC</th><th>Status</th><th>Catatan</th></tr></thead>
+<tbody>
+<tr><td>APP-01</td><td>Branch <code>main</code> sudah di-merge dari semua perubahan yang direncanakan</td><td>Lead Dev</td><td>[ ]</td><td><code>git log --oneline -5</code></td></tr>
+<tr><td>APP-02</td><td>Semua unit test <strong>PASS</strong> (<code>vendor/bin/pest</code> = 100%)</td><td>QA Lead</td><td>[ ]</td><td>Coverage report tersedia</td></tr>
+<tr><td>APP-03</td><td>Test coverage ≥ 80%</td><td>QA Lead</td><td>[ ]</td><td></td></tr>
+<tr><td>APP-04</td><td><code>composer install --no-dev --optimize-autoloader</code> berhasil</td><td>DevOps</td><td>[ ]</td><td>Tidak ada error</td></tr>
+<tr><td>APP-05</td><td><code>npm run build</code> berhasil; assets di <code>/public/build/</code></td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>APP-06</td><td><code>php artisan config:cache</code>, <code>route:cache</code>, <code>view:cache</code> berhasil</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>APP-07</td><td>Health check endpoint GET /api/v1/health → 200 OK di staging</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>APP-08</td><td>UAT sign-off diterima (form ditandatangani)</td><td>QA Lead</td><td>[ ]</td><td>Tanggal: __________</td></tr>
+<tr><td>APP-09</td><td>Changelog di CHANGELOG.md diperbarui</td><td>Lead Dev</td><td>[ ]</td><td></td></tr>
+<tr><td>APP-10</td><td>Git tag versi dibuat (<code>v1.0.0</code>)</td><td>Lead Dev</td><td>[ ]</td><td><code>git tag -a v1.0.0 -m "Go-live release"</code></td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>1.5 Monitoring & Observability</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Item</th><th>PIC</th><th>Status</th><th>Catatan</th></tr></thead>
+<tbody>
+<tr><td>MON-01</td><td>Dashboard monitoring aktif dan menampilkan data</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>MON-02</td><td>Alert CPU > 80% dikonfigurasi</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>MON-03</td><td>Alert Memory > 85% dikonfigurasi</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>MON-04</td><td>Alert Error rate > 1% dikonfigurasi</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>MON-05</td><td>Alert Disk usage > 80% dikonfigurasi</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>MON-06</td><td>Log aggregation berjalan (file audit.log dibaca)</td><td>DevOps</td><td>[ ]</td><td></td></tr>
+<tr><td>MON-07</td><td>On-call rotation terkonfigurasi dan kontak valid</td><td>PM</td><td>[ ]</td><td></td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>1.6 Communication</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Item</th><th>PIC</th><th>Status</th><th>Catatan</th></tr></thead>
+<tbody>
+<tr><td>COM-01</td><td>Stakeholder diberitahu jadwal and maintenance window</td><td>PM</td><td>[ ]</td><td></td></tr>
+<tr><td>COM-02</td><td>Rollback plan dikomunikasikan ke seluruh tim</td><td>PM</td><td>[ ]</td><td></td></tr>
+<tr><td>COM-03</td><td>Tim support disiapkan selama H+3 go-live</td><td>PM</td><td>[ ]</td><td></td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>2. DEPLOYMENT PROCEDURE</h2>
+<br>
+<blockquote><strong>Maintenance Window:</strong> 22.00 – 01.00 WIB (di luar jam operasional)</blockquote>
+<blockquote><strong>Total Estimasi Waktu:</strong> 45–60 menit</blockquote>
+<br>
+<pre><code># ══════════════════════════════════════════
+# DEPLOYMENT SCRIPT — MikoMart POS v1.0.0
+# Jalankan sebagai: www-data atau deploy user
+# ══════════════════════════════════════════
+
+# STEP 1: Catat waktu mulai
+echo "=== DEPLOYMENT DIMULAI: $(date) ==="
+DEPLOY_LOG="/var/log/mikomart/deployments/deploy_$(date +%Y%m%d_%H%M%S).log"
+
+# STEP 2: Aktifkan maintenance mode
+php artisan down --message="MikoMart sedang dalam pemeliharaan. Akan kembali dalam 45 menit." \
+  --retry=300
+echo "[$(date)] Maintenance mode: ON" >> $DEPLOY_LOG
+
+# STEP 3: BACKUP DATABASE (wajib sebelum migration)
+DB_BACKUP_FILE="mikomart_prod_backup_$(date +%Y%m%d_%H%M%S).sql.gz"
+mysqldump -u ${DB_USERNAME} -p${DB_PASSWORD} ${DB_DATABASE} | gzip > /backups/${DB_BACKUP_FILE}
+echo "[$(date)] Database backup: ${DB_BACKUP_FILE}" >> $DEPLOY_LOG
+
+# Verifikasi backup tidak kosong
+if [ ! -s "/backups/${DB_BACKUP_FILE}" ]; then
+    echo "ERROR: Backup kosong! Deployment dibatalkan."
+    php artisan up
+    exit 1
+fi
+
+# STEP 4: Pull kode terbaru
+git fetch origin
+git checkout main
+git pull origin main
+git log --oneline -3 >> $DEPLOY_LOG
+echo "[$(date)] Code pulled: $(git rev-parse --short HEAD)" >> $DEPLOY_LOG
+
+# STEP 5: Install dependencies (production only)
+composer install --no-dev --optimize-autoloader --no-interaction
+echo "[$(date)] Composer install: DONE" >> $DEPLOY_LOG
+
+# STEP 6: Build frontend assets
+npm ci --only=production
+npm run build
+echo "[$(date)] Frontend build: DONE" >> $DEPLOY_LOG
+
+# STEP 7: Jalankan migration database
+# Expand-contract: migration harus backward-compatible
+php artisan migrate --force
+echo "[$(date)] Migration: DONE" >> $DEPLOY_LOG
+
+# STEP 8: Clear dan rebuild cache
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+echo "[$(date)] Cache rebuilt: DONE" >> $DEPLOY_LOG
+
+# STEP 9: Storage link (jika belum)
+php artisan storage:link
+
+# STEP 10: Restart queue worker
+sudo supervisorctl restart mikomart-worker:*
+echo "[$(date)] Queue worker restarted" >> $DEPLOY_LOG
+
+# STEP 11: Nonaktifkan maintenance mode
+php artisan up
+echo "[$(date)] Maintenance mode: OFF" >> $DEPLOY_LOG
+
+# STEP 12: Smoke Test — verifikasi health check
+HEALTH_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://api.mikomart.local/api/v1/health)
+if [ "$HEALTH_STATUS" != "200" ]; then
+    echo "ERROR: Health check gagal (HTTP ${HEALTH_STATUS})! Mulai rollback..."
+    # → Trigger Rollback Tier 1 (lihat Bagian 3)
+    exit 1
+fi
+echo "[$(date)] Health check: OK (HTTP 200)" >> $DEPLOY_LOG
+echo "=== DEPLOYMENT SELESAI: $(date) ===" >> $DEPLOY_LOG
+echo "✅ Deployment berhasil! Versi: $(git describe --tags)"</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>3. ROLLBACK PROCEDURE</h2>
+<br>
+<h3>KAPAN ROLLBACK DILAKUKAN?</h3>
+<br>
+<pre><code>Kondisi WAJIB Rollback (tanpa diskusi):
+✗ Health check /api/v1/health mengembalikan 503 selama > 5 menit
+✗ Error rate transaksi > 5% setelah live
+✗ Data integrity issue (transaksi tidak tersimpan, stok negatif)
+✗ Security breach terdeteksi
+
+Kondisi DISKUSI DULU sebelum Rollback:
+⚠ Performance degradasi (response time P95 > 15 detik)
+⚠ Salah satu komponen health check "warn"
+⚠ Bug High yang belum ada workaround</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.1 Rollback Tier 1 — Kode Saja (< 15 menit)</h3>
+<br>
+<blockquote>Gunakan jika: bug ada di kode; TIDAK ada perubahan schema database</blockquote>
+<br>
+<pre><code># TIER 1 ROLLBACK — Kode saja
+echo "=== ROLLBACK TIER 1 DIMULAI: $(date) ==="
+
+# 1. Aktifkan maintenance mode
+php artisan down
+
+# 2. Rollback ke commit/tag sebelumnya
+git checkout tags/v0.9.x  # Ganti dengan versi sebelumnya
+
+# 3. Reinstall dependencies versi lama
+composer install --no-dev --optimize-autoloader --no-interaction
+
+# 4. Rebuild frontend
+npm ci && npm run build
+
+# 5. Clear cache
+php artisan config:clear && php artisan route:clear
+php artisan config:cache && php artisan route:cache
+
+# 6. Restart services
+sudo supervisorctl restart mikomart-worker:*
+
+# 7. Aktifkan kembali
+php artisan up
+
+# 8. Verifikasi
+curl -s https://api.mikomart.local/api/v1/health | python3 -m json.tool
+echo "=== ROLLBACK TIER 1 SELESAI: $(date) ==="</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.2 Rollback Tier 2 — Kode + Database (< 30 menit)</h3>
+<br>
+<blockquote>Gunakan jika: ada migration yang perlu di-revert (hanya migration yang tidak merusak data)</blockquote>
+<br>
+<pre><code># TIER 2 ROLLBACK — Kode + Migration
+echo "=== ROLLBACK TIER 2 DIMULAI: $(date) ==="
+
+# 1. Aktifkan maintenance mode  
+php artisan down
+
+# 2. ROLLBACK MIGRATION
+# Verifikasi dulu berapa banyak yang perlu di-rollback
+php artisan migrate:status
+
+# Rollback 1 batch terakhir
+php artisan migrate:rollback --step=1
+
+# Verifikasi status setelah rollback
+php artisan migrate:status
+
+# 3. Rollback kode
+git checkout tags/v0.9.x
+composer install --no-dev --optimize-autoloader
+
+# 4. Rebuild cache
+php artisan config:cache && php artisan route:cache
+
+# 5. Aktifkan kembali
+php artisan up
+
+# 6. Health check
+HEALTH=$(curl -s https://api.mikomart.local/api/v1/health | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['status'])")
+echo "Health status: ${HEALTH}"
+echo "=== ROLLBACK TIER 2 SELESAI: $(date) ==="</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>3.3 Rollback Tier 3 — Full Database Restore (< 60 menit)</h3>
+<br>
+<blockquote><strong>TERAKHIR DIGUNAKAN!</strong> Hanya jika data corrupt atau Tier 1/2 gagal.</blockquote>
+<blockquote><strong>PERHATIAN:</strong> Transaksi yang dilakukan SETELAH backup akan HILANG.</blockquote>
+<br>
+<pre><code># TIER 3 ROLLBACK — Full DB Restore dari Backup
+echo "=== ROLLBACK TIER 3 DIMULAI: $(date) ===" 
+echo "⚠️ PERINGATAN: Data setelah backup akan hilang!"
+
+# 1. Konfirmasi dengan PM sebelum lanjut
+read -p "Ketik 'CONFIRM_RESTORE' untuk melanjutkan: " CONFIRM
+if [ "$CONFIRM" != "CONFIRM_RESTORE" ]; then
+    echo "Rollback dibatalkan."
+    exit 0
+fi
+
+# 2. Aktifkan maintenance mode
+php artisan down
+
+# 3. Identifikasi file backup terakhir
+BACKUP_FILE=$(ls -t /backups/mikomart_prod_backup_*.sql.gz | head -1)
+echo "Restore dari: ${BACKUP_FILE}"
+
+# 4. Drop dan recreate database (HATI-HATI!)
+mysql -u ${DB_USERNAME} -p${DB_PASSWORD} -e "DROP DATABASE IF EXISTS ${DB_DATABASE}; CREATE DATABASE ${DB_DATABASE};"
+
+# 5. Restore backup
+gunzip < "${BACKUP_FILE}" | mysql -u ${DB_USERNAME} -p${DB_PASSWORD} ${DB_DATABASE}
+echo "Database restored dari: ${BACKUP_FILE}"
+
+# 6. Rollback kode ke versi sebelumnya
+git checkout tags/v0.9.x
+composer install --no-dev --optimize-autoloader
+php artisan config:cache && php artisan route:cache
+
+# 7. Aktifkan kembali
+php artisan up
+
+# 8. Verifikasi
+curl -s https://api.mikomart.local/api/v1/health
+echo "=== ROLLBACK TIER 3 SELESAI: $(date) ==="
+echo "PENTING: Laporkan ke PM — data dari rentang waktu deployment mungkin hilang."</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>4. RUNBOOK OPERASIONAL</h2>
+<br>
+<h3>4.1 Troubleshooting — HIGH CPU Usage</h3>
+<br>
+<p><strong>Gejala:</strong> CPU > 80% selama > 5 menit</p>
+<br>
+<p><strong>Diagnosa:</strong></p>
+<pre><code># Cek proses yang paling banyak makan CPU
+top -b -n 1 | head -20
+
+# Cek query MySQL yang berjalan lama
+mysql -u${DB_USER} -p${DB_PASS} -e "SHOW PROCESSLIST;" | grep -v Sleep
+
+# Cek queue workers
+sudo supervisorctl status mikomart-worker:*
+
+# Cek log Laravel untuk exception loop
+tail -100 storage/logs/mikomart.log | grep '"level":"ERROR"'</code></pre>
+<br>
+<p><strong>Tindakan:</strong></p>
+<pre><code># 1. Jika ada query runaway
+mysql -e "KILL QUERY <process_id>;"
+
+# 2. Jika ada worker loop
+sudo supervisorctl restart mikomart-worker:*
+
+# 3. Jika tidak ada yang jelas, scale horizontal sementara
+# atau aktifkan rate limiting lebih ketat di Nginx</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>4.2 Troubleshooting — Memory Leak</h3>
+<br>
+<p><strong>Gejala:</strong> Memory usage terus naik, tidak kembali normal setelah request selesai</p>
+<br>
+<p><strong>Diagnosa:</strong></p>
+<pre><code># Pantau memory real-time
+watch -n 5 'free -h && echo "---" && php-fpm8.2-memory: $(cat /proc/$(pgrep php-fpm)/status | grep VmRSS)'
+
+# Cek apakah ada Tinker atau artisan berjalan tanpa henti
+ps aux | grep artisan</code></pre>
+<br>
+<p><strong>Tindakan:</strong></p>
+<pre><code># 1. Restart PHP-FPM
+sudo systemctl restart php8.2-fpm
+
+# 2. Restart queue workers
+sudo supervisorctl restart mikomart-worker:*
+
+# 3. Clear Laravel cache
+php artisan cache:clear
+php artisan config:clear
+
+# 4. Jika berulang: cek OpCache settings
+php -r "echo opcache_get_configuration()['directives']['opcache.memory_consumption'];"</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>4.3 Troubleshooting — Database Connection Pool Exhausted</h3>
+<br>
+<p><strong>Gejala:</strong> Error <code>SQLSTATE[HY000] [1040] Too many connections</code></p>
+<br>
+<p><strong>Diagnosa:</strong></p>
+<pre><code># Cek jumlah koneksi aktif
+mysql -e "SHOW STATUS WHERE Variable_name = 'Threads_connected';"
+mysql -e "SHOW STATUS WHERE Variable_name = 'Max_used_connections';"
+
+# Cek limit konfigurasi
+mysql -e "SHOW VARIABLES LIKE 'max_connections';"</code></pre>
+<br>
+<p><strong>Tindakan:</strong></p>
+<pre><code># 1. Kill koneksi Sleep yang terlalu lama
+mysql -e "SHOW PROCESSLIST;" | awk '{if ($6 > 60) print "KILL "$1";"}' | mysql
+
+# 2. Sementara naikkan limit (jika darurat)
+mysql -e "SET GLOBAL max_connections = 500;"
+
+# 3. Jangka panjang: Konfigurasi connection pooling via PgBouncer/ProxySQL</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>4.4 Troubleshooting — Payment Gateway Down</h3>
+<br>
+<p><strong>Gejala:</strong> Health check mengembalikan <code>payment_gateway: warn</code>; kasir tidak bisa proses QRIS/Transfer</p>
+<br>
+<p><strong>Tindakan:</strong></p>
+<ol>
+<li><strong>Verifikasi status gateway:</strong> Cek https://status.midtrans.com atau https://status.xendit.co</li>
+<li><strong>Mode fallback tunai:</strong> Umumkan ke kasir bahwa pembayaran non-tunai tidak tersedia sementara</li>
+<li><strong>Catat mulai downtime</strong> untuk klaim SLA ke payment gateway</li>
+<li><strong>Pantau health check</strong> setiap 5 menit hingga recovery</li>
+<li><strong>Recovery:</strong> Setelah gateway kembali, verifikasi transaksi yang tertahan diproses ulang</li>
+</ol>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>4.5 Troubleshooting — Sync Conflict Spike</h3>
+<br>
+<p><strong>Gejala:</strong> Banyak transaksi dengan <code>sync_status: conflict</code>; kasir mendapat notifikasi konflik berulang</p>
+<br>
+<p><strong>Diagnosa:</strong></p>
+<pre><code># Cek jumlah konflik aktif
+php artisan tinker --execute="echo App\Models\SyncConflictLog::where('status', 'pending')->count();"
+
+# Cek log sinkronisasi
+grep '"action":"SYNC_CONFLICT"' storage/logs/audit.log | tail -20</code></pre>
+<br>
+<p><strong>Tindakan:</strong></p>
+<ol>
+<li>Identifikasi kasir dengan konflik terbanyak</li>
+<li>Hubungi kasir tersebut; minta resolve konflik via UI</li>
+<li>Jika ada bug di sync service, aktifkan hotfix procedure</li>
+</ol>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>4.6 Troubleshooting — Security Event Terdeteksi</h3>
+<br>
+<p><strong>Gejala:</strong> Log menunjukkan <code>"security_event": true</code> berulang dari IP yang sama</p>
+<br>
+<p><strong>Diagnosa:</strong></p>
+<pre><code># Cek IP mencurigakan
+grep '"security_event":true' storage/logs/mikomart.log | \
+  python3 -c "import sys,json; [print(json.loads(l).get('ip_address')) for l in sys.stdin]" | \
+  sort | uniq -c | sort -rn | head -10</code></pre>
+<br>
+<p><strong>Tindakan:</strong></p>
+<pre><code># 1. Block IP di Nginx (segera/darurat)
+echo "deny <suspicious_ip>;" >> /etc/nginx/conf.d/blocklist.conf
+nginx -s reload
+
+# 2. Periksa apakah ada akun yang dikompromis
+grep '"event_name":"UNAUTHORIZED_ACCESS_ATTEMPT"' storage/logs/mikomart.log | \
+  grep '"user_id"' | head -20
+
+# 3. Jika akun dikompromis: force logout + reset password via admin panel</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>4.7 Troubleshooting — Disk Storage Penuh</h3>
+<br>
+<p><strong>Gejala:</strong> Alert disk usage > 90%; aplikasi tidak bisa tulis log atau file</p>
+<br>
+<p><strong>Diagnosa:</strong></p>
+<pre><code>df -h
+du -sh /var/www/mikomart/storage/* | sort -rh | head -10</code></pre>
+<br>
+<p><strong>Tindakan:</strong></p>
+<pre><code># 1. Hapus log lama (> 30 hari)
+find /var/www/mikomart/storage/logs/ -name "*.log" -mtime +30 -delete
+
+# 2. Compress file PDF struk lama (> 7 hari)
+find /var/www/mikomart/storage/receipts/ -name "*.pdf" -mtime +7 -exec gzip {} \;
+
+# 3. Clear expired cache
+php artisan cache:clear
+
+# 4. Hapus session file lama
+php artisan session:flush
+
+# 5. Jangka panjang: setup log rotation otomatis</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h3>4.8 Troubleshooting — Kasir Tidak Bisa Login</h3>
+<br>
+<p><strong>Gejala:</strong> Kasir melaporkan tidak bisa login; password benar</p>
+<br>
+<p><strong>Diagnosa:</strong></p>
+<pre><code># Cek apakah akun terkunci
+php artisan tinker --execute="
+  \$user = App\Models\User::where('username', 'kasir01')->first();
+  echo 'Status: ' . \$user->status . PHP_EOL;
+  echo 'Failed attempts: ' . \$user->failed_login_attempts . PHP_EOL;
+"</code></pre>
+<br>
+<p><strong>Tindakan:</strong></p>
+<pre><code># 1. Reset lockout via artisan (jika terkunci brute-force)
+php artisan auth:unlock kasir01
+
+# 2. Reset password jika diperlukan
+php artisan user:reset-password kasir01 --notify
+
+# 3. Cek error log terbaru
+grep '"username":"kasir01"' storage/logs/mikomart.log | tail -5
+
+# 4. Verifikasi JWT_SECRET tidak berubah (token invalidasi massal)
+php artisan tinker --execute="echo config('auth.jwt_secret_hash')[0:8];"</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>5. MONITORING METRICS DASHBOARD</h2>
+<br>
+<h3>5.1 Metrik yang Dipantau</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Metrik</th><th>SLO Target</th><th>Warning</th><th>Critical</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td><strong>API Response P95</strong></td><td>≤ 10 detik</td><td>> 8 detik</td><td>> 15 detik</td><td>Cek query slow log</td></tr>
+<tr><td><strong>Error Rate Transaksi</strong></td><td>< 0.5%</td><td>> 0.5%</td><td>> 2%</td><td>Cek 5xx log; rollback kandidat</td></tr>
+<tr><td><strong>CPU Usage</strong></td><td>< 70%</td><td>> 80%</td><td>> 95%</td><td>Scale atau kill runaway process</td></tr>
+<tr><td><strong>Memory Usage</strong></td><td>< 70%</td><td>> 85%</td><td>> 95%</td><td>Restart PHP-FPM; cek memory leak</td></tr>
+<tr><td><strong>Disk Usage</strong></td><td>< 70%</td><td>> 80%</td><td>> 90%</td><td>Cleanup log lama</td></tr>
+<tr><td><strong>Active DB Connections</strong></td><td>< 80% max</td><td>> 70% max</td><td>> 90% max</td><td>Kill sleep connections</td></tr>
+<tr><td><strong>Queue Depth</strong></td><td>< 1000</td><td>> 500</td><td>> 2000</td><td>Scale queue workers</td></tr>
+<tr><td><strong>Pending Sync</strong></td><td>< 50</td><td>> 100</td><td>> 500</td><td>Cek SyncService; koneksi kasir</td></tr>
+<tr><td><strong>Uptime</strong></td><td>≥ 99.5%</td><td>< 99.5%</td><td>< 99%</td><td>Eskalasi ke DevOps</td></tr>
+<tr><td><strong>Health Check Status</strong></td><td>200 OK</td><td>503 degraded</td><td>503 fail</td><td>Immediate investigation</td></tr>
+<tr><td><strong>Audit Log Write Rate</strong></td><td>Normal</td><td>Naik 3×</td><td>Naik 10×</td><td>Investigasi security event</td></tr>
+<tr><td><strong>Payment Gateway Latency</strong></td><td>< 5 detik</td><td>> 5 detik</td><td>Timeout</td><td>Aktifkan mode tunai-only</td></tr>
+</tbody></table></div>
+<br>
+<h3>5.2 Dashboard Query (contoh untuk Grafana/CloudWatch)</h3>
+<br>
+<pre><code># Transaksi per menit (real-time)
+SELECT COUNT(*) as trx_per_minute
+FROM transactions
+WHERE created_at >= NOW() - INTERVAL 1 MINUTE
+  AND status = 'completed';
+
+# Error rate 5 menit terakhir
+SELECT
+  COUNT(*) as total_requests,
+  SUM(CASE WHEN status_code >= 500 THEN 1 ELSE 0 END) as errors,
+  ROUND(SUM(CASE WHEN status_code >= 500 THEN 1 ELSE 0 END) / COUNT(*) * 100, 2) as error_rate_pct
+FROM request_logs
+WHERE created_at >= NOW() - INTERVAL 5 MINUTE;
+
+# Sync yang masih pending per kasir
+SELECT cashier_id, COUNT(*) as pending_count
+FROM transactions
+WHERE sync_status = 'pending'
+GROUP BY cashier_id
+ORDER BY pending_count DESC;</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>6. POST-DEPLOYMENT MONITORING CHECKLIST</h2>
+<br>
+<h3>T+0 (Segera Setelah Deploy Live)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Check</th><th>Metode</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>PD-01</td><td>Health check endpoint</td><td><code>curl https://api.mikomart.local/api/v1/health</code> → HTTP 200</td><td>[ ]</td></tr>
+<tr><td>PD-02</td><td>Login kasir berhasil</td><td>Buka UI; login manual</td><td>[ ]</td></tr>
+<tr><td>PD-03</td><td>Buat 1 transaksi uji (tunai kecil)</td><td>Eksekusi manual di staging clone</td><td>[ ]</td></tr>
+<tr><td>PD-04</td><td>Verifikasi stok berkurang setelah transaksi uji</td><td>Periksa di admin dashboard</td><td>[ ]</td></tr>
+<tr><td>PD-05</td><td>Error rate di log = 0%</td><td>`grep '"level":"ERROR"' storage/logs/mikomart.log \</td><td>wc -l` = 0</td><td>[ ]</td></tr>
+<tr><td>PD-06</td><td>Queue worker aktif</td><td><code>sudo supervisorctl status</code></td><td>[ ]</td></tr>
+<tr><td>PD-07</td><td>Audit log berjalan</td><td>Cek <code>/storage/logs/audit.log</code> ada entry baru</td><td>[ ]</td></tr>
+</tbody></table></div>
+<br>
+<h3>T+1 Jam (1 Jam Setelah Go-Live)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Check</th><th>Target</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>PD-08</td><td>API Response P95</td><td>≤ 10 detik</td><td>[ ]</td></tr>
+<tr><td>PD-09</td><td>Error rate keseluruhan</td><td>< 0.5%</td><td>[ ]</td></tr>
+<tr><td>PD-10</td><td>CPU & Memory stabil</td><td>CPU < 70%; Mem < 70%</td><td>[ ]</td></tr>
+<tr><td>PD-11</td><td>Transaksi real berhasil dicatat</td><td>Periksa database</td><td>[ ]</td></tr>
+<tr><td>PD-12</td><td>Tidak ada laporan kasir tidak bisa login</td><td>Konfirmasi dengan tim kasir</td><td>[ ]</td></tr>
+</tbody></table></div>
+<br>
+<h3>T+24 Jam (Satu Hari Setelah Go-Live)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Check</th><th>Target</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>PD-13</td><td>Total transaksi hari pertama tercatat lengkap</td><td>Cocokkan dengan laporan manual kasir</td><td>[ ]</td></tr>
+<tr><td>PD-14</td><td>Sinkronisasi offline selesai</td><td><code>sync_status != 'pending'</code> untuk semua transaksi kemarin</td><td>[ ]</td></tr>
+<tr><td>PD-15</td><td>Tidak ada bug Critical/High terbaru</td><td>Periksa bug tracker</td><td>[ ]</td></tr>
+<tr><td>PD-16</td><td>Disk usage tidak naik drastis</td><td>< 60%</td><td>[ ]</td></tr>
+<tr><td>PD-17</td><td>Laporan harian Owner dapat dibuka</td><td>Test di UI Owner</td><td>[ ]</td></tr>
+</tbody></table></div>
+<br>
+<h3>T+7 Hari (Satu Minggu Setelah Go-Live)</h3>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>#</th><th>Check</th><th>Target</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>PD-18</td><td>Uptime 7 hari</td><td>≥ 99.5%</td><td>[ ]</td></tr>
+<tr><td>PD-19</td><td>Tidak ada Memory leak</td><td>Memory stabil setiap hari</td><td>[ ]</td></tr>
+<tr><td>PD-20</td><td>SLO compliance</td><td>Semua SLO terpenuhi</td><td>[ ]</td></tr>
+<tr><td>PD-21</td><td>Laporan bulanan Owner tersedia (jika sudah akhir bulan)</td><td>Test akses laporan bulanan</td><td>[ ]</td></tr>
+<tr><td>PD-22</td><td>Tech Debt Sprint 2 dimulai</td><td>TD-001, TD-004, TD-009, TD-011</td><td>[ ]</td></tr>
+</tbody></table></div>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<h2>7. ON-CALL ESCALATION MATRIX</h2>
+<br>
+<div style="overflow-x:auto"><table>
+<thead><tr><th>Severity</th><th>Response Time</th><th>Notify</th><th>Eskalasi Ke</th></tr></thead>
+<tbody>
+<tr><td>P1 — System Down</td><td>< 15 menit</td><td>DevOps on-call</td><td>PM + Tech Lead</td></tr>
+<tr><td>P2 — Performance Degraded</td><td>< 1 jam</td><td>DevOps on-call</td><td>Tech Lead</td></tr>
+<tr><td>P3 — Feature Bug</td><td>< 4 jam</td><td>Lead Developer</td><td>PM</td></tr>
+<tr><td>P4 — Cosmetic</td><td>Next business day</td><td>Developer</td><td>—</td></tr>
+</tbody></table></div>
+<br>
+<pre><code>On-Call Contact (Ganti dengan data aktual):
+DevOps: +62-xxx-xxxx-xxxx (WhatsApp)
+Tech Lead: +62-xxx-xxxx-xxxx
+PM: +62-xxx-xxxx-xxxx</code></pre>
+<br>
+<hr style="border:none;border-top:1px solid #334155;margin:28px 0;">
+<br>
+<p><em>Dokumen ini adalah bagian dari Fase 6B — Deployment & Runbook MikoMart POS System.</em></p>
+<br>
+<p><strong>Nomor Dokumen:</strong> MikoMart-DEPLOY-2026-001 | <strong>Versi:</strong> 1.0 | <strong>Klasifikasi:</strong> INTERNAL — CONFIDENTIAL</p>
+<br>
+
+</div>
+
+<div class="footer">
+  <strong>MikoMart-DEPLOY-2026-001</strong> &nbsp;|&nbsp; MikoMart POS System &nbsp;|&nbsp; Versi 1.0 &nbsp;|&nbsp; INTERNAL — CONFIDENTIAL
+</div>
+
+</body>
+</html>
