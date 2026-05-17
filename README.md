@@ -34,7 +34,7 @@ Karena proyek ini adalah *Pure Web App*, Anda tidak perlu menginstal *dependenci
 
 ### Langkah-langkah
 
-1. **Clone repository ini** (jika Anda belum melakukannya):
+1. **Clone repository ini**:
    ```bash
    git clone https://github.com/username-anda/mikomart-pos.git
    ```
@@ -103,4 +103,4 @@ Proyek ini tidak hanya berisi *source code*, tetapi juga dokumen rekayasa perang
 Proyek ini dikembangkan untuk keperluan akademik dan edukasi. Silakan merujuk pada kebijakan universitas terkait hak cipta atau gunakan untuk referensi pembelajaran rekayasa perangkat lunak.
 
 ---
-*Dibuat dengan ❤️ sebagai bagian dari proyek akhir Metode Rekayasa Perangkat Lunak.*
+*Dibuat sebagai bagian dari proyek akhir Metode Rekayasa Perangkat Lunak.*
