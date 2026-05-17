@@ -76,15 +76,15 @@ Proyek ini tidak hanya berisi *source code*, tetapi juga dokumen rekayasa perang
 │   ├── 📁 js/                 # File logika aplikasi (Vanilla JS, Revealing Module Pattern)
 │   ├── 📁 database/           # Skrip inisialisasi IndexedDB
 │   └── index.html             # Entry point aplikasi web
-├── 📁 docs/                   # 📄 Dokumentasi Akademik (Bila ada dalam subfolder)
-├── 📄 database_design.md      # Desain ERD & Kamus Data
-├── 📄 project_charter.md      # Project Charter (Fase Inisiasi)
-├── 📄 prd_pos_mikomart.md     # Product Requirements Document (PRD)
-├── 📄 srs_pos_mikomart.md     # Software Requirements Specification (IEEE 830)
-├── 📄 ui_ux_design.md         # Wireframe, Flowchart, dan Panduan Desain Antarmuka
-├── 📄 uat_script.md           # Skenario Pengujian (User Acceptance Testing)
-├── 📄 deployment_runbook.md   # Prosedur Deployment & Rollback
-└── 📄 laporan_akademik_pos_mikomart.md # Laporan Akhir Proyek Akademik
+├── 📁 docs/                   # 📄 Dokumentasi proses pembuatan MikoMart
+│   ├──📄 database_design.md      # Desain ERD & Kamus Data
+│   ├──📄 project_charter.md      # Project Charter (Fase Inisiasi)
+│   ├──📄 prd_pos_mikomart.md     # Product Requirements Document (PRD)
+│   ├──📄 srs_pos_mikomart.md     # Software Requirements Specification (IEEE 830)
+│   ├──📄 ui_ux_design.md         # Wireframe, Flowchart, dan Panduan Desain Antarmuka
+│   ├──📄 uat_script.md           # Skenario Pengujian (User Acceptance Testing)
+│   ├──📄 deployment_runbook.md   # Prosedur Deployment & Rollback
+│   ├──📄 laporan_akademik_pos_mikomart.md # Laporan Akhir Proyek Akademik
 ```
 
 ---
