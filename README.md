@@ -36,12 +36,12 @@ Karena proyek ini adalah *Pure Web App*, Anda tidak perlu menginstal *dependenci
 
 1. **Clone repository ini**:
    ```bash
-   git clone https://github.com/username-anda/mikomart-pos.git
+   git clone [https://github.com/username-anda/mikomart-pos.git](https://github.com/mikailachmad/miko-mart/tree/main/mikomart-pos)
    ```
 
 2. **Buka Terminal / Command Prompt**, lalu masuk ke direktori aplikasi:
    ```bash
-   cd "metode-rekayasa-perangkat-lunak/mikomart-pos"
+   cd "mikomart-pos"
    ```
 
 3. **Jalankan *Local HTTP Server*** menggunakan Python:
