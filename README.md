@@ -36,7 +36,7 @@ Karena proyek ini adalah *Pure Web App*, Anda tidak perlu menginstal *dependenci
 
 1. **Akses Website** melalui browser dengan membuka URL berikut:
    ```
-   [https://miko-mart.netlify.app/](https://miko-mart.netlify.app/)
+   https://miko-mart.netlify.app
    ```
 
 ### 🔑 Akun Default untuk Testing (Seed Data)
