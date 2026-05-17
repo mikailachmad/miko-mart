@@ -34,24 +34,9 @@ Karena proyek ini adalah *Pure Web App*, Anda tidak perlu menginstal *dependenci
 
 ### Langkah-langkah
 
-1. **Clone repository ini**:
-   ```bash
-   git clone [https://github.com/username-anda/mikomart-pos.git](https://github.com/mikailachmad/miko-mart/tree/main/mikomart-pos)
+1. **Akses Website** melalui browser dengan membuka URL berikut:
    ```
-
-2. **Buka Terminal / Command Prompt**, lalu masuk ke direktori aplikasi:
-   ```bash
-   cd "mikomart-pos"
-   ```
-
-3. **Jalankan *Local HTTP Server*** menggunakan Python:
-   ```bash
-   python -m http.server 8080
-   ```
-
-4. **Akses Aplikasi** melalui browser dengan membuka URL berikut:
-   ```
-   http://localhost:8080
+   [https://miko-mart.netlify.app/](https://miko-mart.netlify.app/)
    ```
 
 ### 🔑 Akun Default untuk Testing (Seed Data)
