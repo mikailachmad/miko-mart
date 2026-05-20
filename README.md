@@ -5,7 +5,7 @@
 ![Tech Stack](https://img.shields.io/badge/tech-HTML5%20%7C%20CSS3%20%7C%20Vanilla%20JS-orange.svg)
 ![Storage](https://img.shields.io/badge/storage-IndexedDB-yellow.svg)
 
-**MikoMart POS** adalah sistem *Point of Sale* (kasir) berbasis web (*web-native*) yang dirancang dengan arsitektur **Offline-First**. Sistem ini dikembangkan sebagai pemenuhan Tugas Akhir/Proyek pada mata kuliah **Metode Rekayasa Perangkat Lunak**, dengan berpedoman pada standar industri perangkat lunak seperti **IEEE 830** (untuk spesifikasi kebutuhan) dan standar desain kualitas lainnya.
+**MikoMart POS** adalah sistem *Point of Sale* (kasir) berbasis web (*web-native*) yang dirancang dengan arsitektur **Offline-First**. Sistem ini dikembangkan sebagai pemenuhan Proyek pada mata kuliah **Metode Rekayasa Perangkat Lunak**, dengan berpedoman pada standar industri perangkat lunak seperti **IEEE 830** (untuk spesifikasi kebutuhan) dan standar desain kualitas lainnya.
 
 Aplikasi ini dibangun murni menggunakan teknologi web standar (HTML, CSS, JavaScript Vanilla) tanpa bergantung pada *framework* eksternal yang berat, serta memanfaatkan **IndexedDB** untuk persistensi data lokal, sehingga kasir dapat tetap beroperasi 100% meskipun koneksi internet terputus.
 
@@ -88,4 +88,4 @@ Proyek ini tidak hanya berisi *source code*, tetapi juga dokumen rekayasa perang
 Proyek ini dikembangkan untuk keperluan akademik dan edukasi. Silakan merujuk pada kebijakan universitas terkait hak cipta atau gunakan untuk referensi pembelajaran rekayasa perangkat lunak.
 
 ---
-*Dibuat sebagai bagian dari proyek akhir Metode Rekayasa Perangkat Lunak.*
+*Dibuat sebagai bagian dari proyek individu Metode Rekayasa Perangkat Lunak.*
